@@ -1,0 +1,24 @@
+{
+  "name": "@tollgate/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types.ts",
+    "./constants": "./src/constants.ts",
+    "./chain": "./src/chain.ts",
+    "./circle": "./src/circle.ts",
+    "./x402": "./src/x402.ts"
+  },
+  "dependencies": {
+    "viem": "^2.21.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

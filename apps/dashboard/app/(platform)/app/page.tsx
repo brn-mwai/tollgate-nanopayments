@@ -3,12 +3,16 @@
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
-import { Receipt, CurrencyDollar, Robot, Gauge, ArrowUp } from "@phosphor-icons/react";
+import { Receipt, CurrencyDollar, Robot, Gauge } from "@phosphor-icons/react";
+import { OnboardingCard } from "@/components/onboarding";
 
 export default function OverviewPage() {
   const { user } = useUser();
   const publisher = useQuery(api.publishers.getMine);
+  const sites = useQuery(api.sites.list, publisher ? {} : "skip");
+  const events = useQuery(api.events.recent, publisher ? { limit: 50 } : "skip");
 
+  const first = user?.firstName ?? user?.username ?? "there";
   const date = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     day: "numeric",
@@ -16,15 +20,42 @@ export default function OverviewPage() {
     year: "numeric",
   });
 
-  const first = user?.firstName ?? user?.username ?? "there";
+  // Undefined = loading, null = confirmed absent
+  if (publisher === undefined) return <Loading />;
+
+  if (publisher === null) {
+    const suggested =
+      (user?.username ??
+        user?.primaryEmailAddress?.emailAddress.split("@")[0] ??
+        "my-org")
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, "");
+    return (
+      <>
+        <h1 style={{ fontFamily: "Instrument Serif, serif", fontSize: 38, marginBottom: 4 }}>
+          Welcome, {first}
+        </h1>
+        <p style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 32 }}>{date}</p>
+        <OnboardingCard suggestedSlug={suggested} />
+      </>
+    );
+  }
+
+  const paidToday = (events ?? []).filter((e) => {
+    const dayAgo = Date.now() - 24 * 60 * 60 * 1000;
+    return e.occurredAt > dayAgo && (e.status === "paid_onchain" || e.status === "paid_cached");
+  });
+  const earnedUuUsdc = paidToday.reduce((acc, e) => acc + e.priceMicroUsdc, 0);
+  const earnedUsd = (earnedUuUsdc / 1_000_000).toFixed(4);
+  const uniqueBots = new Set(paidToday.map((e) => e.agentWallet)).size;
 
   return (
     <div>
       <div style={{ fontFamily: "Instrument Serif, serif", fontSize: 38, fontWeight: 400, marginBottom: 4, letterSpacing: "-0.01em" }}>
-        Good morning, {first}
+        Good to see you, {first}
       </div>
       <div style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 32 }}>
-        {date} &middot; {publisher ? "Publisher active" : "Setting up your account..."} &middot; Arc testnet
+        {date} &middot; {sites?.length ?? 0} site{sites?.length === 1 ? "" : "s"} &middot; Arc testnet
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 32 }}>
@@ -32,22 +63,22 @@ export default function OverviewPage() {
           Icon={Receipt}
           color="pink"
           label="Paid TX today"
-          value="0"
-          sub="waiting for first request"
+          value={paidToday.length.toString()}
+          sub={paidToday.length === 0 ? "waiting for first request" : "past 24h"}
         />
         <StatCard
           Icon={CurrencyDollar}
           color="green"
           label="Earnings today"
-          value="$0.0000"
-          sub="500 uUSDC / TX"
+          value={`$${earnedUsd}`}
+          sub="uUSDC on Arc"
         />
         <StatCard
           Icon={Robot}
           color="arc"
           label="Active bots (24h)"
-          value="0"
-          sub="install the SDK to start"
+          value={uniqueBots.toString()}
+          sub={uniqueBots === 0 ? "install the SDK to start" : "unique wallets"}
         />
         <StatCard
           Icon={Gauge}
@@ -92,9 +123,17 @@ export default function OverviewPage() {
         </div>
         <div style={{ fontSize: 12.5, color: "var(--text-2)", lineHeight: 1.55, maxWidth: 680 }}>
           Arc denominates gas in USDC. Gas cost is fixed at design time, not probabilistic at runtime.
-          Every other chain's native-token gas wipes the margin before the article loads.
+          Every other chain&apos;s native-token gas wipes the margin before the article loads.
         </div>
       </div>
+    </div>
+  );
+}
+
+function Loading() {
+  return (
+    <div style={{ padding: 80, textAlign: "center", color: "var(--text-3)", fontSize: 13 }}>
+      Loading...
     </div>
   );
 }
