@@ -62,7 +62,7 @@ MIT. See [`LICENSE`](LICENSE).
 
 ## Hackathon submission
 
-- **Track:** Agentic Economy on Arc (Circle / LabLab / Arc House, April 20-26, 2026)
+- **Track:** [Agentic Economy on Arc](https://lablab.ai/ai-hackathons/nano-payments-arc) (Circle / LabLab / Arc House / Google DeepMind, April 20-26, 2026, $10K prize pool)
 - **Circle products used:** Arc L1, USDC, Nanopayments, Wallets, Gateway, Bridge Kit (CCTP), x402, Circle-titanoboa, Developer Console, Developer Blog
 - **Author:** Brian Mwai ([brianmwai.com](https://brianmwai.com))
 - **Demo:** [tollgate.brianmwai.com](https://tollgate.brianmwai.com)
