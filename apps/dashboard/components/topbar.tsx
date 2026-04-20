@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { MagnifyingGlass, Sparkle, SidebarSimple } from "@phosphor-icons/react";
+import { ChainIcon } from "./chain-icon";
 
 const TITLES: Record<string, string> = {
   "/app": "Overview",
@@ -55,6 +56,7 @@ export function Topbar() {
         className="pill pill-arc badge-3d"
         style={{ marginLeft: 10, display: "inline-flex", alignItems: "center", gap: 6 }}
       >
+        <ChainIcon chain="arc-testnet" size={14} />
         <span
           style={{
             width: 6,

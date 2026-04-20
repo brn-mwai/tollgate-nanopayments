@@ -3,6 +3,7 @@
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { relativeTime, shortHash, uUsdcToUsd } from "@/lib/format";
+import { ChainIcon, chainLabel } from "@/components/chain-icon";
 
 export default function WithdrawalsPage() {
   const res = useQuery(api.withdrawals.listMine, {
@@ -58,7 +59,12 @@ export default function WithdrawalsPage() {
                   <Td>{relativeTime(w.requestedAt)}</Td>
                   <Td mono>{uUsdcToUsd(w.amountMicroUsdc)}</Td>
                   <Td mono>{shortHash(w.destination)}</Td>
-                  <Td>{w.destChain}</Td>
+                  <Td>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <ChainIcon chain={w.destChain} size={16} />
+                      {chainLabel(w.destChain)}
+                    </span>
+                  </Td>
                   <Td mono>{w.circleTxId ? shortHash(w.circleTxId) : "—"}</Td>
                   <Td>
                     <StatusPill status={w.status} />

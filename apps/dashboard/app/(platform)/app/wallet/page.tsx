@@ -4,7 +4,8 @@ import { useAction, useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useState } from "react";
 import { ArrowUpRight, ArrowSquareOut, Copy } from "@phosphor-icons/react";
-import { uUsdcToUsd, shortAddr } from "@/lib/format";
+import { uUsdcToUsd } from "@/lib/format";
+import { ChainIcon } from "@/components/chain-icon";
 
 export default function WalletPage() {
   const wallet = useQuery(api.wallets.get);
@@ -72,8 +73,18 @@ export default function WalletPage() {
             <div style={{ fontFamily: "Instrument Serif, serif", fontSize: 56, lineHeight: 1, marginBottom: 10 }}>
               {uUsdcToUsd(wallet.cachedBalanceUuUsdc)}
             </div>
-            <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 12, color: "var(--text-2)" }}>
-              {wallet.cachedBalanceUuUsdc} uUSDC · Arc testnet
+            <div
+              style={{
+                fontFamily: "JetBrains Mono, monospace",
+                fontSize: 12,
+                color: "var(--text-2)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              {wallet.cachedBalanceUuUsdc} uUSDC <span style={{ opacity: 0.4 }}>·</span>
+              <ChainIcon chain="arc-testnet" size={14} /> Arc testnet
             </div>
             <AddressRow label="Address" value={wallet.address} />
             {wallet.walletId && <AddressRow label="Circle ID" value={wallet.walletId} />}
