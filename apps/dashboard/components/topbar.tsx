@@ -1,9 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { MagnifyingGlass, Sparkle, SidebarSimple } from "@phosphor-icons/react";
+import { MagnifyingGlass, SidebarSimple } from "@phosphor-icons/react";
 import { ChainIcon } from "./chain-icon";
-import { openAskPanel } from "./ask-panel";
 
 const TITLES: Record<string, string> = {
   "/app": "Overview",
@@ -58,10 +57,6 @@ export function Topbar() {
           <MagnifyingGlass size={15} />
           Search
           <span className="topbar-kbd">Ctrl K</span>
-        </button>
-        <button type="button" className="topbar-action" onClick={() => openAskPanel()}>
-          <Sparkle size={15} color="var(--pink-bright)" />
-          Ask Tollgate
         </button>
       </div>
     </div>
