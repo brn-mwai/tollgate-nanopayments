@@ -49,7 +49,15 @@ export async function getCurrentUserOrThrow(ctx: QueryCtx) {
 }
 
 export async function getCurrentUser(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
+  // Wrap in try-catch so partially-configured auth (missing
+  // CLERK_JWT_ISSUER_DOMAIN or no matching provider) surfaces as a
+  // null identity instead of a 500 on every authenticated request.
+  let identity;
+  try {
+    identity = await ctx.auth.getUserIdentity();
+  } catch {
+    return null;
+  }
   if (identity === null) return null;
   return await userByTokenIdentifier(ctx, identity.tokenIdentifier);
 }
