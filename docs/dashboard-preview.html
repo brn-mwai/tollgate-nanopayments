@@ -153,17 +153,30 @@ body {
 .sb-beta {
   font-family: var(--font-m);
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 2px 6px;
-  background: var(--pink-bg);
-  color: var(--pink-bright);
-  border: 1px solid var(--pink);
+  background: linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%);
+  border: 1px solid #B3007D;
   border-radius: 4px;
   align-self: center;
   flex-shrink: 0;
   transition: opacity 0.15s ease;
+}
+
+/* ── Shared 3D badge treatment (applies to pills and icon tiles) ── */
+.sb-beta,
+.nav-badge, .nav-badge-amber, .nav-badge-green, .nav-badge-pink,
+.status, .topbar-chain,
+.quick-icon, .sb-plan-icon {
+  color: #FFFFFF !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.28),
+    inset 0 -1px 1px rgba(0,0,0,0.18),
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    0 1px 2px rgba(0,0,0,0.20);
+  text-shadow: 0 1px 1px rgba(0,0,0,0.15);
 }
 
 /* ── Create button ── */
@@ -234,10 +247,10 @@ body {
 /* ── Badges ── */
 .nav-badge {
   margin-left: auto;
-  font-family: var(--font-m); font-size: 10px; font-weight: 500;
+  font-family: var(--font-m); font-size: 10px; font-weight: 600;
   padding: 1px 6px;
-  background: var(--arc-bg); color: var(--arc-bright);
-  border: 1px solid var(--arc);
+  background: linear-gradient(155deg, #4F96E0 0%, #2775CA 55%, #1F69B4 100%);
+  border: 1px solid #1A5A9E;
   border-radius: 4px;
   flex-shrink: 0;
   transition: opacity 0.15s ease;
@@ -245,10 +258,10 @@ body {
 
 .nav-badge-amber {
   margin-left: auto;
-  font-family: var(--font-m); font-size: 10px; font-weight: 500;
+  font-family: var(--font-m); font-size: 10px; font-weight: 600;
   padding: 1px 6px;
-  background: var(--gold-bg); color: var(--gold);
-  border: 1px solid var(--gold);
+  background: linear-gradient(155deg, #FFBF5F 0%, #F2A541 55%, #D68E2B 100%);
+  border: 1px solid #C77B1F;
   border-radius: 4px;
   flex-shrink: 0;
   transition: opacity 0.15s ease;
@@ -256,10 +269,10 @@ body {
 
 .nav-badge-green {
   margin-left: auto;
-  font-family: var(--font-m); font-size: 9px; font-weight: 600;
+  font-family: var(--font-m); font-size: 9px; font-weight: 700;
   padding: 1px 6px;
-  background: var(--green-bg); color: var(--green);
-  border: 1px solid var(--green);
+  background: linear-gradient(155deg, #12C994 0%, #06A77D 55%, #058A68 100%);
+  border: 1px solid #047155;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -269,10 +282,10 @@ body {
 
 .nav-badge-pink {
   margin-left: auto;
-  font-family: var(--font-m); font-size: 10px; font-weight: 500;
+  font-family: var(--font-m); font-size: 10px; font-weight: 600;
   padding: 1px 6px;
-  background: var(--pink-bg); color: var(--pink-bright);
-  border: 1px solid var(--pink);
+  background: linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%);
+  border: 1px solid #B3007D;
   border-radius: 4px;
   flex-shrink: 0;
   transition: opacity 0.15s ease;
@@ -301,8 +314,8 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 14px;
   flex-shrink: 0;
-  background: var(--pink-bg);
-  color: var(--pink-bright);
+  background: linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%);
+  border: 1px solid #B3007D;
 }
 
 .sb-plan-label { font-size: 11px; color: var(--text-3); line-height: 1.2; }
@@ -520,12 +533,11 @@ body {
   align-items: center;
   gap: 6px;
   padding: 3px 8px;
-  border: 1px solid var(--arc);
-  background: var(--arc-bg);
-  color: var(--arc-bright);
+  border: 1px solid #1A5A9E;
+  background: linear-gradient(155deg, #4F96E0 0%, #2775CA 55%, #1F69B4 100%);
   font-family: var(--font-m);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 4px;
   margin-left: 10px;
   text-transform: uppercase;
@@ -728,9 +740,9 @@ body {
   text-transform: uppercase; letter-spacing: 0.05em;
   font-weight: 600;
 }
-.status-onchain { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
-.status-cached  { background: var(--arc-bg); color: var(--arc-bright); border: 1px solid var(--arc); }
-.status-402     { background: var(--gold-bg); color: var(--gold); border: 1px solid var(--gold); }
+.status-onchain { background: linear-gradient(155deg, #12C994 0%, #06A77D 55%, #058A68 100%); border: 1px solid #047155; }
+.status-cached  { background: linear-gradient(155deg, #4F96E0 0%, #2775CA 55%, #1F69B4 100%); border: 1px solid #1A5A9E; }
+.status-402     { background: linear-gradient(155deg, #FFBF5F 0%, #F2A541 55%, #D68E2B 100%); border: 1px solid #C77B1F; }
 
 .agent-pill {
   display: inline-flex; align-items: center; gap: 5px;
@@ -839,9 +851,9 @@ body {
   font-size: 16px;
   margin-bottom: 12px;
 }
-.quick-icon.pink  { background: var(--pink-bg); color: var(--pink-bright); }
-.quick-icon.arc   { background: var(--arc-bg); color: var(--arc-bright); }
-.quick-icon.gold  { background: var(--gold-bg); color: var(--gold); }
+.quick-icon.pink  { background: linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%); border: 1px solid #B3007D; }
+.quick-icon.arc   { background: linear-gradient(155deg, #4F96E0 0%, #2775CA 55%, #1F69B4 100%); border: 1px solid #1A5A9E; }
+.quick-icon.gold  { background: linear-gradient(155deg, #FFBF5F 0%, #F2A541 55%, #D68E2B 100%); border: 1px solid #C77B1F; }
 
 .quick-title { font-size: 13.5px; font-weight: 600; margin-bottom: 4px; }
 .quick-desc  { font-size: 12px; color: var(--text-3); line-height: 1.45; }
