@@ -1,6 +1,6 @@
 import { internalMutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { requirePublisher, requireSiteOwnedByMe } from "./lib/helpers";
+import { getCurrentPublisher, requireSiteOwnedByMe } from "./lib/helpers";
 
 // Public read: dashboard paginated event stream, scoped to owned sites.
 export const listForSite = query({
@@ -19,7 +19,8 @@ export const listForSite = query({
 export const recent = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, { limit = 20 }) => {
-    const pub = await requirePublisher(ctx);
+    const pub = await getCurrentPublisher(ctx);
+    if (!pub) return [];
     const sites = await ctx.db
       .query("sites")
       .withIndex("by_publisher", (q) => q.eq("publisherId", pub._id))

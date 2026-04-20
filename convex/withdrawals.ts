@@ -1,12 +1,15 @@
 import { mutation, query, action, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
-import { requirePublisher } from "./lib/helpers";
+import { getCurrentPublisher, requirePublisher } from "./lib/helpers";
 
 export const listMine = query({
   args: { paginationOpts: v.any() },
   handler: async (ctx, { paginationOpts }) => {
-    const pub = await requirePublisher(ctx);
+    const pub = await getCurrentPublisher(ctx);
+    if (!pub) {
+      return { page: [], isDone: true, continueCursor: "" };
+    }
     return await ctx.db
       .query("withdrawals")
       .withIndex("by_publisher_time", (q) => q.eq("publisherId", pub._id))

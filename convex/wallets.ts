@@ -1,14 +1,15 @@
 import { action, internalMutation, internalQuery, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
-import { requirePublisher } from "./lib/helpers";
+import { getCurrentPublisher, requirePublisher } from "./lib/helpers";
 
 // Read: dashboard shows wallet address + last-known balance from Convex.
 // Live balance is fetched through `balance` action on demand.
 export const get = query({
   args: {},
   handler: async (ctx) => {
-    const pub = await requirePublisher(ctx);
+    const pub = await getCurrentPublisher(ctx);
+    if (!pub) return null;
     return {
       walletId: pub.circleWalletId ?? null,
       address: pub.arcAddress ?? null,

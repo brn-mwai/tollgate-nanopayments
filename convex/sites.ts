@@ -1,13 +1,14 @@
 import { mutation, query, action, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
-import { requirePublisher, requireSiteOwnedByMe } from "./lib/helpers";
+import { getCurrentPublisher, requirePublisher, requireSiteOwnedByMe } from "./lib/helpers";
 import { generateApiKey, randomHex } from "./lib/apiKey";
 
 export const list = query({
   args: {},
   handler: async (ctx) => {
-    const pub = await requirePublisher(ctx);
+    const pub = await getCurrentPublisher(ctx);
+    if (!pub) return [];
     return await ctx.db
       .query("sites")
       .withIndex("by_publisher", (q) => q.eq("publisherId", pub._id))
