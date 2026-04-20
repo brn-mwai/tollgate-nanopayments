@@ -740,9 +740,11 @@ body {
   text-transform: uppercase; letter-spacing: 0.05em;
   font-weight: 600;
 }
-.status-onchain { background: linear-gradient(155deg, #12C994 0%, #06A77D 55%, #058A68 100%); border: 1px solid #047155; }
-.status-cached  { background: linear-gradient(155deg, #4F96E0 0%, #2775CA 55%, #1F69B4 100%); border: 1px solid #1A5A9E; }
-.status-402     { background: linear-gradient(155deg, #FFBF5F 0%, #F2A541 55%, #D68E2B 100%); border: 1px solid #C77B1F; }
+.status-onchain   { background: linear-gradient(155deg, #12C994 0%, #06A77D 55%, #058A68 100%); border: 1px solid #047155; }
+.status-cached    { background: linear-gradient(155deg, #4F96E0 0%, #2775CA 55%, #1F69B4 100%); border: 1px solid #1A5A9E; }
+.status-402       { background: linear-gradient(155deg, #FFBF5F 0%, #F2A541 55%, #D68E2B 100%); border: 1px solid #C77B1F; }
+.status-preferred { background: linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%); border: 1px solid #B3007D; }
+.status-failed    { background: linear-gradient(155deg, #E05252 0%, #C62828 55%, #A31E1E 100%); border: 1px solid #7C1414; }
 
 .agent-pill {
   display: inline-flex; align-items: center; gap: 5px;
@@ -1837,7 +1839,7 @@ body {
               <tr><td class="time">Apr 15</td><td class="amount">$87.50</td><td class="hash">0x1f88…ab43</td><td>Ethereum</td><td class="hash">tx_a4d1…</td><td><span class="status status-onchain">sent</span></td></tr>
               <tr><td class="time">Apr 12</td><td class="amount">$220.00</td><td class="hash">0x9cE2…d41f</td><td>Base</td><td class="hash">tx_cc32…</td><td><span class="status status-onchain">sent</span></td></tr>
               <tr><td class="time">Apr 08</td><td class="amount">$198.42</td><td class="hash">0x9cE2…d41f</td><td>Base</td><td class="hash">tx_f918…</td><td><span class="status status-onchain">sent</span></td></tr>
-              <tr><td class="time">Apr 03</td><td class="amount">$95.00</td><td class="hash">0x9cE2…d41f</td><td>Base</td><td class="hash">—</td><td><span class="status status-cached">failed</span></td></tr>
+              <tr><td class="time">Apr 03</td><td class="amount">$95.00</td><td class="hash">0x9cE2…d41f</td><td>Base</td><td class="hash">—</td><td><span class="status status-failed">failed</span></td></tr>
               <tr><td class="time">Mar 30</td><td class="amount">$62.30</td><td class="hash">0x1f88…ab43</td><td>Ethereum</td><td class="hash">tx_3b42…</td><td><span class="status status-onchain">sent</span></td></tr>
             </tbody>
           </table>
@@ -1919,11 +1921,11 @@ body {
           <table class="tx-table">
             <thead><tr><th>Agent</th><th>Wallet</th><th>First seen</th><th>Total paid</th><th>Reputation</th><th>Tier</th><th>Status</th></tr></thead>
             <tbody>
-              <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td class="hash">0xF00f…9a12</td><td class="time">Apr 14</td><td class="amount">1,284,500 uUSDC</td><td>0.92</td><td><span class="status status-onchain">trusted</span></td><td><span class="status status-cached">active</span></td></tr>
-              <tr><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td class="hash">0xRE5a…2c91</td><td class="time">Apr 16</td><td class="amount">624,000 uUSDC</td><td>0.76</td><td><span class="status status-onchain">verified</span></td><td><span class="status status-cached">active</span></td></tr>
-              <tr><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td class="hash">0x1ND…71b3</td><td class="time">Apr 18</td><td class="amount">311,000 uUSDC</td><td>0.64</td><td><span class="status status-onchain">verified</span></td><td><span class="status status-cached">active</span></td></tr>
+              <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td class="hash">0xF00f…9a12</td><td class="time">Apr 14</td><td class="amount">1,284,500 uUSDC</td><td>0.92</td><td><span class="status status-onchain">trusted</span></td><td><span class="status status-onchain">active</span></td></tr>
+              <tr><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td class="hash">0xRE5a…2c91</td><td class="time">Apr 16</td><td class="amount">624,000 uUSDC</td><td>0.76</td><td><span class="status status-cached">verified</span></td><td><span class="status status-onchain">active</span></td></tr>
+              <tr><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td class="hash">0x1ND…71b3</td><td class="time">Apr 18</td><td class="amount">311,000 uUSDC</td><td>0.64</td><td><span class="status status-cached">verified</span></td><td><span class="status status-onchain">active</span></td></tr>
               <tr><td>unknown-bot-042</td><td class="hash">0x8a4c…e1f0</td><td class="time">Apr 19</td><td class="amount">12,500 uUSDC</td><td>0.31</td><td><span class="status status-402">unverified</span></td><td><span class="status status-402">flagged</span></td></tr>
-              <tr><td>unknown-bot-087</td><td class="hash">0xd221…88a7</td><td class="time">Apr 20</td><td class="amount">2,500 uUSDC</td><td>0.18</td><td><span class="status status-402">unverified</span></td><td><span class="status status-402">flagged</span></td></tr>
+              <tr><td>unknown-bot-087</td><td class="hash">0xd221…88a7</td><td class="time">Apr 20</td><td class="amount">2,500 uUSDC</td><td>0.18</td><td><span class="status status-402">unverified</span></td><td><span class="status status-failed">banned</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1955,7 +1957,7 @@ body {
             <div class="tier-example">250 uUSDC</div>
           </div>
           <div class="tier-row">
-            <div class="tier-name"><span class="status status-onchain">preferred</span></div>
+            <div class="tier-name"><span class="status status-preferred">preferred</span></div>
             <div class="tier-score">&gt; 0.95</div>
             <div class="tier-discount"><b>80% off</b></div>
             <div class="tier-example">100 uUSDC</div>
@@ -2143,7 +2145,7 @@ app.<span class="fn">listen</span>(<span class="str">3000</span>)</pre>
               <tbody>
                 <tr><td>demo-news prod</td><td class="hash">tg_live_a9f2…</td><td class="time">Apr 14</td><td class="time">just now</td><td><span class="status status-onchain">active</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
                 <tr><td>staging</td><td class="hash">tg_test_4c01…</td><td class="time">Apr 16</td><td class="time">2h ago</td><td><span class="status status-cached">test</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
-                <tr><td>docs reader</td><td class="hash">tg_test_ab32…</td><td class="time">Apr 17</td><td class="time">never</td><td><span class="status status-402">unused</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
+                <tr><td>docs reader</td><td class="hash">tg_test_ab32…</td><td class="time">Apr 17</td><td class="time">never</td><td><span class="status status-failed">revoked</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
               </tbody>
             </table>
           </div>
