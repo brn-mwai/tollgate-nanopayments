@@ -6,6 +6,7 @@ import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useMemo } from "react";
 import { AccountPopup } from "./account-popup";
+import { useShell } from "./shell-context";
 import {
   SquaresFour,
   GlobeHemisphereWest,
@@ -34,6 +35,7 @@ const FREE_TIER_DAILY_TX_LIMIT = 100;
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { collapsed } = useShell();
 
   const publisher = useQuery(api.publishers.getMine);
   const sites = useQuery(api.sites.list);
@@ -97,7 +99,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="sidebar">
+    <aside className={collapsed ? "sidebar collapsed" : "sidebar"}>
       <div className="sb-header">
         <Link href="/app" className="sb-logo">
           <span className="sb-logo-icon">

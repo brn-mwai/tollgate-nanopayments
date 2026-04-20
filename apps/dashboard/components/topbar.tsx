@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { MagnifyingGlass, SidebarSimple } from "@phosphor-icons/react";
 import { ChainIcon } from "./chain-icon";
+import { useShell } from "./shell-context";
 
 const TITLES: Record<string, string> = {
   "/app": "Overview",
@@ -17,11 +18,17 @@ const TITLES: Record<string, string> = {
 
 export function Topbar() {
   const pathname = usePathname();
+  const { toggle } = useShell();
   const title = TITLES[pathname] ?? "Overview";
 
   return (
     <div className="topbar">
-      <button type="button" className="collapse-btn" aria-label="Toggle sidebar">
+      <button
+        type="button"
+        className="collapse-btn"
+        aria-label="Toggle sidebar"
+        onClick={toggle}
+      >
         <SidebarSimple size={17} />
       </button>
       <div className="topbar-divider" />

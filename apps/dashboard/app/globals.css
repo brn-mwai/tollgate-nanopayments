@@ -215,6 +215,8 @@ body {
   overflow: hidden;
 }
 .sidebar.collapsed { width: 0; min-width: 0; padding: 0; overflow: hidden; border: none; }
+.sidebar.collapsed ~ .main { margin-left: 8px; }
+.main { transition: margin 0.2s ease; }
 
 .sb-header { padding: 16px 16px 12px; display: flex; align-items: center; flex-shrink: 0; min-height: 52px; }
 .sb-logo {
