@@ -16,18 +16,22 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "pnpm -r --parallel dev",
+    "dev": "pnpm -C apps/dashboard dev",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "convex:dev": "convex dev",
     "convex:deploy": "convex deploy",
-    "demo": "pnpm -C apps/demo-site dev",
     "dashboard": "pnpm -C apps/dashboard dev"
   },
+  "dependencies": {
+    "@clerk/backend": "^1.21.0",
+    "convex": "^1.31.0",
+    "svix": "^1.45.0"
+  },
   "devDependencies": {
-    "typescript": "^5.6.3",
-    "@types/node": "^22.7.5"
+    "@types/node": "^22.10.0",
+    "typescript": "^5.6.3"
   },
   "engines": {
     "node": ">=20"
