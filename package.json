@@ -1,0 +1,35 @@
+{
+  "name": "tollgate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bot-economics payment infrastructure on Arc. HTTP 402 + USDC + x402.",
+  "license": "MIT",
+  "author": "Brian Mwai",
+  "homepage": "https://tollgate.brianmwai.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brn-mwai/tollgate.git"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "convex:dev": "convex dev",
+    "convex:deploy": "convex deploy",
+    "demo": "pnpm -C apps/demo-site dev",
+    "dashboard": "pnpm -C apps/dashboard dev"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/node": "^22.7.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
