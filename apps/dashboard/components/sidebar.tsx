@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
+import { useMemo } from "react";
 import { AccountPopup } from "./account-popup";
 import {
   SquaresFour,
@@ -19,7 +20,6 @@ import {
 } from "@phosphor-icons/react";
 
 type BadgeVariant = "arc" | "gold" | "green" | "pink";
-
 type Badge = { text: string; variant: BadgeVariant };
 
 type NavItem = {
@@ -29,12 +29,29 @@ type NavItem = {
   badge?: Badge;
 };
 
+// Free-tier daily paid-TX ceiling. Keep in sync with pricing page.
+const FREE_TIER_DAILY_TX_LIMIT = 100;
+
 export function Sidebar() {
   const pathname = usePathname();
 
-  // Reactive counts — render only when there's actually data to surface.
   const sites = useQuery(api.sites.list);
-  const events = useQuery(api.events.recent, { limit: 100 });
+  const events = useQuery(api.events.recent, { limit: 500 });
+
+  // Usage: paid TX in the last 24h vs the Free tier ceiling.
+  const usage = useMemo(() => {
+    if (!events) return { paid: 0, pct: 0, tier: "green" as const };
+    const dayAgo = Date.now() - 24 * 3600_000;
+    const paid = events.filter(
+      (e) =>
+        e.occurredAt > dayAgo &&
+        (e.status === "paid_onchain" || e.status === "paid_cached"),
+    ).length;
+    const pct = Math.min(100, Math.round((paid / FREE_TIER_DAILY_TX_LIMIT) * 100));
+    const tier: "green" | "amber" | "red" =
+      pct >= 90 ? "red" : pct >= 75 ? "amber" : "green";
+    return { paid, pct, tier };
+  }, [events]);
 
   const nav: NavItem[][] = [
     [
@@ -43,13 +60,19 @@ export function Sidebar() {
         href: "/app/sites",
         label: "Sites",
         Icon: GlobeHemisphereWest,
-        badge: (sites && sites.length > 0) ? { text: String(sites.length), variant: "arc" } : undefined,
+        badge:
+          sites && sites.length > 0
+            ? { text: String(sites.length), variant: "arc" }
+            : undefined,
       },
       {
         href: "/app/events",
         label: "Events",
         Icon: ListMagnifyingGlass,
-        badge: (events && events.length > 0) ? { text: String(events.length), variant: "arc" } : undefined,
+        badge:
+          events && events.length > 0
+            ? { text: String(events.length), variant: "arc" }
+            : undefined,
       },
     ],
     [
@@ -127,9 +150,29 @@ export function Sidebar() {
             <div className="sb-plan-name">Free</div>
           </div>
         </div>
+
+        <div className="sb-plan-usage">
+          <div className="sb-plan-bar-track">
+            <div
+              className={`sb-plan-bar-fill ${usage.tier}`}
+              style={{ width: `${usage.pct}%` }}
+            />
+          </div>
+          <div className="sb-plan-count">
+            <span>
+              {usage.paid} / {FREE_TIER_DAILY_TX_LIMIT} paid TX today
+            </span>
+            <span>{usage.pct}%</span>
+          </div>
+        </div>
+
         <div className="sb-plan-msg">
           Upgrade to Pro for unlimited TX, 5 sites, priority facilitator, and CCTP off-ramp.
         </div>
+
+        <button type="button" className="sb-plan-upgrade">
+          <Star size={13} weight="fill" /> Upgrade to Pro
+        </button>
       </div>
 
       <div className="sb-footer" style={{ padding: "8px 10px" }}>
