@@ -1018,11 +1018,350 @@ body {
 [data-theme="light"] .ai-panel-send { background: #FFFFFF; }
 .ai-panel-send:hover { color: var(--text-1); }
 
+/* ── Page switching ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px; font-weight: 500;
+  font-family: var(--font-h);
+  color: var(--text-1);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+[data-theme="dark"] .btn { background: #101420; }
+[data-theme="light"] .btn { background: #FFFFFF; }
+.btn:hover { background: var(--bg-hover); }
+.btn i { font-size: 15px; }
+.btn.btn-primary {
+  background: linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%);
+  border: 1px solid #B3007D;
+  color: #FFFFFF;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.28),
+    inset 0 -1px 1px rgba(0,0,0,0.18),
+    0 1px 2px rgba(0,0,0,0.20);
+  text-shadow: 0 1px 1px rgba(0,0,0,0.15);
+}
+.btn.btn-primary:hover { filter: brightness(1.08); }
+.btn.btn-ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+.btn.btn-ghost:hover { background: var(--bg-hover); color: var(--text-1); }
+.btn.btn-danger { color: var(--red); border-color: rgba(198,40,40,0.4); }
+.btn.btn-danger:hover { background: rgba(198,40,40,0.08); }
+
+/* ── Page header ── */
+.page-header-row {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.page-header-row .page-title, .page-header-row .page-subtitle { margin-bottom: 0; }
+.page-header-row .page-subtitle { margin-top: 6px; }
+.page-header-row .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── Multi-column ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+.three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+
+/* ── Site cards ── */
+.site-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  transition: border-color 0.15s ease;
+  cursor: pointer;
+}
+[data-theme="dark"] .site-card { background: rgba(255,255,255,0.025); }
+[data-theme="light"] .site-card { background: #FFFFFF; }
+.site-card:hover { border-color: var(--text-3); }
+.site-card-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.site-favicon {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: linear-gradient(155deg, rgba(255,0,170,0.2), rgba(39,117,202,0.2));
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-m); font-size: 13px; font-weight: 600; color: var(--text-1);
+  flex-shrink: 0;
+}
+.site-card-domain { font-size: 14px; font-weight: 600; flex: 1; min-width: 0; word-break: break-all; }
+.site-card-meta { display: flex; gap: 22px; flex-wrap: wrap; }
+.site-card-meta-item { display: flex; flex-direction: column; gap: 3px; }
+.site-card-meta-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; }
+.site-card-meta-value { font-family: var(--font-m); font-size: 14px; font-weight: 600; }
+.site-card-meta-value.accent { color: var(--green); }
+.site-card-meta-value.muted { color: var(--text-2); }
+.site-card-actions {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-s);
+}
+
+/* ── Filter bar ── */
+.filter-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+[data-theme="dark"] .filter-bar { background: rgba(255,255,255,0.025); }
+[data-theme="light"] .filter-bar { background: #FFFFFF; }
+.filter-chip {
+  font-size: 12px; font-weight: 500;
+  padding: 5px 10px;
+  color: var(--text-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  background: transparent;
+}
+.filter-chip:hover { color: var(--text-1); background: var(--bg-hover); }
+.filter-chip.active {
+  background: linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%);
+  border-color: #B3007D;
+  color: #FFFFFF;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.15);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 1px 2px rgba(0,0,0,0.2);
+}
+.filter-divider { width: 1px; height: 20px; background: var(--border); }
+.filter-input {
+  flex: 1; min-width: 160px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: var(--font-h);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-1);
+  outline: none;
+}
+[data-theme="dark"] .filter-input { background: #101420; }
+[data-theme="light"] .filter-input { background: #FAFAFA; }
+.filter-input:focus { border-color: var(--pink); }
+
+/* ── Balance hero ── */
+.balance-hero {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 32px 32px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="dark"] .balance-hero { background: rgba(255,255,255,0.025); }
+[data-theme="light"] .balance-hero { background: #FFFFFF; }
+.balance-hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -80px;
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, rgba(255,0,170,0.18), transparent 65%);
+  pointer-events: none;
+}
+.balance-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; position: relative; }
+.balance-value {
+  font-family: 'Instrument Serif', serif;
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  position: relative;
+}
+.balance-sub { font-family: var(--font-m); font-size: 12px; color: var(--text-2); position: relative; }
+
+/* ── Address row ── */
+.address-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  margin-top: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-s);
+  position: relative;
+  flex-wrap: wrap;
+}
+[data-theme="dark"] .address-row { background: rgba(255,255,255,0.03); }
+[data-theme="light"] .address-row { background: #FAFAFA; }
+.address-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; min-width: 64px; font-weight: 600; }
+.address-value { flex: 1; font-family: var(--font-m); font-size: 12.5px; color: var(--arc-bright); overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.address-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.address-actions button {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 1px solid var(--border-s);
+  color: var(--text-3); cursor: pointer;
+  border-radius: 5px;
+  font-size: 13px;
+}
+.address-actions button:hover { color: var(--text-1); background: var(--bg-hover); }
+
+/* ── Tabs ── */
+.tabs {
+  display: flex; gap: 2px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.tab {
+  padding: 10px 14px;
+  font-size: 13px; font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-family: var(--font-h);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.tab i { font-size: 15px; }
+.tab:hover { color: var(--text-1); }
+.tab.active { color: var(--text-1); border-bottom-color: #FF00AA; font-weight: 600; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── Form ── */
+.form-field { margin-bottom: 16px; }
+.form-label { font-size: 12px; color: var(--text-2); font-weight: 500; display: block; margin-bottom: 6px; }
+.form-hint { font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.5; }
+.input, .textarea, .select {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-family: var(--font-h);
+  color: var(--text-1);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+}
+[data-theme="dark"] .input, [data-theme="dark"] .textarea, [data-theme="dark"] .select { background: #101420; }
+[data-theme="light"] .input, [data-theme="light"] .textarea, [data-theme="light"] .select { background: #FFFFFF; }
+.input:focus, .textarea:focus, .select:focus { border-color: var(--pink); }
+.textarea { resize: vertical; min-height: 80px; font-family: var(--font-m); }
+
+/* ── List ── */
+.list { display: flex; flex-direction: column; }
+.list-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-s);
+}
+.list-item:last-child { border-bottom: 0; }
+.list-item-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.28),
+    inset 0 -1px 1px rgba(0,0,0,0.18),
+    0 1px 2px rgba(0,0,0,0.20);
+  text-shadow: 0 1px 1px rgba(0,0,0,0.15);
+  color: #FFFFFF;
+}
+.list-item-body { flex: 1; min-width: 0; }
+.list-item-title { font-size: 13.5px; font-weight: 500; margin-bottom: 2px; }
+.list-item-desc { font-size: 12px; color: var(--text-3); }
+.list-item-meta { font-family: var(--font-m); font-size: 12px; color: var(--text-3); flex-shrink: 0; text-align: right; }
+.list-item-meta.accent { color: var(--green); }
+
+/* ── Key-value grid ── */
+.kv-grid { display: grid; grid-template-columns: 180px 1fr; gap: 14px 20px; padding: 4px 0; }
+.kv-grid .k { font-size: 11px; color: var(--text-3); padding-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+.kv-grid .v { font-size: 13.5px; color: var(--text-1); }
+.kv-grid .v.mono { font-family: var(--font-m); font-size: 12.5px; }
+.kv-grid .v.muted { color: var(--text-2); }
+
+/* ── Pagination ── */
+.pagination {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-s);
+  font-size: 12px; color: var(--text-3);
+  gap: 10px; flex-wrap: wrap;
+}
+.pagination-controls { display: flex; gap: 4px; }
+.pagination-controls button {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 1px solid var(--border);
+  color: var(--text-2); cursor: pointer;
+  border-radius: 5px;
+  font-size: 13px;
+}
+.pagination-controls button:hover { color: var(--text-1); background: var(--bg-hover); }
+.pagination-controls button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Checklist ── */
+.checklist { padding: 4px 0; }
+.checklist-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0;
+  font-size: 13px;
+  color: var(--text-1);
+}
+.checklist-item i { font-size: 17px; flex-shrink: 0; }
+.checklist-item.done i { color: var(--green); }
+.checklist-item.pending { color: var(--text-2); }
+.checklist-item.pending i { color: var(--text-3); }
+.checklist-item.warning i { color: var(--gold); }
+
+/* ── Tier list ── */
+.tier-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 120px 140px;
+  gap: 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border-s);
+  font-size: 13px;
+  align-items: center;
+}
+.tier-row.head { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); font-weight: 600; }
+.tier-row:last-child { border-bottom: 0; }
+.tier-row .tier-name { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.tier-row .tier-score, .tier-row .tier-discount, .tier-row .tier-example { font-family: var(--font-m); color: var(--text-2); }
+.tier-row .tier-discount b { color: var(--green); }
+
+/* ── Responsive ── */
 @media (max-width: 1100px) {
   .stats { grid-template-columns: repeat(2, 1fr); }
+  .three-col { grid-template-columns: repeat(2, 1fr); }
   .margin-card { grid-template-columns: 1fr; }
   .margin-left { border-right: none; border-bottom: 1px solid var(--border); }
   .quick { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .page-content { padding: 28px 24px; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .three-col { grid-template-columns: 1fr; }
+  .kv-grid { grid-template-columns: 1fr; gap: 4px 0; }
+  .kv-grid .k { padding-top: 10px; }
+  .tier-row { grid-template-columns: 1fr 1fr; }
+  .tier-row.head { display: none; }
+}
+@media (max-width: 640px) {
+  :root { --sidebar-w: 220px; }
+  .stats { grid-template-columns: 1fr; }
+  .page-content { padding: 24px 16px; }
+  .page-title { font-size: 28px; }
+  .balance-value { font-size: 40px; }
+  .topbar { padding: 0 14px; }
+  .topbar-breadcrumb, .topbar-chain { display: none; }
+  .topbar-action .topbar-kbd { display: none; }
+  .tx-table th, .tx-table td { padding: 8px 12px; font-size: 12px; }
+  .tx-table .hide-sm { display: none; }
+  .site-card-meta { gap: 16px; }
 }
 </style>
 </head>
@@ -1048,23 +1387,23 @@ body {
 
     <nav class="sb-nav">
       <div class="nav-sec">
-        <a class="nav-item active"><i class="ph-duotone ph-squares-four"></i> <span class="nav-text">Overview</span></a>
-        <a class="nav-item"><i class="ph-duotone ph-globe-hemisphere-west"></i> <span class="nav-text">Sites</span> <span class="nav-badge">2</span></a>
-        <a class="nav-item"><i class="ph-duotone ph-list-magnifying-glass"></i> <span class="nav-text">Events</span> <span class="nav-badge">47</span></a>
+        <a class="nav-item active" data-page="overview"><i class="ph-duotone ph-squares-four"></i> <span class="nav-text">Overview</span></a>
+        <a class="nav-item" data-page="sites"><i class="ph-duotone ph-globe-hemisphere-west"></i> <span class="nav-text">Sites</span> <span class="nav-badge">2</span></a>
+        <a class="nav-item" data-page="events"><i class="ph-duotone ph-list-magnifying-glass"></i> <span class="nav-text">Events</span> <span class="nav-badge">47</span></a>
       </div>
 
       <div class="nav-sec">
-        <a class="nav-item"><i class="ph-duotone ph-wallet"></i> <span class="nav-text">Wallet</span></a>
-        <a class="nav-item"><i class="ph-duotone ph-arrow-square-out"></i> <span class="nav-text">Withdrawals</span></a>
+        <a class="nav-item" data-page="wallet"><i class="ph-duotone ph-wallet"></i> <span class="nav-text">Wallet</span></a>
+        <a class="nav-item" data-page="withdrawals"><i class="ph-duotone ph-arrow-square-out"></i> <span class="nav-text">Withdrawals</span></a>
       </div>
 
       <div class="nav-sec">
-        <a class="nav-item"><i class="ph-duotone ph-users-three"></i> <span class="nav-text">Agents</span> <span class="nav-badge-amber">ERC-8004</span></a>
-        <a class="nav-item"><i class="ph-duotone ph-code"></i> <span class="nav-text">Install SDK</span></a>
+        <a class="nav-item" data-page="agents"><i class="ph-duotone ph-users-three"></i> <span class="nav-text">Agents</span> <span class="nav-badge-amber">ERC-8004</span></a>
+        <a class="nav-item" data-page="install"><i class="ph-duotone ph-code"></i> <span class="nav-text">Install SDK</span></a>
       </div>
 
       <div class="nav-sec">
-        <a class="nav-item"><i class="ph-duotone ph-gear"></i> <span class="nav-text">Settings</span></a>
+        <a class="nav-item" data-page="settings"><i class="ph-duotone ph-gear"></i> <span class="nav-text">Settings</span></a>
       </div>
     </nav>
 
@@ -1118,7 +1457,7 @@ body {
     <div class="topbar">
       <button class="collapse-btn" onclick="toggleSidebar()"><i class="ph ph-sidebar-simple"></i></button>
       <div class="topbar-divider"></div>
-      <div class="topbar-breadcrumb"><span>Overview</span></div>
+      <div class="topbar-breadcrumb"><span id="breadcrumb">Overview</span></div>
       <span class="topbar-chain"><span class="live-dot"></span> Arc Testnet</span>
       <div class="topbar-spacer"></div>
       <div class="topbar-actions">
@@ -1128,133 +1467,523 @@ body {
     </div>
 
     <div class="page-content">
-      <div class="page-title">Good morning, Brian</div>
-      <div class="page-subtitle">Monday, 20 April 2026 &middot; 2 sites active &middot; Arc testnet</div>
 
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-header">
-            <div class="stat-icon pink"><i class="ph-duotone ph-receipt"></i></div>
-            <div class="stat-label">Paid TX today</div>
+      <!-- ══════════════════ OVERVIEW ══════════════════ -->
+      <section class="page active" data-page="overview">
+        <div class="page-title">Good morning, Brian</div>
+        <div class="page-subtitle">Monday, 20 April 2026 &middot; 2 sites active &middot; Arc testnet</div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-header">
+              <div class="stat-icon pink"><i class="ph-duotone ph-receipt"></i></div>
+              <div class="stat-label">Paid TX today</div>
+            </div>
+            <div class="stat-value">47</div>
+            <div><span class="stat-delta"><i class="ph ph-arrow-up"></i> 12.4%</span><span class="stat-sub">vs yesterday</span></div>
           </div>
-          <div class="stat-value">47</div>
-          <div><span class="stat-delta"><i class="ph ph-arrow-up"></i> 12.4%</span><span class="stat-sub">vs yesterday</span></div>
-        </div>
 
-        <div class="stat">
-          <div class="stat-header">
-            <div class="stat-icon green"><i class="ph-duotone ph-currency-dollar"></i></div>
-            <div class="stat-label">Earnings today</div>
+          <div class="stat">
+            <div class="stat-header">
+              <div class="stat-icon green"><i class="ph-duotone ph-currency-dollar"></i></div>
+              <div class="stat-label">Earnings today</div>
+            </div>
+            <div class="stat-value">$0.0235</div>
+            <div><span class="stat-delta"><i class="ph ph-arrow-up"></i> 8.1%</span><span class="stat-sub">500 uUSDC / TX</span></div>
           </div>
-          <div class="stat-value">$0.0235</div>
-          <div><span class="stat-delta"><i class="ph ph-arrow-up"></i> 8.1%</span><span class="stat-sub">500 uUSDC / TX</span></div>
-        </div>
 
-        <div class="stat">
-          <div class="stat-header">
-            <div class="stat-icon arc"><i class="ph-duotone ph-robot"></i></div>
-            <div class="stat-label">Active bots (24h)</div>
+          <div class="stat">
+            <div class="stat-header">
+              <div class="stat-icon arc"><i class="ph-duotone ph-robot"></i></div>
+              <div class="stat-label">Active bots (24h)</div>
+            </div>
+            <div class="stat-value">3</div>
+            <div><span class="stat-sub">FoundationCrawler, ResearchAgent, IndieAgent</span></div>
           </div>
-          <div class="stat-value">3</div>
-          <div><span class="stat-sub">FoundationCrawler, ResearchAgent, IndieAgent</span></div>
-        </div>
 
-        <div class="stat">
-          <div class="stat-header">
-            <div class="stat-icon gold"><i class="ph-duotone ph-gauge"></i></div>
-            <div class="stat-label">Margin</div>
+          <div class="stat">
+            <div class="stat-header">
+              <div class="stat-icon gold"><i class="ph-duotone ph-gauge"></i></div>
+              <div class="stat-label">Margin</div>
+            </div>
+            <div class="stat-value">96%</div>
+            <div><span class="stat-sub">Gas $0.00002 / TX &middot; Arc L1</span></div>
           </div>
-          <div class="stat-value">96%</div>
-          <div><span class="stat-sub">Gas $0.00002 / TX &middot; Arc L1</span></div>
         </div>
-      </div>
 
-      <div class="margin-card">
-        <div class="margin-left">
-          <div class="margin-kicker">Why Arc</div>
-          <div class="margin-headline">The only chain where sub-cent per-request math closes.</div>
-          <div class="margin-body">Arc denominates gas in USDC. Gas cost is fixed at design time, not probabilistic at runtime. Every other chain's native-token gas wipes the margin before the article loads.</div>
-          <div class="margin-tag">60 TX demo &middot; <b>96% net margin</b></div>
+        <div class="margin-card">
+          <div class="margin-left">
+            <div class="margin-kicker">Why Arc</div>
+            <div class="margin-headline">The only chain where sub-cent per-request math closes.</div>
+            <div class="margin-body">Arc denominates gas in USDC. Gas cost is fixed at design time, not probabilistic at runtime. Every other chain's native-token gas wipes the margin before the article loads.</div>
+            <div class="margin-tag">60 TX demo &middot; <b>96% net margin</b></div>
+          </div>
+          <div class="margin-right">
+            <table class="margin-table">
+              <thead><tr><th>60 TX</th><th>Arc</th><th>Ethereum</th><th>Polygon</th></tr></thead>
+              <tbody>
+                <tr><td>Revenue</td><td class="arc-col">$0.0300</td><td>$0.0300</td><td>$0.0300</td></tr>
+                <tr><td>Gas spent</td><td class="arc-col">$0.00120</td><td>$30.00</td><td>$0.60</td></tr>
+                <tr><td>Net profit</td><td class="arc-col pos">$0.02880</td><td class="neg">-$29.97</td><td class="neg">-$0.57</td></tr>
+                <tr><td><b>Margin</b></td><td class="arc-col pos"><b>96%</b></td><td class="neg">-99,900%</td><td class="neg">-1,900%</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="margin-right">
-          <table class="margin-table">
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Live events</div>
+            <div class="panel-desc">demo-news.brianmwai.com &middot; last 30 minutes</div>
+            <div class="right">
+              <span class="panel-tab active">All</span>
+              <span class="panel-tab">Onchain</span>
+              <span class="panel-tab">Cached</span>
+              <span class="panel-tab">402</span>
+            </div>
+          </div>
+          <table class="tx-table">
             <thead>
-              <tr>
-                <th>60 TX</th>
-                <th>Arc</th>
-                <th>Ethereum</th>
-                <th>Polygon</th>
-              </tr>
+              <tr><th>Agent</th><th>Path</th><th>Amount</th><th>Tx hash</th><th>Status</th><th>Time</th></tr>
             </thead>
             <tbody>
-              <tr><td>Revenue</td><td class="arc-col">$0.0300</td><td>$0.0300</td><td>$0.0300</td></tr>
-              <tr><td>Gas spent</td><td class="arc-col">$0.00120</td><td>$30.00</td><td>$0.60</td></tr>
-              <tr><td>Net profit</td><td class="arc-col pos">$0.02880</td><td class="neg">-$29.97</td><td class="neg">-$0.57</td></tr>
-              <tr><td><b>Margin</b></td><td class="arc-col pos"><b>96%</b></td><td class="neg">-99,900%</td><td class="neg">-1,900%</td></tr>
+              <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/42</td><td class="amount">+500 uUSDC</td><td class="hash">0xabc3…e91f</td><td><span class="status status-onchain">onchain</span></td><td class="time">just now</td></tr>
+              <tr><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td>/article/17</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td><td class="time">2s ago</td></tr>
+              <tr><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td>/article/09</td><td class="amount">+500 uUSDC</td><td class="hash">0xf12a…7c40</td><td><span class="status status-onchain">onchain</span></td><td class="time">5s ago</td></tr>
+              <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/41</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td><td class="time">7s ago</td></tr>
+              <tr><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td>/article/16</td><td class="amount">+500 uUSDC</td><td class="hash">0x3bd1…f004</td><td><span class="status status-onchain">onchain</span></td><td class="time">9s ago</td></tr>
+              <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/40</td><td class="amount">—</td><td class="hash">—</td><td><span class="status status-402">402</span></td><td class="time">11s ago</td></tr>
+              <tr><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td>/article/08</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td><td class="time">14s ago</td></tr>
             </tbody>
           </table>
         </div>
-      </div>
 
-      <div class="panel">
-        <div class="panel-head">
-          <div class="panel-title">Live events</div>
-          <div class="panel-desc">demo-news.brianmwai.com &middot; last 30 minutes</div>
-          <div class="right">
-            <span class="panel-tab active">All</span>
-            <span class="panel-tab">Onchain</span>
-            <span class="panel-tab">Cached</span>
-            <span class="panel-tab">402</span>
+        <div class="quick">
+          <div class="quick-card" data-goto="install">
+            <div class="quick-icon pink"><i class="ph-duotone ph-code"></i></div>
+            <div class="quick-title">Install the SDK</div>
+            <div class="quick-desc">Add one line to your Express, Hono, or Cloudflare Worker. Start charging in minutes.</div>
+          </div>
+          <div class="quick-card" data-goto="sites">
+            <div class="quick-icon arc"><i class="ph-duotone ph-currency-circle-dollar"></i></div>
+            <div class="quick-title">Set pricing rules</div>
+            <div class="quick-desc">Per-path, per-bot-class, or tiered by reputation. Priority-ordered, hot-cached at the edge.</div>
+          </div>
+          <div class="quick-card" data-goto="withdrawals">
+            <div class="quick-icon gold"><i class="ph-duotone ph-arrow-square-out"></i></div>
+            <div class="quick-title">Withdraw via CCTP</div>
+            <div class="quick-desc">Off-ramp USDC from Arc to Base, Ethereum, or your bank through Circle Bridge Kit.</div>
           </div>
         </div>
-        <table class="tx-table">
-          <thead>
-            <tr>
-              <th>Agent</th>
-              <th>Path</th>
-              <th>Amount</th>
-              <th>Tx hash</th>
-              <th>Status</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/42</td><td class="amount">+500 uUSDC</td><td class="hash">0xabc3…e91f</td><td><span class="status status-onchain">onchain</span></td><td class="time">just now</td></tr>
-            <tr><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td>/article/17</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td><td class="time">2s ago</td></tr>
-            <tr><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td>/article/09</td><td class="amount">+500 uUSDC</td><td class="hash">0xf12a…7c40</td><td><span class="status status-onchain">onchain</span></td><td class="time">5s ago</td></tr>
-            <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/41</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td><td class="time">7s ago</td></tr>
-            <tr><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td>/article/16</td><td class="amount">+500 uUSDC</td><td class="hash">0x3bd1…f004</td><td><span class="status status-onchain">onchain</span></td><td class="time">9s ago</td></tr>
-            <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/40</td><td class="amount">—</td><td class="hash">—</td><td><span class="status status-402">402</span></td><td class="time">11s ago</td></tr>
-            <tr><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td>/article/08</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td><td class="time">14s ago</td></tr>
-          </tbody>
-        </table>
-      </div>
+      </section>
 
-      <div class="quick">
-        <div class="quick-card">
-          <div class="quick-icon pink"><i class="ph-duotone ph-code"></i></div>
-          <div class="quick-title">Install the SDK</div>
-          <div class="quick-desc">Add one line to your Express, Hono, or Cloudflare Worker. Start charging in minutes.</div>
+      <!-- ══════════════════ SITES ══════════════════ -->
+      <section class="page" data-page="sites">
+        <div class="page-header-row">
+          <div>
+            <div class="page-title">Sites</div>
+            <div class="page-subtitle">2 active &middot; 72 paths priced &middot; 47 paid TX today</div>
+          </div>
+          <div class="header-actions">
+            <button class="btn"><i class="ph ph-funnel"></i> Filter</button>
+            <button class="btn btn-primary"><i class="ph ph-plus"></i> Add site</button>
+          </div>
         </div>
-        <div class="quick-card">
-          <div class="quick-icon arc"><i class="ph-duotone ph-currency-circle-dollar"></i></div>
-          <div class="quick-title">Set pricing rules</div>
-          <div class="quick-desc">Per-path, per-bot-class, or tiered by reputation. Priority-ordered, hot-cached at the edge.</div>
-        </div>
-        <div class="quick-card">
-          <div class="quick-icon gold"><i class="ph-duotone ph-arrow-square-out"></i></div>
-          <div class="quick-title">Withdraw via CCTP</div>
-          <div class="quick-desc">Off-ramp USDC from Arc to Base, Ethereum, or your bank through Circle Bridge Kit.</div>
-        </div>
-      </div>
 
-      <div class="panel">
-        <div class="panel-head">
-          <div class="panel-title">One-line install</div>
-          <div class="panel-desc">Hono runtime &middot; Node 20+</div>
+        <div class="two-col">
+          <div class="site-card">
+            <div class="site-card-head">
+              <div class="site-favicon">DN</div>
+              <div class="site-card-domain">demo-news.brianmwai.com</div>
+              <span class="status status-onchain">active</span>
+            </div>
+            <div class="site-card-meta">
+              <div class="site-card-meta-item"><span class="site-card-meta-label">Paid TX today</span><span class="site-card-meta-value">47</span></div>
+              <div class="site-card-meta-item"><span class="site-card-meta-label">Earnings</span><span class="site-card-meta-value accent">$0.0235</span></div>
+              <div class="site-card-meta-item"><span class="site-card-meta-label">Paths</span><span class="site-card-meta-value muted">60</span></div>
+              <div class="site-card-meta-item"><span class="site-card-meta-label">Rules</span><span class="site-card-meta-value muted">3</span></div>
+            </div>
+            <div class="site-card-actions">
+              <button class="btn"><i class="ph ph-chart-line-up"></i> View</button>
+              <button class="btn"><i class="ph ph-currency-circle-dollar"></i> Pricing</button>
+              <button class="btn btn-ghost"><i class="ph ph-key"></i> API key</button>
+            </div>
+          </div>
+
+          <div class="site-card">
+            <div class="site-card-head">
+              <div class="site-favicon">DX</div>
+              <div class="site-card-domain">docs.brianmwai.com</div>
+              <span class="status status-402">unverified</span>
+            </div>
+            <div class="site-card-meta">
+              <div class="site-card-meta-item"><span class="site-card-meta-label">Paid TX today</span><span class="site-card-meta-value">0</span></div>
+              <div class="site-card-meta-item"><span class="site-card-meta-label">Earnings</span><span class="site-card-meta-value muted">$0.00</span></div>
+              <div class="site-card-meta-item"><span class="site-card-meta-label">Paths</span><span class="site-card-meta-value muted">12</span></div>
+              <div class="site-card-meta-item"><span class="site-card-meta-label">Rules</span><span class="site-card-meta-value muted">1</span></div>
+            </div>
+            <div class="site-card-actions">
+              <button class="btn btn-primary"><i class="ph ph-check"></i> Verify ownership</button>
+              <button class="btn btn-ghost"><i class="ph ph-copy"></i> Copy token</button>
+            </div>
+          </div>
         </div>
-        <div style="padding: 18px;">
-<pre class="snippet"><span class="cm">// your existing Hono app</span>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Pricing rules</div>
+            <div class="panel-desc">demo-news.brianmwai.com &middot; priority order</div>
+            <div class="right"><button class="btn"><i class="ph ph-plus"></i> Add rule</button></div>
+          </div>
+          <table class="tx-table">
+            <thead><tr><th>#</th><th>Path pattern</th><th>Bot class</th><th>Price</th><th>Priority</th><th>Last matched</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><span class="hash">/premium/*</span></td><td>any</td><td class="amount">2,000 uUSDC</td><td>1</td><td class="time">2h ago</td></tr>
+              <tr><td>2</td><td><span class="hash">/article/*</span></td><td>verified</td><td class="amount">250 uUSDC</td><td>2</td><td class="time">just now</td></tr>
+              <tr><td>3</td><td><span class="hash">/article/*</span></td><td>any</td><td class="amount">500 uUSDC</td><td>3</td><td class="time">just now</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══════════════════ EVENTS ══════════════════ -->
+      <section class="page" data-page="events">
+        <div class="page-header-row">
+          <div>
+            <div class="page-title">Events</div>
+            <div class="page-subtitle">Every 402, payment, cache hit, and webhook indexed by site + agent</div>
+          </div>
+          <div class="header-actions">
+            <button class="btn"><i class="ph ph-download-simple"></i> Export CSV</button>
+            <button class="btn btn-primary"><i class="ph ph-arrow-clockwise"></i> Refresh</button>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <span class="filter-chip active">All</span>
+          <span class="filter-chip">Onchain</span>
+          <span class="filter-chip">Cached</span>
+          <span class="filter-chip">402</span>
+          <span class="filter-chip">Rejected</span>
+          <span class="filter-chip">Failed verify</span>
+          <div class="filter-divider"></div>
+          <select class="filter-input" style="flex: 0 0 200px">
+            <option>All sites</option>
+            <option>demo-news.brianmwai.com</option>
+            <option>docs.brianmwai.com</option>
+          </select>
+          <input class="filter-input" type="text" placeholder="Filter by agent wallet or tx hash…">
+        </div>
+
+        <div class="panel">
+          <table class="tx-table">
+            <thead>
+              <tr><th>Time</th><th>Site</th><th>Agent</th><th>Path</th><th>Amount</th><th>Tx hash</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="time">just now</td><td>demo-news</td><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/42</td><td class="amount">+500 uUSDC</td><td class="hash">0xabc3…e91f</td><td><span class="status status-onchain">onchain</span></td></tr>
+              <tr><td class="time">2s ago</td><td>demo-news</td><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td>/article/17</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td></tr>
+              <tr><td class="time">5s ago</td><td>demo-news</td><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td>/article/09</td><td class="amount">+500 uUSDC</td><td class="hash">0xf12a…7c40</td><td><span class="status status-onchain">onchain</span></td></tr>
+              <tr><td class="time">7s ago</td><td>demo-news</td><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/41</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td></tr>
+              <tr><td class="time">9s ago</td><td>demo-news</td><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td>/article/16</td><td class="amount">+500 uUSDC</td><td class="hash">0x3bd1…f004</td><td><span class="status status-onchain">onchain</span></td></tr>
+              <tr><td class="time">11s ago</td><td>demo-news</td><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/40</td><td class="amount">—</td><td class="hash">—</td><td><span class="status status-402">402</span></td></tr>
+              <tr><td class="time">14s ago</td><td>demo-news</td><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td>/article/08</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td></tr>
+              <tr><td class="time">16s ago</td><td>demo-news</td><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td>/article/15</td><td class="amount">+500 uUSDC</td><td class="hash">0x8fce…bb22</td><td><span class="status status-onchain">onchain</span></td></tr>
+              <tr><td class="time">19s ago</td><td>demo-news</td><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/39</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td></tr>
+              <tr><td class="time">22s ago</td><td>demo-news</td><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td>/article/07</td><td class="amount">+500 uUSDC</td><td class="hash">0x41a7…c0de</td><td><span class="status status-onchain">onchain</span></td></tr>
+              <tr><td class="time">25s ago</td><td>demo-news</td><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td>/article/14</td><td class="amount">+500 uUSDC</td><td class="hash">—</td><td><span class="status status-cached">cached</span></td></tr>
+              <tr><td class="time">28s ago</td><td>demo-news</td><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td>/article/38</td><td class="amount">+500 uUSDC</td><td class="hash">0x221d…ee39</td><td><span class="status status-onchain">onchain</span></td></tr>
+            </tbody>
+          </table>
+          <div class="pagination">
+            <span>Showing 1-12 of 1,247 events</span>
+            <div class="pagination-controls">
+              <button disabled><i class="ph ph-caret-double-left"></i></button>
+              <button disabled><i class="ph ph-caret-left"></i></button>
+              <button><i class="ph ph-caret-right"></i></button>
+              <button><i class="ph ph-caret-double-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════ WALLET ══════════════════ -->
+      <section class="page" data-page="wallet">
+        <div class="page-header-row">
+          <div>
+            <div class="page-title">Wallet</div>
+            <div class="page-subtitle">Circle-custodied programmable wallet on Arc &middot; zero key management</div>
+          </div>
+          <div class="header-actions">
+            <button class="btn"><i class="ph ph-arrow-square-out"></i> View on explorer</button>
+            <button class="btn btn-primary" data-goto="withdrawals"><i class="ph ph-arrow-up-right"></i> Withdraw</button>
+          </div>
+        </div>
+
+        <div class="balance-hero">
+          <div class="balance-label">Available balance</div>
+          <div class="balance-value">$12.4375</div>
+          <div class="balance-sub">12,437,500 uUSDC &middot; Arc testnet &middot; updated 3s ago</div>
+          <div class="address-row">
+            <span class="address-label">Address</span>
+            <span class="address-value">0x4a8E7bC3fDeA45C0e91Bc38aF11c92EeD0c4F1a9</span>
+            <div class="address-actions">
+              <button title="Copy"><i class="ph ph-copy"></i></button>
+              <button title="Open in explorer"><i class="ph ph-arrow-square-out"></i></button>
+            </div>
+          </div>
+          <div class="address-row">
+            <span class="address-label">Circle ID</span>
+            <span class="address-value">wallet_d4f9b8e2-1a24-42c7-bc91-0fa6d9ea28c1</span>
+            <div class="address-actions">
+              <button title="Copy"><i class="ph ph-copy"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="three-col">
+          <div class="stat">
+            <div class="stat-header"><div class="stat-icon green"><i class="ph-duotone ph-wallet"></i></div><div class="stat-label">Lifetime earnings</div></div>
+            <div class="stat-value">$847.21</div>
+            <div><span class="stat-sub">across 2 sites</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-header"><div class="stat-icon arc"><i class="ph-duotone ph-arrow-square-out"></i></div><div class="stat-label">Total withdrawn</div></div>
+            <div class="stat-value">$820.14</div>
+            <div><span class="stat-sub">7 withdrawals</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-header"><div class="stat-icon gold"><i class="ph-duotone ph-hourglass"></i></div><div class="stat-label">Pending</div></div>
+            <div class="stat-value">$14.66</div>
+            <div><span class="stat-sub">1 CCTP bridge to Base</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Wallet activity</div>
+            <div class="panel-desc">last 24h</div>
+          </div>
+          <div class="list">
+            <div class="list-item">
+              <div class="list-item-icon" style="background: linear-gradient(155deg, #12C994, #06A77D, #058A68); border: 1px solid #047155;"><i class="ph-duotone ph-arrow-down"></i></div>
+              <div class="list-item-body"><div class="list-item-title">Payment received</div><div class="list-item-desc">FoundationCrawler &middot; /article/42</div></div>
+              <div class="list-item-meta accent">+500 uUSDC &middot; just now</div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-icon" style="background: linear-gradient(155deg, #12C994, #06A77D, #058A68); border: 1px solid #047155;"><i class="ph-duotone ph-arrow-down"></i></div>
+              <div class="list-item-body"><div class="list-item-title">Payment received</div><div class="list-item-desc">IndieAgent &middot; /article/09</div></div>
+              <div class="list-item-meta accent">+500 uUSDC &middot; 5s ago</div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-icon" style="background: linear-gradient(155deg, #12C994, #06A77D, #058A68); border: 1px solid #047155;"><i class="ph-duotone ph-arrow-down"></i></div>
+              <div class="list-item-body"><div class="list-item-title">Payment received</div><div class="list-item-desc">ResearchAgent &middot; /article/16</div></div>
+              <div class="list-item-meta accent">+500 uUSDC &middot; 9s ago</div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-icon" style="background: linear-gradient(155deg, #4F96E0, #2775CA, #1F69B4); border: 1px solid #1A5A9E;"><i class="ph-duotone ph-arrow-up"></i></div>
+              <div class="list-item-body"><div class="list-item-title">Withdrawal to Base via CCTP</div><div class="list-item-desc">0x9cE2…d41f &middot; pending attestation</div></div>
+              <div class="list-item-meta">-14,660,000 uUSDC &middot; 2h ago</div>
+            </div>
+            <div class="list-item">
+              <div class="list-item-icon" style="background: linear-gradient(155deg, #12C994, #06A77D, #058A68); border: 1px solid #047155;"><i class="ph-duotone ph-arrow-down"></i></div>
+              <div class="list-item-body"><div class="list-item-title">Payment received</div><div class="list-item-desc">FoundationCrawler &middot; /premium/report-q1</div></div>
+              <div class="list-item-meta accent">+2,000 uUSDC &middot; 3h ago</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════ WITHDRAWALS ══════════════════ -->
+      <section class="page" data-page="withdrawals">
+        <div class="page-header-row">
+          <div>
+            <div class="page-title">Withdrawals</div>
+            <div class="page-subtitle">Off-ramp USDC via Circle CCTP or direct transfer on Arc</div>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-primary"><i class="ph ph-plus"></i> New withdrawal</button>
+          </div>
+        </div>
+
+        <div class="three-col">
+          <div class="stat">
+            <div class="stat-header"><div class="stat-icon green"><i class="ph-duotone ph-bank"></i></div><div class="stat-label">Total withdrawn</div></div>
+            <div class="stat-value">$820.14</div>
+            <div><span class="stat-sub">7 withdrawals &middot; lifetime</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-header"><div class="stat-icon gold"><i class="ph-duotone ph-hourglass"></i></div><div class="stat-label">Pending</div></div>
+            <div class="stat-value">$14.66</div>
+            <div><span class="stat-sub">1 CCTP bridge to Base</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-header"><div class="stat-icon arc"><i class="ph-duotone ph-clock-clockwise"></i></div><div class="stat-label">Avg settlement</div></div>
+            <div class="stat-value">2m 14s</div>
+            <div><span class="stat-sub">CCTP to Base</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Recent withdrawals</div>
+            <div class="panel-desc">most recent first</div>
+          </div>
+          <table class="tx-table">
+            <thead><tr><th>Date</th><th>Amount</th><th>Destination</th><th>Chain</th><th>Circle tx</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="time">2h ago</td><td class="amount">$14.66</td><td class="hash">0x9cE2…d41f</td><td>Base</td><td class="hash">tx_e81c…</td><td><span class="status status-402">pending</span></td></tr>
+              <tr><td class="time">Apr 18</td><td class="amount">$142.30</td><td class="hash">0x9cE2…d41f</td><td>Base</td><td class="hash">tx_b12a…</td><td><span class="status status-onchain">sent</span></td></tr>
+              <tr><td class="time">Apr 15</td><td class="amount">$87.50</td><td class="hash">0x1f88…ab43</td><td>Ethereum</td><td class="hash">tx_a4d1…</td><td><span class="status status-onchain">sent</span></td></tr>
+              <tr><td class="time">Apr 12</td><td class="amount">$220.00</td><td class="hash">0x9cE2…d41f</td><td>Base</td><td class="hash">tx_cc32…</td><td><span class="status status-onchain">sent</span></td></tr>
+              <tr><td class="time">Apr 08</td><td class="amount">$198.42</td><td class="hash">0x9cE2…d41f</td><td>Base</td><td class="hash">tx_f918…</td><td><span class="status status-onchain">sent</span></td></tr>
+              <tr><td class="time">Apr 03</td><td class="amount">$95.00</td><td class="hash">0x9cE2…d41f</td><td>Base</td><td class="hash">—</td><td><span class="status status-cached">failed</span></td></tr>
+              <tr><td class="time">Mar 30</td><td class="amount">$62.30</td><td class="hash">0x1f88…ab43</td><td>Ethereum</td><td class="hash">tx_3b42…</td><td><span class="status status-onchain">sent</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">How CCTP off-ramp works</div><div class="panel-desc">Circle Bridge Kit &middot; native burn + mint</div></div>
+            <div style="padding: 18px 20px; font-size: 13px; color: var(--text-2); line-height: 1.65">
+              <div style="margin-bottom: 12px"><b style="color: var(--text-1)">1. Burn</b> &middot; USDC burned on Arc via Circle Wallets.</div>
+              <div style="margin-bottom: 12px"><b style="color: var(--text-1)">2. Attestation</b> &middot; Circle signs the burn receipt off-chain.</div>
+              <div style="margin-bottom: 12px"><b style="color: var(--text-1)">3. Mint</b> &middot; USDC minted on destination chain (Base, Ethereum, Solana).</div>
+              <div><b style="color: var(--text-1)">4. Off-ramp</b> &middot; route to your preferred fiat on-ramp (optional).</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Supported destinations</div></div>
+            <div class="list">
+              <div class="list-item">
+                <div class="list-item-icon" style="background: linear-gradient(155deg, #4F96E0, #2775CA, #1F69B4); border: 1px solid #1A5A9E;"><i class="ph-duotone ph-network"></i></div>
+                <div class="list-item-body"><div class="list-item-title">Base</div><div class="list-item-desc">1-3 min &middot; $0 CCTP fee &middot; recommended</div></div>
+                <div class="list-item-meta">fastest</div>
+              </div>
+              <div class="list-item">
+                <div class="list-item-icon" style="background: linear-gradient(155deg, #4F96E0, #2775CA, #1F69B4); border: 1px solid #1A5A9E;"><i class="ph-duotone ph-network"></i></div>
+                <div class="list-item-body"><div class="list-item-title">Ethereum</div><div class="list-item-desc">10-15 min &middot; ~$3 gas &middot; bank off-ramp ready</div></div>
+                <div class="list-item-meta">liquidity</div>
+              </div>
+              <div class="list-item">
+                <div class="list-item-icon" style="background: linear-gradient(155deg, #4F96E0, #2775CA, #1F69B4); border: 1px solid #1A5A9E;"><i class="ph-duotone ph-network"></i></div>
+                <div class="list-item-body"><div class="list-item-title">Solana</div><div class="list-item-desc">~30 s &middot; &lt;$0.01 fee</div></div>
+                <div class="list-item-meta">cheap</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════ AGENTS ══════════════════ -->
+      <section class="page" data-page="agents">
+        <div class="page-header-row">
+          <div>
+            <div class="page-title">Agents</div>
+            <div class="page-subtitle">Wallet-based identity &middot; ERC-8004 reputation &middot; tiered discount pricing</div>
+          </div>
+          <div class="header-actions">
+            <input class="filter-input" type="text" placeholder="Search wallet or label…" style="width: 260px">
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-header"><div class="stat-icon arc"><i class="ph-duotone ph-robot"></i></div><div class="stat-label">Total agents</div></div>
+            <div class="stat-value">27</div>
+            <div><span class="stat-sub">seen in last 30 days</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-header"><div class="stat-icon green"><i class="ph-duotone ph-lightning"></i></div><div class="stat-label">Active 24h</div></div>
+            <div class="stat-value">3</div>
+            <div><span class="stat-sub">FoundationCrawler +2</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-header"><div class="stat-icon gold"><i class="ph-duotone ph-flag"></i></div><div class="stat-label">Flagged</div></div>
+            <div class="stat-value">2</div>
+            <div><span class="stat-sub">abnormal nonce reuse</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-header"><div class="stat-icon pink"><i class="ph-duotone ph-prohibit"></i></div><div class="stat-label">Banned</div></div>
+            <div class="stat-value">0</div>
+            <div><span class="stat-sub">no wallets suspended</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Agent directory</div>
+            <div class="panel-desc">sorted by total paid</div>
+          </div>
+          <table class="tx-table">
+            <thead><tr><th>Agent</th><th>Wallet</th><th>First seen</th><th>Total paid</th><th>Reputation</th><th>Tier</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td class="hash">0xF00f…9a12</td><td class="time">Apr 14</td><td class="amount">1,284,500 uUSDC</td><td>0.92</td><td><span class="status status-onchain">trusted</span></td><td><span class="status status-cached">active</span></td></tr>
+              <tr><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td class="hash">0xRE5a…2c91</td><td class="time">Apr 16</td><td class="amount">624,000 uUSDC</td><td>0.76</td><td><span class="status status-onchain">verified</span></td><td><span class="status status-cached">active</span></td></tr>
+              <tr><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td class="hash">0x1ND…71b3</td><td class="time">Apr 18</td><td class="amount">311,000 uUSDC</td><td>0.64</td><td><span class="status status-onchain">verified</span></td><td><span class="status status-cached">active</span></td></tr>
+              <tr><td>unknown-bot-042</td><td class="hash">0x8a4c…e1f0</td><td class="time">Apr 19</td><td class="amount">12,500 uUSDC</td><td>0.31</td><td><span class="status status-402">unverified</span></td><td><span class="status status-402">flagged</span></td></tr>
+              <tr><td>unknown-bot-087</td><td class="hash">0xd221…88a7</td><td class="time">Apr 20</td><td class="amount">2,500 uUSDC</td><td>0.18</td><td><span class="status status-402">unverified</span></td><td><span class="status status-402">flagged</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Reputation tiers</div>
+            <div class="panel-desc">ERC-8004 onchain &middot; tiered discount by score</div>
+          </div>
+          <div class="tier-row head">
+            <div>Tier</div><div>Score range</div><div>Discount</div><div>Example price</div>
+          </div>
+          <div class="tier-row">
+            <div class="tier-name"><span class="status status-402">unverified</span></div>
+            <div class="tier-score">&lt; 0.5</div>
+            <div class="tier-discount">0%</div>
+            <div class="tier-example">500 uUSDC (full)</div>
+          </div>
+          <div class="tier-row">
+            <div class="tier-name"><span class="status status-cached">verified</span></div>
+            <div class="tier-score">0.5 – 0.8</div>
+            <div class="tier-discount"><b>25% off</b></div>
+            <div class="tier-example">375 uUSDC</div>
+          </div>
+          <div class="tier-row">
+            <div class="tier-name"><span class="status status-onchain">trusted</span></div>
+            <div class="tier-score">0.8 – 0.95</div>
+            <div class="tier-discount"><b>50% off</b></div>
+            <div class="tier-example">250 uUSDC</div>
+          </div>
+          <div class="tier-row">
+            <div class="tier-name"><span class="status status-onchain">preferred</span></div>
+            <div class="tier-score">&gt; 0.95</div>
+            <div class="tier-discount"><b>80% off</b></div>
+            <div class="tier-example">100 uUSDC</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════ INSTALL SDK ══════════════════ -->
+      <section class="page" data-page="install">
+        <div class="page-header-row">
+          <div>
+            <div class="page-title">Install the SDK</div>
+            <div class="page-subtitle">One line of middleware. Start charging AI bots per request.</div>
+          </div>
+        </div>
+
+        <div class="tabs" id="install-tabs">
+          <button class="tab active" data-tab="hono"><i class="ph-duotone ph-flame"></i> Hono</button>
+          <button class="tab" data-tab="express"><i class="ph-duotone ph-tree-structure"></i> Express</button>
+          <button class="tab" data-tab="cfw"><i class="ph-duotone ph-cloud"></i> Cloudflare Worker</button>
+          <button class="tab" data-tab="nextjs"><i class="ph-duotone ph-rocket"></i> Next.js</button>
+        </div>
+
+        <div class="tab-content active" data-tab-content="hono">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Hono</div><div class="panel-desc">Node 20+, Bun, or Deno</div></div>
+            <div style="padding: 18px;">
+<pre class="snippet"><span class="cm">// npm i @tollgate/hono hono</span>
 <span class="kw">import</span> { Hono } <span class="kw">from</span> <span class="str">'hono'</span>
 <span class="kw">import</span> { <span class="fn">tollgate</span> } <span class="kw">from</span> <span class="str">'@tollgate/hono'</span>
 
@@ -1267,9 +1996,237 @@ app.<span class="fn">use</span>(<span class="str">'/article/*'</span>, <span cla
   receipt:  { ttl: <span class="str">300</span> }        <span class="cm">// 5-minute HMAC cache</span>
 }))
 
+app.<span class="fn">get</span>(<span class="str">'/article/:id'</span>, c =&gt; c.<span class="fn">json</span>({ body: <span class="str">'...'</span> }))
+
 <span class="kw">export default</span> app</pre>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <div class="tab-content" data-tab-content="express">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Express</div><div class="panel-desc">Node 20+</div></div>
+            <div style="padding: 18px;">
+<pre class="snippet"><span class="cm">// npm i @tollgate/express express</span>
+<span class="kw">import</span> express <span class="kw">from</span> <span class="str">'express'</span>
+<span class="kw">import</span> { <span class="fn">tollgate</span> } <span class="kw">from</span> <span class="str">'@tollgate/express'</span>
+
+<span class="kw">const</span> app = <span class="fn">express</span>()
+
+app.<span class="fn">use</span>(<span class="str">'/article'</span>, <span class="fn">tollgate</span>({
+  siteId:   <span class="fn">process</span>.env.TOLLGATE_SITE_ID,
+  price:    <span class="str">'500uUSDC'</span>,
+  chain:    <span class="str">'arc-testnet'</span>,
+  receipt:  { ttl: <span class="str">300</span> }
+}))
+
+app.<span class="fn">get</span>(<span class="str">'/article/:id'</span>, (req, res) =&gt; res.<span class="fn">json</span>({ body: <span class="str">'...'</span> }))
+
+app.<span class="fn">listen</span>(<span class="str">3000</span>)</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" data-tab-content="cfw">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Cloudflare Worker</div><div class="panel-desc">wrangler 3.x</div></div>
+            <div style="padding: 18px;">
+<pre class="snippet"><span class="cm">// npm i @tollgate/cloudflare-worker</span>
+<span class="kw">import</span> { <span class="fn">tollgate</span> } <span class="kw">from</span> <span class="str">'@tollgate/cloudflare-worker'</span>
+
+<span class="kw">export default</span> {
+  <span class="kw">async</span> <span class="fn">fetch</span>(request, env, ctx) {
+    <span class="kw">const</span> gated = <span class="kw">await</span> <span class="fn">tollgate</span>({
+      siteId:   env.TOLLGATE_SITE_ID,
+      price:    <span class="str">'500uUSDC'</span>,
+      chain:    <span class="str">'arc-testnet'</span>,
+      receipt:  { ttl: <span class="str">300</span> },
+      kv:       env.TOLLGATE_KV   <span class="cm">// for nonce dedup</span>
+    })(request)
+
+    <span class="kw">if</span> (gated) <span class="kw">return</span> gated
+    <span class="kw">return new</span> <span class="fn">Response</span>(<span class="str">'article body'</span>)
+  }
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" data-tab-content="nextjs">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Next.js 16</div><div class="panel-desc">Route handlers on App Router</div></div>
+            <div style="padding: 18px;">
+<pre class="snippet"><span class="cm">// app/api/article/[id]/route.ts</span>
+<span class="kw">import</span> { <span class="fn">tollgate</span> } <span class="kw">from</span> <span class="str">'@tollgate/next'</span>
+<span class="kw">import</span> { NextResponse } <span class="kw">from</span> <span class="str">'next/server'</span>
+
+<span class="kw">export const</span> <span class="fn">GET</span> = <span class="fn">tollgate</span>({
+  price:   <span class="str">'500uUSDC'</span>,
+  chain:   <span class="str">'arc-testnet'</span>,
+  receipt: { ttl: <span class="str">300</span> }
+})(<span class="kw">async</span> (req, ctx) =&gt; {
+  <span class="kw">return</span> NextResponse.<span class="fn">json</span>({ body: <span class="str">'...'</span> })
+})</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Setup checklist</div></div>
+            <div style="padding: 16px 20px;">
+              <div class="checklist">
+                <div class="checklist-item done"><i class="ph-fill ph-check-circle"></i> Site registered and verified</div>
+                <div class="checklist-item done"><i class="ph-fill ph-check-circle"></i> API key generated</div>
+                <div class="checklist-item done"><i class="ph-fill ph-check-circle"></i> Circle Wallet provisioned on Arc</div>
+                <div class="checklist-item pending"><i class="ph ph-circle"></i> SDK installed in your server</div>
+                <div class="checklist-item pending"><i class="ph ph-circle"></i> First paid request observed</div>
+                <div class="checklist-item pending"><i class="ph ph-circle"></i> Withdraw flow tested on testnet</div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Environment variables</div><div class="panel-desc">copy into your .env</div></div>
+            <div style="padding: 18px 20px;">
+              <div class="kv-grid">
+                <div class="k">TOLLGATE_SITE_ID</div><div class="v mono">site_x4a8E7bC3</div>
+                <div class="k">TOLLGATE_API_KEY</div><div class="v mono muted">tg_live_••••••••a9f2</div>
+                <div class="k">TOLLGATE_HMAC_SECRET</div><div class="v mono muted">••••••••••••••••</div>
+                <div class="k">ARC_RPC_URL</div><div class="v mono">https://rpc.testnet.arc.network</div>
+                <div class="k">X402_FACILITATOR_URL</div><div class="v mono">https://facilitator.x402.org</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════ SETTINGS ══════════════════ -->
+      <section class="page" data-page="settings">
+        <div class="page-header-row">
+          <div>
+            <div class="page-title">Settings</div>
+            <div class="page-subtitle">Account, keys, secrets, webhooks, team</div>
+          </div>
+        </div>
+
+        <div class="tabs" id="settings-tabs">
+          <button class="tab active" data-tab="profile"><i class="ph-duotone ph-user"></i> Profile</button>
+          <button class="tab" data-tab="api-keys"><i class="ph-duotone ph-key"></i> API keys</button>
+          <button class="tab" data-tab="hmac"><i class="ph-duotone ph-shield-check"></i> HMAC secrets</button>
+          <button class="tab" data-tab="webhooks"><i class="ph-duotone ph-webhooks-logo"></i> Webhooks</button>
+          <button class="tab" data-tab="team"><i class="ph-duotone ph-users-three"></i> Team</button>
+          <button class="tab" data-tab="danger"><i class="ph-duotone ph-warning-octagon"></i> Danger zone</button>
+        </div>
+
+        <div class="tab-content active" data-tab-content="profile">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Profile</div></div>
+            <div style="padding: 20px 22px; max-width: 560px">
+              <div class="form-field"><label class="form-label">Name</label><input class="input" value="Brian Mwai"></div>
+              <div class="form-field"><label class="form-label">Email</label><input class="input" type="email" value="brian@tollgate.brianmwai.com"></div>
+              <div class="form-field"><label class="form-label">Organisation slug</label><input class="input" value="brianmwai"><div class="form-hint">URL-safe. Used in /app paths and public referral links.</div></div>
+              <div class="form-field"><label class="form-label">Timezone</label><select class="select"><option>Africa/Nairobi (UTC+3)</option><option>UTC</option><option>America/Los_Angeles</option></select></div>
+              <button class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" data-tab-content="api-keys">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">API keys</div>
+              <div class="panel-desc">SHA-256 hashed at rest &middot; plaintext shown once on creation</div>
+              <div class="right"><button class="btn btn-primary"><i class="ph ph-plus"></i> Create key</button></div>
+            </div>
+            <table class="tx-table">
+              <thead><tr><th>Name</th><th>Prefix</th><th>Created</th><th>Last used</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr><td>demo-news prod</td><td class="hash">tg_live_a9f2…</td><td class="time">Apr 14</td><td class="time">just now</td><td><span class="status status-onchain">active</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
+                <tr><td>staging</td><td class="hash">tg_test_4c01…</td><td class="time">Apr 16</td><td class="time">2h ago</td><td><span class="status status-cached">test</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
+                <tr><td>docs reader</td><td class="hash">tg_test_ab32…</td><td class="time">Apr 17</td><td class="time">never</td><td><span class="status status-402">unused</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-content" data-tab-content="hmac">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">HMAC receipt secrets</div>
+              <div class="panel-desc">per-site &middot; rotated daily by cron, or manually</div>
+            </div>
+            <div class="list">
+              <div class="list-item">
+                <div class="list-item-icon" style="background: linear-gradient(155deg, #FF3CC0, #FF00AA, #E60098); border: 1px solid #B3007D;"><i class="ph-duotone ph-shield-check"></i></div>
+                <div class="list-item-body"><div class="list-item-title">demo-news.brianmwai.com</div><div class="list-item-desc">rotated 3h ago &middot; next auto-rotate in 21h</div></div>
+                <button class="btn"><i class="ph ph-arrows-clockwise"></i> Rotate now</button>
+              </div>
+              <div class="list-item">
+                <div class="list-item-icon" style="background: linear-gradient(155deg, #FF3CC0, #FF00AA, #E60098); border: 1px solid #B3007D;"><i class="ph-duotone ph-shield-check"></i></div>
+                <div class="list-item-body"><div class="list-item-title">docs.brianmwai.com</div><div class="list-item-desc" style="color: var(--gold)">rotated 6d ago &middot; needs rotation</div></div>
+                <button class="btn btn-primary"><i class="ph ph-arrows-clockwise"></i> Rotate now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" data-tab-content="webhooks">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Webhooks</div>
+              <div class="panel-desc">HMAC-signed. Retries up to 1 hour via scheduler.</div>
+              <div class="right"><button class="btn btn-primary"><i class="ph ph-plus"></i> Add endpoint</button></div>
+            </div>
+            <table class="tx-table">
+              <thead><tr><th>URL</th><th>Events</th><th>Created</th><th>Last delivery</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="hash">https://hooks.example.com/tollgate</td><td>event.paid, withdraw.sent</td><td class="time">Apr 15</td><td class="time">4s ago</td><td><span class="status status-onchain">active</span></td></tr>
+                <tr><td class="hash">https://logs.example.com/tg</td><td>event.paid</td><td class="time">Apr 18</td><td class="time">2h ago</td><td><span class="status status-cached">active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-content" data-tab-content="team">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Team</div>
+              <div class="panel-desc">admins and viewers under this organisation</div>
+              <div class="right"><button class="btn btn-primary"><i class="ph ph-user-plus"></i> Invite</button></div>
+            </div>
+            <div class="list">
+              <div class="list-item">
+                <div class="sb-avatar">BM</div>
+                <div class="list-item-body"><div class="list-item-title">Brian Mwai</div><div class="list-item-desc">brian@tollgate.brianmwai.com</div></div>
+                <div class="list-item-meta">Owner</div>
+              </div>
+              <div class="list-item">
+                <div class="sb-avatar" style="background: linear-gradient(135deg, var(--gold), var(--pink));">JL</div>
+                <div class="list-item-body"><div class="list-item-title">Joy C. Langat</div><div class="list-item-desc">joy@hausorlabs.tech</div></div>
+                <div class="list-item-meta">Admin</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" data-tab-content="danger">
+          <div class="panel" style="border-color: rgba(198,40,40,0.4);">
+            <div class="panel-head" style="border-color: rgba(198,40,40,0.4);"><div class="panel-title" style="color: var(--red)">Danger zone</div></div>
+            <div style="padding: 20px 22px; max-width: 640px">
+              <div class="form-field">
+                <label class="form-label">Reset all HMAC secrets</label>
+                <div class="form-hint">Invalidates every active receipt across all sites. Bots will face cold path on next request (expected +1s p95 latency spike for ~5 minutes).</div>
+                <button class="btn btn-danger" style="margin-top: 10px">Reset secrets</button>
+              </div>
+              <div class="form-field" style="margin-top: 26px">
+                <label class="form-label">Delete organisation</label>
+                <div class="form-hint">Permanent. All sites, events, and rollup data erased from Convex. Wallet balance must be withdrawn first.</div>
+                <button class="btn btn-danger" style="margin-top: 10px">Delete org</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
     </div>
   </main>
@@ -1344,6 +2301,92 @@ function setTheme(mode) {
   }
 }
 
+// ── Page routing ──
+const PAGE_TITLES = {
+  overview:    'Overview',
+  sites:       'Sites',
+  events:      'Events',
+  wallet:      'Wallet',
+  withdrawals: 'Withdrawals',
+  agents:      'Agents',
+  install:     'Install SDK',
+  settings:    'Settings'
+};
+
+function gotoPage(key) {
+  if (!key || !PAGE_TITLES[key]) return;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.querySelector(`.page[data-page="${key}"]`);
+  if (target) target.classList.add('active');
+
+  document.querySelectorAll('.nav-item[data-page]').forEach(n => n.classList.remove('active'));
+  const nav = document.querySelector(`.nav-item[data-page="${key}"]`);
+  if (nav) nav.classList.add('active');
+
+  const breadcrumb = document.getElementById('breadcrumb');
+  if (breadcrumb) breadcrumb.textContent = PAGE_TITLES[key];
+
+  const content = document.querySelector('.page-content');
+  if (content) content.scrollTop = 0;
+
+  if (window.history && window.history.replaceState) {
+    window.history.replaceState(null, '', '#' + key);
+  }
+}
+
+// Nav click handlers
+document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+  item.addEventListener('click', e => {
+    e.preventDefault();
+    gotoPage(item.dataset.page);
+  });
+});
+
+// Quick-card deep links (data-goto)
+document.querySelectorAll('[data-goto]').forEach(el => {
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    gotoPage(el.dataset.goto);
+  });
+});
+
+// Tab switching (works for every .tabs group in the page)
+document.querySelectorAll('.tabs').forEach(group => {
+  group.addEventListener('click', e => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    const key = btn.dataset.tab;
+    if (!key) return;
+    // Find the tab container's parent section
+    const section = group.closest('.page') || document;
+    section.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    section.querySelectorAll(':scope > .tab-content, .tab-content').forEach(c => {
+      if (c.closest('.page') === section || section === document) c.classList.remove('active');
+    });
+    const target = section.querySelector(`.tab-content[data-tab-content="${key}"]`);
+    if (target) target.classList.add('active');
+  });
+});
+
+// Panel-tab (the small filter chips inside Overview live events)
+document.querySelectorAll('.panel-head .panel-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    tab.parentElement.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Filter chips
+document.querySelectorAll('.filter-bar').forEach(bar => {
+  bar.addEventListener('click', e => {
+    const chip = e.target.closest('.filter-chip');
+    if (!chip) return;
+    bar.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  });
+});
+
 document.querySelector('.ask-ai').onclick = function() {
   document.getElementById('ai-overlay').classList.add('open');
   document.getElementById('ai-panel').classList.add('open');
@@ -1364,6 +2407,12 @@ document.addEventListener('keydown', function(e) {
     document.getElementById('search-modal').classList.remove('open');
     closeAI();
   }
+});
+
+// Respect hash on load
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = (location.hash || '').replace('#', '');
+  if (hash && PAGE_TITLES[hash]) gotoPage(hash);
 });
 </script>
 
