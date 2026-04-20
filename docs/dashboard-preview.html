@@ -628,11 +628,12 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 15px;
   color: #FFFFFF;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
 }
-.stat-icon.pink  { background-color: #FF00AA; border: 2px solid #B3007D; }
-.stat-icon.arc   { background-color: #2775CA; border: 2px solid #1A5A9E; }
-.stat-icon.green { background-color: #06A77D; border: 2px solid #047155; }
-.stat-icon.gold  { background-color: #F2A541; border: 2px solid #C77B1F; }
+.stat-icon.pink  { background: linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%); border: 1px solid #B3007D; }
+.stat-icon.arc   { background: linear-gradient(155deg, #4F96E0 0%, #2775CA 55%, #1F69B4 100%); border: 1px solid #1A5A9E; }
+.stat-icon.green { background: linear-gradient(155deg, #12C994 0%, #06A77D 55%, #058A68 100%); border: 1px solid #047155; }
+.stat-icon.gold  { background: linear-gradient(155deg, #FFBF5F 0%, #F2A541 55%, #D68E2B 100%); border: 1px solid #C77B1F; }
 
 .stat-label { font-size: 11.5px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.05em; }
 .stat-value {
