@@ -106,7 +106,7 @@ function AddressRow({ label, value }: { label: string; value: string }) {
         marginTop: 14,
         borderRadius: 8,
         border: "1px solid var(--border-s)",
-        background: "rgba(255,255,255,0.03)",
+        background: "var(--bg-sub)",
       }}
     >
       <span
@@ -149,7 +149,7 @@ const heroStyle = {
   border: "1px solid var(--border)",
   borderRadius: 10,
   padding: "32px",
-  background: "rgba(255,255,255,0.025)",
+  background: "var(--bg-card)",
   marginBottom: 16,
   position: "relative" as const,
   overflow: "hidden" as const,
@@ -193,7 +193,7 @@ const ghostBtn = {
   fontSize: 13,
   fontWeight: 500,
   color: "var(--text-2)",
-  background: "#101420",
+  background: "var(--bg-shell)",
   border: "1px solid var(--border)",
   borderRadius: 6,
   cursor: "pointer",

@@ -25,7 +25,7 @@ export default function AgentsPage() {
           marginTop: 24,
           border: "1px solid var(--border)",
           borderRadius: 10,
-          background: "rgba(255,255,255,0.025)",
+          background: "var(--bg-card)",
           overflow: "hidden",
         }}
       >
@@ -105,7 +105,7 @@ function ReputationTiers() {
     { name: "preferred", range: "> 0.95", discount: "80% off", price: "100 uUSDC", pill: "pill-pink" },
   ];
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: 10, background: "rgba(255,255,255,0.025)", overflow: "hidden" }}>
+    <div style={{ border: "1px solid var(--border)", borderRadius: 10, background: "var(--bg-card)", overflow: "hidden" }}>
       <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--border)" }}>
         <div style={{ fontSize: 14, fontWeight: 600 }}>Reputation tiers</div>
         <div style={{ fontSize: 12, color: "var(--text-3)", marginTop: 2 }}>

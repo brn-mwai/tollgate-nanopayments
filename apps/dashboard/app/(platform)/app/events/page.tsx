@@ -32,7 +32,7 @@ export default function EventsPage() {
             border: "1px solid var(--border)",
             borderRadius: 10,
             overflow: "hidden",
-            background: "rgba(255,255,255,0.025)",
+            background: "var(--bg-card)",
           }}
         >
           <table style={{ width: "100%", borderCollapse: "collapse" }}>

@@ -139,7 +139,7 @@ function ApiKeyCallout({ apiKey, domain, onClose }: { apiKey: string; domain: st
         style={{
           display: "flex",
           gap: 8,
-          background: "#101420",
+          background: "var(--bg-shell)",
           border: "1px solid var(--border)",
           borderRadius: 6,
           padding: "10px 12px",
@@ -237,7 +237,7 @@ const pageSubtitle = { fontSize: 13, color: "var(--text-3)" as string };
 const panelStyle = {
   border: "1px solid var(--border)",
   borderRadius: 10,
-  background: "rgba(255,255,255,0.025)",
+  background: "var(--bg-card)",
   marginBottom: 16,
   overflow: "hidden",
 };
@@ -246,7 +246,7 @@ const siteCardStyle = {
   border: "1px solid var(--border)",
   borderRadius: 10,
   padding: "18px 20px",
-  background: "rgba(255,255,255,0.025)",
+  background: "var(--bg-card)",
 };
 const faviconStyle = {
   width: 32,
@@ -268,7 +268,7 @@ const inputStyle = {
   fontSize: 13,
   fontFamily: "JetBrains Mono, monospace",
   color: "var(--text-1)",
-  background: "#101420",
+  background: "var(--bg-shell)",
   border: "1px solid var(--border)",
   borderRadius: 6,
   outline: "none",
@@ -298,7 +298,7 @@ const ghostBtn = {
   fontSize: 13,
   fontWeight: 500,
   color: "var(--text-2)",
-  background: "#101420",
+  background: "var(--bg-shell)",
   border: "1px solid var(--border)",
   borderRadius: 6,
   cursor: "pointer",

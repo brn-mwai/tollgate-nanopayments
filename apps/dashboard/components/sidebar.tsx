@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "@convex/_generated/api";
 import { AccountPopup } from "./account-popup";
 import {
   SquaresFour,
@@ -18,32 +20,53 @@ import {
 
 type BadgeVariant = "arc" | "gold" | "green" | "pink";
 
+type Badge = { text: string; variant: BadgeVariant };
+
 type NavItem = {
   href: string;
   label: string;
   Icon: React.ComponentType<{ size?: number; weight?: "duotone" | "regular" | "fill" }>;
-  badge?: { text: string; variant: BadgeVariant };
+  badge?: Badge;
 };
-
-const NAV: NavItem[][] = [
-  [
-    { href: "/app", label: "Overview", Icon: SquaresFour },
-    { href: "/app/sites", label: "Sites", Icon: GlobeHemisphereWest, badge: { text: "2", variant: "arc" } },
-    { href: "/app/events", label: "Events", Icon: ListMagnifyingGlass, badge: { text: "47", variant: "arc" } },
-  ],
-  [
-    { href: "/app/wallet", label: "Wallet", Icon: Wallet },
-    { href: "/app/withdrawals", label: "Withdrawals", Icon: ArrowSquareOut },
-  ],
-  [
-    { href: "/app/agents", label: "Agents", Icon: UsersThree, badge: { text: "ERC-8004", variant: "gold" } },
-    { href: "/app/install", label: "Install SDK", Icon: Code },
-  ],
-  [{ href: "/app/settings", label: "Settings", Icon: Gear }],
-];
 
 export function Sidebar() {
   const pathname = usePathname();
+
+  // Reactive counts — render only when there's actually data to surface.
+  const sites = useQuery(api.sites.list);
+  const events = useQuery(api.events.recent, { limit: 100 });
+
+  const nav: NavItem[][] = [
+    [
+      { href: "/app", label: "Overview", Icon: SquaresFour },
+      {
+        href: "/app/sites",
+        label: "Sites",
+        Icon: GlobeHemisphereWest,
+        badge: (sites && sites.length > 0) ? { text: String(sites.length), variant: "arc" } : undefined,
+      },
+      {
+        href: "/app/events",
+        label: "Events",
+        Icon: ListMagnifyingGlass,
+        badge: (events && events.length > 0) ? { text: String(events.length), variant: "arc" } : undefined,
+      },
+    ],
+    [
+      { href: "/app/wallet", label: "Wallet", Icon: Wallet },
+      { href: "/app/withdrawals", label: "Withdrawals", Icon: ArrowSquareOut },
+    ],
+    [
+      {
+        href: "/app/agents",
+        label: "Agents",
+        Icon: UsersThree,
+        badge: { text: "ERC-8004", variant: "gold" },
+      },
+      { href: "/app/install", label: "Install SDK", Icon: Code },
+    ],
+    [{ href: "/app/settings", label: "Settings", Icon: Gear }],
+  ];
 
   return (
     <aside className="sidebar">
@@ -61,13 +84,13 @@ export function Sidebar() {
         </Link>
       </div>
 
-      <button type="button" className="sb-create">
+      <Link href="/app/sites" className="sb-create" style={{ textDecoration: "none" }}>
         <Plus size={15} weight="bold" />
         <span>Add site</span>
-      </button>
+      </Link>
 
       <nav className="sb-nav">
-        {NAV.map((section, i) => (
+        {nav.map((section, i) => (
           <div key={i} className="nav-sec">
             {section.map((item) => {
               const active = pathname === item.href;

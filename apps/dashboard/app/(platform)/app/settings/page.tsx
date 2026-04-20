@@ -114,7 +114,7 @@ function Panel({
       style={{
         border: "1px solid var(--border)",
         borderRadius: 10,
-        background: "rgba(255,255,255,0.025)",
+        background: "var(--bg-card)",
         overflow: "hidden",
       }}
     >
@@ -152,7 +152,7 @@ function Field({
           fontSize: 13,
           fontFamily: "inherit",
           color: "var(--text-1)",
-          background: "#101420",
+          background: "var(--bg-shell)",
           border: "1px solid var(--border)",
           borderRadius: 6,
           outline: "none",

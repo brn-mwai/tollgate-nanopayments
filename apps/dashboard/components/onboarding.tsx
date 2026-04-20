@@ -28,7 +28,7 @@ export function OnboardingCard({ suggestedSlug }: { suggestedSlug: string }) {
         border: "1px solid var(--border)",
         borderRadius: 10,
         padding: 32,
-        background: "rgba(255,255,255,0.025)",
+        background: "var(--bg-card)",
         maxWidth: 560,
       }}
     >
@@ -69,7 +69,7 @@ export function OnboardingCard({ suggestedSlug }: { suggestedSlug: string }) {
           fontSize: 14,
           fontFamily: "JetBrains Mono, monospace",
           color: "var(--text-1)",
-          background: "#101420",
+          background: "var(--bg-input)",
           border: "1px solid var(--border)",
           borderRadius: 6,
           outline: "none",

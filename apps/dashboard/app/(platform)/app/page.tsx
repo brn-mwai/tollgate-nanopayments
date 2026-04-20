@@ -195,7 +195,7 @@ export default function OverviewPage() {
           border: "1px solid var(--border)",
           borderRadius: 10,
           padding: 32,
-          background: "rgba(255,255,255,0.025)",
+          background: "var(--bg-card)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -246,7 +246,7 @@ function Panel({
       style={{
         border: "1px solid var(--border)",
         borderRadius: 10,
-        background: "rgba(255,255,255,0.025)",
+        background: "var(--bg-card)",
         overflow: "hidden",
       }}
     >
