@@ -20,37 +20,13 @@ export function Topbar() {
   const title = TITLES[pathname] ?? "Overview";
 
   return (
-    <div
-      style={{
-        height: 52,
-        borderBottom: "1px solid var(--border)",
-        display: "flex",
-        alignItems: "center",
-        padding: "0 24px",
-        flexShrink: 0,
-        gap: 0,
-      }}
-    >
-      <button
-        type="button"
-        style={{
-          width: 32,
-          height: 32,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          border: "none",
-          background: "none",
-          color: "var(--text-2)",
-          cursor: "pointer",
-          flexShrink: 0,
-        }}
-      >
+    <div className="topbar">
+      <button type="button" className="collapse-btn" aria-label="Toggle sidebar">
         <SidebarSimple size={17} />
       </button>
-      <div style={{ width: 1, height: 24, background: "var(--border)", margin: "0 12px", flexShrink: 0 }} />
-      <div style={{ fontSize: 13, color: "var(--text-3)", display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ color: "var(--text-1)", fontWeight: 500 }}>{title}</span>
+      <div className="topbar-divider" />
+      <div className="topbar-breadcrumb">
+        <span className="crumb">{title}</span>
       </div>
       <span
         className="pill pill-arc badge-3d"
@@ -68,57 +44,16 @@ export function Topbar() {
         />
         Arc Testnet
       </span>
-      <div style={{ flex: 1 }} />
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <button
-          type="button"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "6px 12px",
-            border: "1px solid var(--border)",
-            background: "#101420",
-            color: "var(--text-2)",
-            cursor: "pointer",
-            borderRadius: 6,
-            fontSize: 13,
-            fontWeight: 500,
-          }}
-        >
-          <MagnifyingGlass size={15} /> Search
-          <span
-            style={{
-              fontFamily: "JetBrains Mono, monospace",
-              fontSize: 10,
-              color: "var(--text-3)",
-              padding: "1px 5px",
-              border: "1px solid var(--border-s)",
-              borderRadius: 3,
-              marginLeft: 6,
-              lineHeight: 1.4,
-            }}
-          >
-            Ctrl K
-          </span>
+      <div className="topbar-spacer" />
+      <div className="topbar-actions">
+        <button type="button" className="topbar-action">
+          <MagnifyingGlass size={15} />
+          Search
+          <span className="topbar-kbd">Ctrl K</span>
         </button>
-        <button
-          type="button"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "6px 12px",
-            border: "1px solid var(--border)",
-            background: "#101420",
-            color: "var(--text-2)",
-            cursor: "pointer",
-            borderRadius: 6,
-            fontSize: 13,
-            fontWeight: 500,
-          }}
-        >
-          <Sparkle size={15} color="var(--pink-bright)" /> Ask Tollgate
+        <button type="button" className="topbar-action">
+          <Sparkle size={15} color="var(--pink-bright)" />
+          Ask Tollgate
         </button>
       </div>
     </div>
