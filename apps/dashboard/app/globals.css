@@ -123,9 +123,16 @@ body {
 }
 
 .pill {
-  display: inline-flex; align-items: center; gap: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  max-width: fit-content;
+  justify-self: start;
+  align-self: center;
   font-family: var(--font-mono);
-  font-size: 10px; font-weight: 700;
+  font-size: 10px;
+  font-weight: 700;
   padding: 4px 9px;
   border-radius: 6px;
   text-transform: uppercase;
@@ -147,6 +154,8 @@ body {
   justify-content: center;
   font-size: 15px;
   flex-shrink: 0;
+  justify-self: start;
+  align-self: center;
 }
 .tile-pink  { background: linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%); border: 1px solid #B3007D; }
 .tile-arc   { background: linear-gradient(155deg, #4F96E0 0%, #2775CA 55%, #1F69B4 100%); border: 1px solid #1A5A9E; }
@@ -155,6 +164,10 @@ body {
 
 .state {
   display: inline-flex; align-items: center; gap: 6px;
+  width: fit-content;
+  max-width: fit-content;
+  justify-self: start;
+  align-self: center;
   font-family: var(--font-mono);
   font-size: 11px; font-weight: 500;
   color: var(--text-1);

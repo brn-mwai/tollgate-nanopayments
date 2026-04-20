@@ -35,8 +35,13 @@ const FREE_TIER_DAILY_TX_LIMIT = 100;
 export function Sidebar() {
   const pathname = usePathname();
 
+  const publisher = useQuery(api.publishers.getMine);
   const sites = useQuery(api.sites.list);
   const events = useQuery(api.events.recent, { limit: 500 });
+
+  const plan = publisher?.plan ?? "free";
+  const isFree = plan === "free";
+  const planLabel = plan.charAt(0).toUpperCase() + plan.slice(1);
 
   // Usage: paid TX in the last 24h vs the Free tier ceiling.
   const usage = useMemo(() => {
@@ -142,37 +147,47 @@ export function Sidebar() {
 
       <div className="sb-plan">
         <div className="sb-plan-header">
-          <div className="tile tile-pink badge-3d">
+          <div className={`tile ${isFree ? "tile-pink" : "tile-green"} badge-3d`}>
             <Star size={14} weight="fill" />
           </div>
-          <div>
+          <div style={{ minWidth: 0, flex: 1 }}>
             <div className="sb-plan-label">Current plan</div>
-            <div className="sb-plan-name">Free</div>
+            <div className="sb-plan-name">{planLabel}</div>
           </div>
         </div>
 
-        <div className="sb-plan-usage">
-          <div className="sb-plan-bar-track">
-            <div
-              className={`sb-plan-bar-fill ${usage.tier}`}
-              style={{ width: `${usage.pct}%` }}
-            />
-          </div>
-          <div className="sb-plan-count">
-            <span>
-              {usage.paid} / {FREE_TIER_DAILY_TX_LIMIT} paid TX today
-            </span>
-            <span>{usage.pct}%</span>
-          </div>
-        </div>
+        {isFree ? (
+          <>
+            <div className="sb-plan-usage">
+              <div className="sb-plan-bar-track">
+                <div
+                  className={`sb-plan-bar-fill ${usage.tier}`}
+                  style={{ width: `${usage.pct}%` }}
+                />
+              </div>
+              <div className="sb-plan-count">
+                <span>
+                  {usage.paid} / {FREE_TIER_DAILY_TX_LIMIT} paid TX today
+                </span>
+                <span>{usage.pct}%</span>
+              </div>
+            </div>
 
-        <div className="sb-plan-msg">
-          Upgrade to Pro for unlimited TX, 5 sites, priority facilitator, and CCTP off-ramp.
-        </div>
+            <div className="sb-plan-msg">
+              Upgrade to Pro for unlimited TX, 5 sites, priority facilitator, and CCTP off-ramp.
+            </div>
 
-        <button type="button" className="sb-plan-upgrade">
-          <Star size={13} weight="fill" /> Upgrade to Pro
-        </button>
+            <button type="button" className="sb-plan-upgrade">
+              <Star size={13} weight="fill" /> Upgrade to Pro
+            </button>
+          </>
+        ) : (
+          <div className="sb-plan-msg" style={{ marginTop: 0 }}>
+            {plan === "pro"
+              ? "Unlimited TX, 5 sites, priority facilitator, CCTP off-ramp."
+              : "Enterprise: unlimited everything, white-glove support."}
+          </div>
+        )}
       </div>
 
       <div className="sb-footer" style={{ padding: "8px 10px" }}>
