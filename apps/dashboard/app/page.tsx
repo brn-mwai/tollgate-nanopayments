@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 export default function LandingPage() {
   return (
@@ -46,23 +52,32 @@ export default function LandingPage() {
             Tollgate
           </span>
         </Link>
+
         <div style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
-          <Show when="signed-out">
+          <SignedOut>
             <SignInButton mode="modal">
               <button type="button" style={ghostBtn}>Sign in</button>
             </SignInButton>
             <SignUpButton mode="modal">
               <button type="button" style={primaryBtn}>Sign up</button>
             </SignUpButton>
-          </Show>
-          <Show when="signed-in">
+          </SignedOut>
+          <SignedIn>
             <Link href="/app" style={primaryBtn}>Go to dashboard</Link>
             <UserButton afterSignOutUrl="/" />
-          </Show>
+          </SignedIn>
         </div>
       </header>
 
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 24,
+        }}
+      >
         <div style={{ maxWidth: 760, textAlign: "center" }}>
           <h1
             style={{
@@ -86,21 +101,34 @@ export default function LandingPage() {
               margin: "0 auto 36px",
             }}
           >
-            The payment layer Andreessen said was missing. HTTP 402 + USDC on Arc. Publishers charge AI
-            bots per request. Sub-cent pricing, 96% margin, settled onchain in a second.
+            The payment layer Andreessen said was missing. HTTP 402 + USDC on Arc. Publishers charge
+            AI bots per request. Sub-cent pricing, 96% margin, settled onchain in a second.
           </p>
-          <div style={{ display: "inline-flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
-            <Show when="signed-out">
+          <div
+            style={{
+              display: "inline-flex",
+              gap: 10,
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
+          >
+            <SignedOut>
               <SignUpButton mode="modal">
-                <button type="button" style={primaryBtnLarge}>Start monetising bot traffic</button>
+                <button type="button" style={primaryBtnLarge}>
+                  Start monetising bot traffic
+                </button>
               </SignUpButton>
               <SignInButton mode="modal">
-                <button type="button" style={ghostBtnLarge}>Sign in</button>
+                <button type="button" style={ghostBtnLarge}>
+                  Sign in
+                </button>
               </SignInButton>
-            </Show>
-            <Show when="signed-in">
-              <Link href="/app" style={primaryBtnLarge}>Open dashboard</Link>
-            </Show>
+            </SignedOut>
+            <SignedIn>
+              <Link href="/app" style={primaryBtnLarge}>
+                Open dashboard
+              </Link>
+            </SignedIn>
           </div>
         </div>
       </div>
