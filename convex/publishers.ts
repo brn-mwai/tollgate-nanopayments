@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { getCurrentUser, getCurrentUserOrThrow } from "./users";
+import { getCurrentUser } from "./users";
+import { ensureCurrentUser } from "./lib/helpers";
 
 export const getMine = query({
   args: {},
@@ -17,7 +18,8 @@ export const getMine = query({
 export const create = mutation({
   args: { orgSlug: v.string() },
   handler: async (ctx, { orgSlug }) => {
-    const user = await getCurrentUserOrThrow(ctx);
+    // Upsert the user on-demand if the Clerk webhook hasn't fired yet.
+    const user = await ensureCurrentUser(ctx);
 
     const existing = await ctx.db
       .query("publishers")

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
+import { AccountPopup } from "./account-popup";
 import {
   SquaresFour,
   GlobeHemisphereWest,
@@ -109,9 +109,8 @@ export function Sidebar() {
         </div>
       </div>
 
-      <div className="sb-footer">
-        <UserButton afterSignOutUrl="/" />
-        <div style={{ fontSize: 12, color: "var(--text-2)" }}>Account</div>
+      <div className="sb-footer" style={{ padding: "8px 10px" }}>
+        <AccountPopup />
       </div>
     </aside>
   );
