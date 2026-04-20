@@ -214,9 +214,30 @@ body {
   transition: width 0.2s ease, min-width 0.2s ease;
   overflow: hidden;
 }
-.sidebar.collapsed { width: 0; min-width: 0; padding: 0; overflow: hidden; border: none; }
+.sidebar.collapsed {
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: none;
+}
+/* Inner groups fade slightly faster than the width animation so the
+   final frame doesn't feel abrupt. Matches the HTML preview's hints. */
+.sidebar .sb-header,
+.sidebar .sb-create,
+.sidebar .sb-nav,
+.sidebar .sb-plan,
+.sidebar .sb-footer {
+  transition: opacity 0.15s ease;
+}
+.sidebar.collapsed .sb-header,
+.sidebar.collapsed .sb-create,
+.sidebar.collapsed .sb-nav,
+.sidebar.collapsed .sb-plan,
+.sidebar.collapsed .sb-footer {
+  opacity: 0;
+}
 .sidebar.collapsed ~ .main { margin-left: 8px; }
-.main { transition: margin 0.2s ease; }
 
 .sb-header { padding: 16px 16px 12px; display: flex; align-items: center; flex-shrink: 0; min-height: 52px; }
 .sb-logo {
@@ -364,6 +385,7 @@ body {
   z-index: 1;
   overflow: hidden;
   background: var(--bg-main);
+  transition: margin-left 0.2s ease;
 }
 
 .topbar {
