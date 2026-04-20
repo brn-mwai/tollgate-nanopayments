@@ -758,6 +758,27 @@ body {
 .agent-pill.research .dot { background: var(--arc); }
 .agent-pill.indie .dot    { background: var(--gold); }
 
+/* ── State indicator (dot + text, distinct from solid pills) ── */
+.state {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-m);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-1);
+  text-transform: capitalize;
+}
+.state .state-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.04);
+}
+.state.state-active  .state-dot { background: var(--green); box-shadow: 0 0 0 2px rgba(6,167,125,0.18), 0 0 4px var(--green); }
+.state.state-flagged .state-dot { background: var(--gold);  box-shadow: 0 0 0 2px rgba(242,165,65,0.18); }
+.state.state-banned  .state-dot { background: var(--red);   box-shadow: 0 0 0 2px rgba(198,40,40,0.18); }
+.state.state-banned  { color: var(--red); }
+.state.state-flagged { color: var(--gold); }
+
 /* ── Margin reveal card (hero proof) ── */
 .margin-card {
   display: grid;
@@ -1597,7 +1618,7 @@ body {
             <div class="site-card-head">
               <div class="site-favicon">DN</div>
               <div class="site-card-domain">demo-news.brianmwai.com</div>
-              <span class="status status-onchain">active</span>
+              <span class="state state-active"><span class="state-dot"></span>active</span>
             </div>
             <div class="site-card-meta">
               <div class="site-card-meta-item"><span class="site-card-meta-label">Paid TX today</span><span class="site-card-meta-value">47</span></div>
@@ -1921,11 +1942,11 @@ body {
           <table class="tx-table">
             <thead><tr><th>Agent</th><th>Wallet</th><th>First seen</th><th>Total paid</th><th>Reputation</th><th>Tier</th><th>Status</th></tr></thead>
             <tbody>
-              <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td class="hash">0xF00f…9a12</td><td class="time">Apr 14</td><td class="amount">1,284,500 uUSDC</td><td>0.92</td><td><span class="status status-onchain">trusted</span></td><td><span class="status status-onchain">active</span></td></tr>
-              <tr><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td class="hash">0xRE5a…2c91</td><td class="time">Apr 16</td><td class="amount">624,000 uUSDC</td><td>0.76</td><td><span class="status status-cached">verified</span></td><td><span class="status status-onchain">active</span></td></tr>
-              <tr><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td class="hash">0x1ND…71b3</td><td class="time">Apr 18</td><td class="amount">311,000 uUSDC</td><td>0.64</td><td><span class="status status-cached">verified</span></td><td><span class="status status-onchain">active</span></td></tr>
-              <tr><td>unknown-bot-042</td><td class="hash">0x8a4c…e1f0</td><td class="time">Apr 19</td><td class="amount">12,500 uUSDC</td><td>0.31</td><td><span class="status status-402">unverified</span></td><td><span class="status status-402">flagged</span></td></tr>
-              <tr><td>unknown-bot-087</td><td class="hash">0xd221…88a7</td><td class="time">Apr 20</td><td class="amount">2,500 uUSDC</td><td>0.18</td><td><span class="status status-402">unverified</span></td><td><span class="status status-failed">banned</span></td></tr>
+              <tr><td><span class="agent-pill crawler"><span class="dot"></span>FoundationCrawler</span></td><td class="hash">0xF00f…9a12</td><td class="time">Apr 14</td><td class="amount">1,284,500 uUSDC</td><td>0.92</td><td><span class="status status-onchain">trusted</span></td><td><span class="state state-active"><span class="state-dot"></span>active</span></td></tr>
+              <tr><td><span class="agent-pill research"><span class="dot"></span>ResearchAgent</span></td><td class="hash">0xRE5a…2c91</td><td class="time">Apr 16</td><td class="amount">624,000 uUSDC</td><td>0.76</td><td><span class="status status-cached">verified</span></td><td><span class="state state-active"><span class="state-dot"></span>active</span></td></tr>
+              <tr><td><span class="agent-pill indie"><span class="dot"></span>IndieAgent</span></td><td class="hash">0x1ND…71b3</td><td class="time">Apr 18</td><td class="amount">311,000 uUSDC</td><td>0.64</td><td><span class="status status-cached">verified</span></td><td><span class="state state-active"><span class="state-dot"></span>active</span></td></tr>
+              <tr><td>unknown-bot-042</td><td class="hash">0x8a4c…e1f0</td><td class="time">Apr 19</td><td class="amount">12,500 uUSDC</td><td>0.31</td><td><span class="status status-402">unverified</span></td><td><span class="state state-flagged"><span class="state-dot"></span>flagged</span></td></tr>
+              <tr><td>unknown-bot-087</td><td class="hash">0xd221…88a7</td><td class="time">Apr 20</td><td class="amount">2,500 uUSDC</td><td>0.18</td><td><span class="status status-402">unverified</span></td><td><span class="state state-banned"><span class="state-dot"></span>banned</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -2143,9 +2164,9 @@ app.<span class="fn">listen</span>(<span class="str">3000</span>)</pre>
             <table class="tx-table">
               <thead><tr><th>Name</th><th>Prefix</th><th>Created</th><th>Last used</th><th>Status</th><th></th></tr></thead>
               <tbody>
-                <tr><td>demo-news prod</td><td class="hash">tg_live_a9f2…</td><td class="time">Apr 14</td><td class="time">just now</td><td><span class="status status-onchain">active</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
+                <tr><td>demo-news prod</td><td class="hash">tg_live_a9f2…</td><td class="time">Apr 14</td><td class="time">just now</td><td><span class="state state-active"><span class="state-dot"></span>active</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
                 <tr><td>staging</td><td class="hash">tg_test_4c01…</td><td class="time">Apr 16</td><td class="time">2h ago</td><td><span class="status status-cached">test</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
-                <tr><td>docs reader</td><td class="hash">tg_test_ab32…</td><td class="time">Apr 17</td><td class="time">never</td><td><span class="status status-failed">revoked</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
+                <tr><td>docs reader</td><td class="hash">tg_test_ab32…</td><td class="time">Apr 17</td><td class="time">never</td><td><span class="state state-banned"><span class="state-dot"></span>revoked</span></td><td><button class="btn btn-ghost"><i class="ph ph-arrows-clockwise"></i> Rotate</button></td></tr>
               </tbody>
             </table>
           </div>
@@ -2182,8 +2203,8 @@ app.<span class="fn">listen</span>(<span class="str">3000</span>)</pre>
             <table class="tx-table">
               <thead><tr><th>URL</th><th>Events</th><th>Created</th><th>Last delivery</th><th>Status</th></tr></thead>
               <tbody>
-                <tr><td class="hash">https://hooks.example.com/tollgate</td><td>event.paid, withdraw.sent</td><td class="time">Apr 15</td><td class="time">4s ago</td><td><span class="status status-onchain">active</span></td></tr>
-                <tr><td class="hash">https://logs.example.com/tg</td><td>event.paid</td><td class="time">Apr 18</td><td class="time">2h ago</td><td><span class="status status-cached">active</span></td></tr>
+                <tr><td class="hash">https://hooks.example.com/tollgate</td><td>event.paid, withdraw.sent</td><td class="time">Apr 15</td><td class="time">4s ago</td><td><span class="state state-active"><span class="state-dot"></span>active</span></td></tr>
+                <tr><td class="hash">https://logs.example.com/tg</td><td>event.paid</td><td class="time">Apr 18</td><td class="time">2h ago</td><td><span class="state state-active"><span class="state-dot"></span>active</span></td></tr>
               </tbody>
             </table>
           </div>
