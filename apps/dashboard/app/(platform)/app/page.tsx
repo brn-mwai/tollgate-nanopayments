@@ -10,6 +10,9 @@ import { KpiCard } from "@/components/kpi-card";
 import { ActivityChart } from "@/components/charts/activity-chart";
 import { StatusDonut } from "@/components/charts/status-donut";
 import { bucketByTime, bucketSumByTime, delta } from "@/lib/delta";
+import { relativeTime, shortAddr, shortHash } from "@/lib/format";
+import Link from "next/link";
+import { ArrowRight } from "@phosphor-icons/react";
 
 const HOUR = 3600_000;
 const DAY = 24 * HOUR;
@@ -190,6 +193,8 @@ export default function OverviewPage() {
         </Panel>
       </div>
 
+      <RecentEvents events={(events ?? []).slice(0, 10)} />
+
       <div
         style={{
           border: "1px solid var(--border)",
@@ -230,6 +235,157 @@ export default function OverviewPage() {
       </div>
     </div>
   );
+}
+
+function RecentEvents({ events }: { events: Array<{
+  _id: string; agentWallet: string; path: string; priceMicroUsdc: number;
+  txHash?: string; occurredAt: number; status: string;
+}> }) {
+  return (
+    <div
+      className="panel"
+      style={{ marginBottom: 28 }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "14px 18px",
+          borderBottom: "1px solid var(--border)",
+        }}
+      >
+        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-1)" }}>
+          Recent events
+        </div>
+        <div style={{ fontSize: 12, color: "var(--text-3)" }}>
+          last {events.length || 0} across all sites
+        </div>
+        <Link
+          href="/app/events"
+          style={{
+            marginLeft: "auto",
+            fontSize: 12,
+            fontWeight: 500,
+            color: "var(--pink-bright)",
+            textDecoration: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          View all <ArrowRight size={12} weight="bold" />
+        </Link>
+      </div>
+
+      {events.length === 0 ? (
+        <div
+          style={{
+            padding: "48px 24px",
+            textAlign: "center",
+            fontSize: 13,
+            color: "var(--text-3)",
+          }}
+        >
+          No events yet. Install the SDK on a site to see live requests here.
+        </div>
+      ) : (
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <Th>Time</Th>
+              <Th>Agent</Th>
+              <Th>Path</Th>
+              <Th>Amount</Th>
+              <Th>Tx hash</Th>
+              <Th>Status</Th>
+            </tr>
+          </thead>
+          <tbody>
+            {events.map((e) => (
+              <tr key={e._id} style={{ borderTop: "1px solid var(--border-s)" }}>
+                <Td mono muted>{relativeTime(e.occurredAt)}</Td>
+                <Td mono>{shortAddr(e.agentWallet)}</Td>
+                <Td mono>{e.path}</Td>
+                <Td mono accent>
+                  {e.priceMicroUsdc > 0 ? `+${e.priceMicroUsdc} uUSDC` : "—"}
+                </Td>
+                <Td mono link>{shortHash(e.txHash ?? "—")}</Td>
+                <Td>
+                  <StatusPill status={e.status} />
+                </Td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
+function Th({ children }: { children: React.ReactNode }) {
+  return (
+    <th
+      style={{
+        textAlign: "left",
+        fontSize: 10.5,
+        textTransform: "uppercase",
+        letterSpacing: "0.06em",
+        color: "var(--text-3)",
+        fontWeight: 500,
+        padding: "10px 18px",
+        borderBottom: "1px solid var(--border-s)",
+      }}
+    >
+      {children}
+    </th>
+  );
+}
+
+function Td({
+  children,
+  mono,
+  muted,
+  accent,
+  link,
+}: {
+  children: React.ReactNode;
+  mono?: boolean;
+  muted?: boolean;
+  accent?: boolean;
+  link?: boolean;
+}) {
+  const color = accent
+    ? "var(--green)"
+    : link
+      ? "var(--arc-bright)"
+      : muted
+        ? "var(--text-3)"
+        : "var(--text-2)";
+  return (
+    <td
+      style={{
+        padding: "11px 18px",
+        fontSize: mono ? 12 : 13,
+        color,
+        fontFamily: mono ? "JetBrains Mono, monospace" : undefined,
+      }}
+    >
+      {children}
+    </td>
+  );
+}
+
+function StatusPill({ status }: { status: string }) {
+  const map: Record<string, string> = {
+    paid_onchain: "pill-green",
+    paid_cached: "pill-arc",
+    unpaid_402: "pill-gold",
+    rejected: "pill-red",
+    failed_verify: "pill-red",
+  };
+  const label = status.replace("paid_", "").replace("_", " ");
+  return <span className={`pill ${map[status] ?? "pill-arc"} badge-3d`}>{label}</span>;
 }
 
 function Panel({
