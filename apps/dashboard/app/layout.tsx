@@ -29,6 +29,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Sans:wght@600;700&display=swap"
           rel="stylesheet"
         />
+        {/* Hoist theme before React hydrates to prevent flash of wrong theme. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var m=localStorage.getItem('tollgate-theme');if(!m||m==='system'){m=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',m)}catch(e){}})();`,
+          }}
+        />
       </head>
       <body>
         <Providers>{children}</Providers>

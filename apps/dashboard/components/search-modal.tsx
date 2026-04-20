@@ -32,34 +32,12 @@ export function SearchModal() {
 
   return (
     <div
+      className="tg-modal-overlay"
       onClick={(e) => {
         if (e.target === e.currentTarget) setOpen(false);
       }}
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.5)",
-        backdropFilter: "blur(4px)",
-        zIndex: 100,
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        paddingTop: "15vh",
-      }}
     >
-      <div
-        style={{
-          width: 560,
-          maxWidth: "90vw",
-          maxHeight: 480,
-          border: "1px solid var(--border)",
-          borderRadius: 12,
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-          background: "#12131A",
-        }}
-      >
+      <div className="tg-modal">
         <div
           style={{
             display: "flex",

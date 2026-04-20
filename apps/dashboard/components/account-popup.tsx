@@ -2,6 +2,8 @@
 
 import { useClerk, useUser } from "@clerk/nextjs";
 import { useState, useRef, useEffect } from "react";
+
+const THEME_KEY = "tollgate-theme";
 import {
   CaretUp,
   User,
@@ -23,10 +25,17 @@ export function AccountPopup() {
   const [theme, setTheme] = useState<Theme>("dark");
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  // Init theme from html[data-theme]
+  // Init theme from localStorage or html[data-theme]
   useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme") as Theme | null;
-    if (current) setTheme(current);
+    const stored = (localStorage.getItem(THEME_KEY) as Theme | null) ?? null;
+    if (stored) {
+      setTheme(stored);
+      applyDom(stored);
+    } else {
+      const current = document.documentElement.getAttribute("data-theme") as Theme | null;
+      if (current) setTheme(current);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Close on outside click
@@ -38,14 +47,19 @@ export function AccountPopup() {
     return () => document.removeEventListener("click", onClick);
   }, [open]);
 
-  function applyTheme(mode: Theme) {
-    setTheme(mode);
+  function applyDom(mode: Theme) {
     if (mode === "system") {
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       document.documentElement.dataset.theme = prefersDark ? "dark" : "light";
     } else {
       document.documentElement.dataset.theme = mode;
     }
+  }
+
+  function applyTheme(mode: Theme) {
+    setTheme(mode);
+    applyDom(mode);
+    localStorage.setItem(THEME_KEY, mode);
   }
 
   const initials = (user?.fullName ?? user?.username ?? "?")
@@ -69,7 +83,7 @@ export function AccountPopup() {
             border: "1px solid var(--border)",
             borderRadius: 8,
             padding: 6,
-            background: "#12131A",
+            background: "var(--bg-popup)",
             zIndex: 10,
             boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
           }}

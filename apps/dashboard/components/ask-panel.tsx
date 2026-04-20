@@ -35,7 +35,7 @@ export function AskPanel() {
         style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(0,0,0,0.3)",
+          background: "var(--overlay-panel)",
           zIndex: 100,
           opacity: open ? 1 : 0,
           pointerEvents: open ? "all" : "none",
@@ -54,7 +54,7 @@ export function AskPanel() {
           display: "flex",
           flexDirection: "column",
           zIndex: 101,
-          background: "#12131A",
+          background: "var(--bg-main)",
           transform: open ? "translateX(0)" : "translateX(100%)",
           transition: "transform 0.2s ease",
         }}
@@ -109,7 +109,7 @@ export function AskPanel() {
                   borderRadius: 6,
                   cursor: "pointer",
                   fontFamily: "inherit",
-                  background: "#101420",
+                  background: "var(--bg-shell)",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.color = "var(--text-1)";
