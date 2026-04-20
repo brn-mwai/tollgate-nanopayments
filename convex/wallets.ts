@@ -1,4 +1,4 @@
-import { action, internalMutation, query } from "./_generated/server";
+import { action, internalMutation, internalQuery, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { requirePublisher } from "./lib/helpers";
@@ -67,7 +67,7 @@ export const balance = action({
 
 // ───────── internal helpers ─────────
 
-export const _me = query({
+export const _me = internalQuery({
   args: {},
   handler: async (ctx) => requirePublisher(ctx),
 });

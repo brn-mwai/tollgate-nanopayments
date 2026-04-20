@@ -1,4 +1,4 @@
-import { mutation, query, action, internalMutation } from "./_generated/server";
+import { mutation, query, action, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { requirePublisher, requireSiteOwnedByMe } from "./lib/helpers";
@@ -111,7 +111,7 @@ export const verify = action({
   },
 });
 
-export const _internalGet = internalMutation({
+export const _internalGet = internalQuery({
   args: { siteId: v.id("sites") },
   handler: async (ctx, { siteId }) => ctx.db.get(siteId),
 });

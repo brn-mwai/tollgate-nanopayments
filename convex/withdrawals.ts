@@ -1,4 +1,4 @@
-import { mutation, query, action, internalMutation } from "./_generated/server";
+import { mutation, query, action, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { requirePublisher } from "./lib/helpers";
@@ -105,7 +105,7 @@ export const _markFailed = internalMutation({
 
 // ───────── internal ─────────
 
-export const _get = query({
+export const _get = internalQuery({
   args: { withdrawalId: v.id("withdrawals") },
   handler: async (ctx, { withdrawalId }) => ctx.db.get(withdrawalId),
 });

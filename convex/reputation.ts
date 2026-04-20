@@ -1,4 +1,4 @@
-import { action, internalMutation, query } from "./_generated/server";
+import { action, internalAction, internalMutation, internalQuery, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
@@ -14,7 +14,7 @@ export const tierFor = query({
 
 // Cron target: compute score per agent from the last 24h of events and
 // batch-push to the ERC-8004 contract on Arc.
-export const rollDaily = action({
+export const rollDaily = internalAction({
   args: {},
   handler: async (ctx) => {
     const agents = await ctx.runQuery(internal.reputation._listAgents);
@@ -47,12 +47,12 @@ export const rollDaily = action({
 
 // ───────── internal ─────────
 
-export const _listAgents = query({
+export const _listAgents = internalQuery({
   args: {},
   handler: async (ctx) => ctx.db.query("agents").collect(),
 });
 
-export const _eventsForAgent = query({
+export const _eventsForAgent = internalQuery({
   args: { wallet: v.string(), since: v.number() },
   handler: async (ctx, { wallet, since }) =>
     ctx.db
