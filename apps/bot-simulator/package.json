@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "tsx src/run.ts",
     "start": "tsx src/run.ts",
-    "burst": "tsx src/run.ts --agents 20 --requests 5",
-    "mega": "tsx src/run.ts --agents 30 --requests 8",
+    "burst": "tsx src/run.ts --agents 10 --requests 12",
+    "mega": "tsx src/run.ts --agents 20 --requests 15",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -47,15 +47,26 @@ async function main(): Promise<void> {
   let errors = 0;
   const startedAt = Date.now();
 
+  // Process agents in waves to stay under Circle Testnet's ~10 QPS rate limit.
+  // Each wave runs `BATCH_SIZE` agents in parallel, then sleeps before the
+  // next wave. This trades a little wall-clock for a much higher success rate.
+  const BATCH_SIZE = 5;
+  const WAVE_DELAY_MS = 1500;
+
   for (let round = 0; round < args.requests; round++) {
-    const results = await Promise.all(agents.map((a) => hit(a, args.publisher)));
-    for (const r of results) {
-      if (r.kind === "onchain") onchain++;
-      else if (r.kind === "cached") cached++;
-      else errors++;
-      log(`agent.${r.kind}`, r);
+    for (let i = 0; i < agents.length; i += BATCH_SIZE) {
+      const batch = agents.slice(i, i + BATCH_SIZE);
+      const results = await Promise.all(batch.map((a) => hit(a, args.publisher)));
+      for (const r of results) {
+        if (r.kind === "onchain") onchain++;
+        else if (r.kind === "cached") cached++;
+        else errors++;
+        log(`agent.${r.kind}`, r);
+      }
+      if (i + BATCH_SIZE < agents.length) await sleep(WAVE_DELAY_MS);
     }
-    await sleep(250 + Math.random() * 750);
+    // Small inter-round breather; helps cache hits land cleanly.
+    await sleep(500);
   }
 
   const elapsedMs = Date.now() - startedAt;
@@ -73,18 +84,16 @@ type HitResult =
   | { kind: "cached"; agent: string; path: string; durMs: number }
   | { kind: "error"; agent: string; path: string; error: string };
 
-// Per-agent round-robin over the article list for the first pass guarantees
-// that every (agent, url) pair is hit at least once — so `agents × articles`
-// onchain settles are a floor. Random picks take over once all slugs are
-// warmed, so receipt-cache hits accumulate naturally after that.
+// Per-agent round-robin: walk every article once to seed receipts, then
+// re-hit warmed slugs on subsequent rounds. This guarantees an agent sees
+// receipt-cache hits when iterations exceed the article count.
 const agentCursor = new WeakMap<Agent, number>();
 
 async function hit(agent: Agent, baseUrl: string): Promise<HitResult> {
   const seen = agentCursor.get(agent) ?? 0;
-  const slug =
-    seen < ARTICLES.length
-      ? ARTICLES[seen]!
-      : ARTICLES[Math.floor(Math.random() * ARTICLES.length)]!;
+  // Modulo means rounds 0..N-1 fan across articles, then repeat — fresh
+  // agents settle onchain on first hit, then cache the receipt for future.
+  const slug = ARTICLES[seen % ARTICLES.length]!;
   agentCursor.set(agent, seen + 1);
   const path = `/api/articles/${slug}`;
   const startedAt = Date.now();

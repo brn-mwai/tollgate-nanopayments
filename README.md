@@ -1,4 +1,6 @@
-# Tollgate
+<p align="left">
+  <img src="docs/tollgate-logo-white.svg" alt="Tollgate" width="320" />
+</p>
 
 **A dashboard and middleware library that lets any website charge AI bots per request in USDC.**
 
