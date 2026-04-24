@@ -104,12 +104,6 @@ importers:
 
   apps/demo-news:
     dependencies:
-      '@tollgate/middleware':
-        specifier: workspace:*
-        version: link:../../packages/middleware
-      '@tollgate/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       next:
         specifier: ^16.2.4
         version: 16.2.4(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -119,6 +113,9 @@ importers:
       react-dom:
         specifier: ^19.2.5
         version: 19.2.5(react@19.2.5)
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
     devDependencies:
       '@types/node':
         specifier: ^22.10.0

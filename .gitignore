@@ -49,3 +49,5 @@ __pycache__
 *.dat
 circle-credentials.json
 .secrets/
+
+.vercel

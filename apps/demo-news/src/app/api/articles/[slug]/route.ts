@@ -3,7 +3,7 @@
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { runTollgate, MiddlewareConfigSchema } from "@tollgate/middleware";
+import { runTollgate, MiddlewareConfigSchema } from "../../../../lib/middleware/core";
 import { ARTICLES } from "../../../../lib/articles-data";
 import { getConfig } from "../../../../lib/config";
 

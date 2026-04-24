@@ -1,16 +1,22 @@
 import type { NextConfig } from "next";
 import path from "node:path";
 
+const isVercel = process.env.VERCEL === "1";
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ["convex"],
-  // Pin the workspace root to the monorepo root so standalone traces
-  // include `../../convex/_generated/*` which is path-aliased as `@convex/*`.
-  // Without this, Vercel's Next build reports "Module not found" for the
-  // alias because file tracing stays scoped to apps/dashboard.
-  outputFileTracingRoot: path.resolve(process.cwd(), "../.."),
+  // On Vercel the deployment tree is scoped to apps/dashboard; convex is
+  // synced locally via the prebuild script so no upward tracing is needed.
+  // Locally we keep the tracing root at the monorepo root for a cleaner
+  // turbopack workspace scan.
+  ...(isVercel
+    ? {}
+    : {
+        outputFileTracingRoot: path.resolve(process.cwd(), "../.."),
+      }),
   turbopack: {
-    root: path.resolve(process.cwd(), "../.."),
+    root: isVercel ? process.cwd() : path.resolve(process.cwd(), "../.."),
   },
   experimental: {
     optimizePackageImports: ["@phosphor-icons/react"],

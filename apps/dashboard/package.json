@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack --port 3000",
-    "prebuild": "node ../../scripts/sync-convex-generated.mjs",
+    "prebuild": "node ../../scripts/sync-convex-generated.mjs || echo 'sync-convex skipped'",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
