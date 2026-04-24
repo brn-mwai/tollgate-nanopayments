@@ -1,15 +1,44 @@
-<p align="left">
-  <img src="docs/tollgate-logo-white.svg" alt="Tollgate" width="320" />
+<p align="center">
+  <img src="docs/tollgate-logo-white.svg" alt="Tollgate" width="380" />
 </p>
 
-**A dashboard and middleware library that lets any website charge AI bots per request in USDC.**
+<p align="center">
+  <strong>A dashboard and middleware library that lets any website charge AI bots per request in USDC.</strong>
+</p>
+
+<p align="center">
+  <a href="https://tollgate.brianmwai.com">
+    <img alt="Live dashboard" src="https://img.shields.io/badge/dashboard-tollgate.brianmwai.com-FF00AA?style=for-the-badge&labelColor=0A0B10" />
+  </a>
+  <a href="https://demo-news.brianmwai.com">
+    <img alt="Demo publisher" src="https://img.shields.io/badge/demo-demo--news.brianmwai.com-FF00AA?style=for-the-badge&labelColor=0A0B10" />
+  </a>
+  <a href="https://github.com/brn-mwai/tollgate">
+    <img alt="Source" src="https://img.shields.io/badge/source-MIT-06A77D?style=for-the-badge&labelColor=0A0B10" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/coinbase/x402"><img alt="x402" src="https://img.shields.io/badge/standard-x402-2775CA?style=flat-square&labelColor=1F2937" /></a>
+  <a href="https://docs.arc.network"><img alt="Arc" src="https://img.shields.io/badge/chain-Arc%20%2F%20Base%20Sepolia-2775CA?style=flat-square&labelColor=1F2937" /></a>
+  <a href="https://developers.circle.com/w3s"><img alt="Circle Wallets" src="https://img.shields.io/badge/wallets-Circle-06A77D?style=flat-square&labelColor=1F2937" /></a>
+  <a href="https://ai.google.dev/gemini-api/docs/function-calling"><img alt="Gemini" src="https://img.shields.io/badge/pricing-Gemini%203%20Flash-FF3CC0?style=flat-square&labelColor=1F2937" /></a>
+  <a href="https://convex.dev"><img alt="Convex" src="https://img.shields.io/badge/backend-Convex-EE342F?style=flat-square&labelColor=1F2937" /></a>
+  <a href="https://nextjs.org"><img alt="Next.js" src="https://img.shields.io/badge/web-Next.js%2016-000?style=flat-square&labelColor=1F2937" /></a>
+  <a href="https://www.typescriptlang.org"><img alt="TypeScript" src="https://img.shields.io/badge/lang-TypeScript-3178C6?style=flat-square&labelColor=1F2937" /></a>
+</p>
+
+<p align="center">
+  <img alt="Onchain settlements" src="https://img.shields.io/badge/onchain%20settlements-240%2B-06A77D?style=flat-square&labelColor=1F2937" />
+  <img alt="Per-request" src="https://img.shields.io/badge/per--request-%240.001-FF3CC0?style=flat-square&labelColor=1F2937" />
+  <img alt="Margin" src="https://img.shields.io/badge/margin%20on%20Arc-99.2%25-06A77D?style=flat-square&labelColor=1F2937" />
+  <img alt="Compression" src="https://img.shields.io/badge/receipt%20compression-50%3A1-2775CA?style=flat-square&labelColor=1F2937" />
+  <img alt="Hackathon" src="https://img.shields.io/badge/built%20for-Agentic%20Economy%20on%20Arc-FF00AA?style=flat-square&labelColor=1F2937" />
+</p>
+
+---
 
 Built on the open [x402](https://github.com/coinbase/x402) standard, Circle Wallets, and Arc. Dynamic pricing via Google Gemini Function Calling. HMAC receipt caching makes sub-cent pricing profitable.
-
-- Live demo (publisher dashboard): https://tollgate.brianmwai.com
-- Live demo (bot-facing blog): https://demo-news.brianmwai.com
-- Repo: https://github.com/brn-mwai/tollgate
-- Built for the [Agentic Economy on Arc](https://lablab.ai/ai-hackathons/nano-payments-arc) hackathon · April 2026
 
 ---
 
