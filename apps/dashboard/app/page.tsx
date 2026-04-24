@@ -1,66 +1,63 @@
 import Link from "next/link";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { LiveTicker } from "./_landing/live-ticker";
 
 export const dynamic = "force-dynamic";
 
 export default function Landing() {
   return (
-    <main style={{ background: "var(--bg-shell)", color: "var(--text-1)" }}>
-      <Nav />
-      <Hero />
-      <Proof />
-      <HowItWorks />
-      <Pricing />
-      <Stack />
-      <CTA />
-      <Footer />
-    </main>
+    <>
+      <style>{styles}</style>
+      <main className="lp-root">
+        <TopNav />
+        <Hero />
+        <section className="lp-section lp-section-tight">
+          <LiveTicker />
+        </section>
+        <ValueProp />
+        <HowItWorks />
+        <WhyArc />
+        <Stack />
+        <Testimonial />
+        <FinalCTA />
+        <SiteFooter />
+      </main>
+    </>
   );
 }
 
-function Nav() {
+function TopNav() {
   return (
-    <nav
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 10,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "16px 28px",
-        borderBottom: "1px solid var(--border-s)",
-        background: "rgba(10,11,16,0.72)",
-        backdropFilter: "blur(14px)",
-      }}
-    >
-      <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-        <svg width="22" height="26" viewBox="0 0 129 155" xmlns="http://www.w3.org/2000/svg">
-          <path d="M15.5 21.5L0 38V116.5L15.5 133.5V21.5Z" fill="#FF00AA" />
-          <path d="M63.5 21.5L32 38V116.5L63.5 133.5V21.5Z" fill="#FF00AA" />
-          <path d="M129 21.5L80 38V116.5L129 133.5V21.5Z" fill="#FF00AA" />
-        </svg>
-        <span style={{ fontSize: 17, fontWeight: 700, color: "var(--text-1)", letterSpacing: "-0.01em" }}>
-          Tollgate
-        </span>
-      </Link>
-      <div style={{ display: "flex", gap: 22, alignItems: "center" }}>
-        <Link href="#how" style={navLink}>How it works</Link>
-        <Link href="#pricing" style={navLink}>Pricing</Link>
-        <Link href="#stack" style={navLink}>Stack</Link>
-        <a href="https://demo-news.brianmwai.com" style={navLink} target="_blank" rel="noopener noreferrer">
-          Live demo
-        </a>
-        <a href="https://github.com/brn-mwai/tollgate" style={navLink} target="_blank" rel="noopener noreferrer">
-          GitHub
-        </a>
-        <SignedOut>
-          <Link href="/sign-in" style={ghostBtn}>Sign in</Link>
-          <Link href="/sign-up" style={primaryBtn}>Start</Link>
-        </SignedOut>
-        <SignedIn>
-          <Link href="/app" style={primaryBtn}>Open dashboard</Link>
-        </SignedIn>
+    <nav className="lp-nav">
+      <div className="lp-nav-inner">
+        <Link href="/" className="lp-brand">
+          <svg width="22" height="26" viewBox="0 0 129 155" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            <path d="M15.5 21.5L0 38V116.5L15.5 133.5V21.5Z" fill="#FF00AA" />
+            <path d="M63.5 21.5L32 38V116.5L63.5 133.5V21.5Z" fill="#FF00AA" />
+            <path d="M129 21.5L80 38V116.5L129 133.5V21.5Z" fill="#FF00AA" />
+          </svg>
+          <span>Tollgate</span>
+        </Link>
+        <div className="lp-nav-links">
+          <Link href="#how">How it works</Link>
+          <Link href="#economics">Economics</Link>
+          <Link href="#stack">Stack</Link>
+          <a href="https://demo-news.brianmwai.com" target="_blank" rel="noopener noreferrer">
+            Live demo
+          </a>
+          <a href="https://github.com/brn-mwai/tollgate" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+        </div>
+        <div className="lp-nav-cta">
+          <SignedOut>
+            <Link href="/sign-in" className="lp-btn lp-btn-ghost lp-btn-sm">Sign in</Link>
+            <Link href="/sign-up" className="lp-btn lp-btn-primary lp-btn-sm">Start free</Link>
+          </SignedOut>
+          <SignedIn>
+            <Link href="/app" className="lp-btn lp-btn-primary lp-btn-sm">Open dashboard</Link>
+          </SignedIn>
+        </div>
       </div>
     </nav>
   );
@@ -68,167 +65,89 @@ function Nav() {
 
 function Hero() {
   return (
-    <section
-      style={{
-        padding: "104px 28px 80px",
-        maxWidth: 1200,
-        margin: "0 auto",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse at top right, rgba(255,60,192,0.1), transparent 60%), radial-gradient(ellipse at bottom left, rgba(39,117,202,0.08), transparent 60%)",
-          pointerEvents: "none",
-        }}
-      />
-      <div style={{ position: "relative", textAlign: "center", maxWidth: 880, margin: "0 auto" }}>
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "6px 14px",
-            borderRadius: 999,
-            border: "1px solid rgba(255,60,192,0.35)",
-            background: "rgba(255,60,192,0.06)",
-            fontSize: 11.5,
-            fontFamily: "JetBrains Mono, monospace",
-            color: "var(--pink-bright)",
-            letterSpacing: "0.06em",
-            marginBottom: 28,
-          }}
-        >
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#06A77D", boxShadow: "0 0 8px #06A77D" }} />
-          Live · 180+ real onchain settlements on Base Sepolia
+    <section className="lp-hero">
+      <div className="lp-hero-inner">
+        <div className="lp-badge">
+          <span className="lp-badge-dot" />
+          180+ real onchain settlements · Base Sepolia · April 2026
         </div>
-        <h1
-          style={{
-            fontFamily: "Instrument Serif, serif",
-            fontSize: "clamp(48px, 8vw, 102px)",
-            fontWeight: 400,
-            lineHeight: 1.0,
-            letterSpacing: "-0.03em",
-            margin: "0 0 24px",
-          }}
-        >
-          Every AI scrape becomes{" "}
-          <span style={{ color: "var(--pink-bright)" }}>revenue</span>,<br />
-          not theft.
+        <h1 className="lp-hero-title">
+          The payment rail<br />
+          for <em>agentic</em> commerce.
         </h1>
-        <p
-          style={{
-            fontSize: 19,
-            color: "var(--text-2)",
-            lineHeight: 1.55,
-            maxWidth: 720,
-            margin: "0 auto 40px",
-          }}
-        >
-          Tollgate is the HTTP 402 payment rail for the agent economy. Install the
-          middleware, provision a Circle Wallet, charge AI bots per request in USDC. Sub-cent
-          pricing, 99% margin, settled onchain. No API keys. No subscriptions. No humans in the
-          loop.
+        <p className="lp-hero-sub">
+          Tollgate turns every HTTP 402 into a USDC micropayment. Publishers charge bots
+          per request. Bots pay in cryptographic receipts. Settlement is onchain, sub-second,
+          sub-cent. This page ships running code, not a pitch deck.
         </p>
-        <div style={{ display: "inline-flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+        <div className="lp-hero-cta">
           <SignedOut>
-            <Link href="/sign-up" style={primaryBtnLarge}>Start monetising bot traffic →</Link>
-            <a
-              href="https://demo-news.brianmwai.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={ghostBtnLarge}
-            >
-              See it running live
-            </a>
+            <Link href="/sign-up" className="lp-btn lp-btn-primary">
+              Start monetising bots <Arrow />
+            </Link>
           </SignedOut>
           <SignedIn>
-            <Link href="/app" style={primaryBtnLarge}>Open dashboard →</Link>
-            <a
-              href="https://demo-news.brianmwai.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={ghostBtnLarge}
-            >
-              See it running live
-            </a>
+            <Link href="/app" className="lp-btn lp-btn-primary">
+              Open dashboard <Arrow />
+            </Link>
           </SignedIn>
-        </div>
-        <div
-          style={{
-            marginTop: 28,
-            fontSize: 12,
-            color: "var(--text-3)",
-            fontFamily: "JetBrains Mono, monospace",
-            letterSpacing: "0.03em",
-          }}
-        >
-          Built for the{" "}
           <a
-            href="https://lablab.ai/ai-hackathons/nano-payments-arc"
+            href="https://demo-news.brianmwai.com"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: "var(--pink-bright)" }}
+            className="lp-btn lp-btn-ghost"
           >
-            Agentic Economy on Arc
-          </a>{" "}
-          hackathon · April 2026
+            See it live
+          </a>
+        </div>
+        <div className="lp-hero-meta">
+          <span>Circle Wallets</span>
+          <i>·</i>
+          <span>Arc</span>
+          <i>·</i>
+          <span>Gemini Function Calling</span>
+          <i>·</i>
+          <span>x402</span>
+          <i>·</i>
+          <span>Convex</span>
         </div>
       </div>
     </section>
   );
 }
 
-function Proof() {
-  const stats = [
-    { label: "Onchain settlements", value: "180+", sub: "real Base Sepolia txs" },
-    { label: "Per-request price", value: "$0.001", sub: "cap $0.01 · Gemini priced" },
-    { label: "Margin on Arc", value: "99.2%", sub: "vs −19,900% on Ethereum" },
-    { label: "Compression ratio", value: "5–50×", sub: "receipts cache onchain" },
+function ValueProp() {
+  const bullets = [
+    {
+      title: "Sub-cent pricing, finally profitable",
+      body: "At $0.001 per request, Arc's USDC-native gas runs at 99% margin. The same request on Ethereum L1 costs $0.50 to settle — gas consumes 500x the revenue.",
+    },
+    {
+      title: "No cards. No humans. No OAuth.",
+      body: "Bots have wallets. Wallets hold USDC. Wallets sign payment intents. The entire payment surface collapses to one HTTP status code — 402.",
+    },
+    {
+      title: "Receipts collapse onchain cost",
+      body: "One onchain settlement unlocks 50 cached reads via 5-minute HMAC receipts. Publishers keep 99% margin. Bots pay list price. Everyone wins.",
+    },
   ];
   return (
-    <section style={{ padding: "0 28px 80px", maxWidth: 1200, margin: "0 auto" }}>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: 1,
-          background: "var(--border)",
-          border: "1px solid var(--border)",
-          borderRadius: 14,
-          overflow: "hidden",
-        }}
-      >
-        {stats.map((s) => (
-          <div key={s.label} style={{ padding: "26px 24px", background: "var(--bg-card)" }}>
-            <div
-              style={{
-                fontSize: 10.5,
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-                color: "var(--text-3)",
-                fontFamily: "JetBrains Mono, monospace",
-                marginBottom: 12,
-              }}
-            >
-              {s.label}
-            </div>
-            <div
-              style={{
-                fontFamily: "Instrument Serif, serif",
-                fontSize: 42,
-                lineHeight: 1,
-                color: "var(--text-1)",
-                marginBottom: 8,
-              }}
-            >
-              {s.value}
-            </div>
-            <div style={{ fontSize: 12, color: "var(--text-3)" }}>{s.sub}</div>
+    <section className="lp-section">
+      <SectionKicker>Why Tollgate</SectionKicker>
+      <h2 className="lp-section-title">
+        The agent economy is here.<br />
+        Its payment rails don't exist yet.
+      </h2>
+      <p className="lp-section-lede">
+        70% of 2026 web traffic is non-human. LLM pipelines, research agents, scrapers &mdash; all
+        extracting billions in uncompensated content. Tollgate is the rail that lets
+        publishers charge for it without blocking it.
+      </p>
+      <div className="lp-grid-3">
+        {bullets.map((b) => (
+          <div key={b.title} className="lp-value-card">
+            <div className="lp-value-title">{b.title}</div>
+            <p className="lp-value-body">{b.body}</p>
           </div>
         ))}
       </div>
@@ -240,81 +159,44 @@ function HowItWorks() {
   const steps = [
     {
       num: "01",
-      title: "Bot sends a GET",
-      body: "A crawler, LLM trainer, or research agent fetches a protected URL. No API key. No OAuth. Just HTTP.",
+      title: "Bot sends GET",
+      body: "A crawler fetches any protected URL. No API key, no OAuth, no prior signup — agents are first-class citizens.",
       code: "GET /api/articles/arc-primer",
     },
     {
       num: "02",
-      title: "Your site returns 402",
-      body: "Tollgate's middleware replies with a signed x402 quote carrying a nonce, price, and your Circle Wallet as payTo.",
-      code: "HTTP 402 · $0.001 USDC · nonce:n_...",
+      title: "Server returns 402",
+      body: "Middleware emits a signed x402 quote: price, nonce, publisher wallet. Gemini prices the quote dynamically.",
+      code: 'HTTP/1.1 402 Payment Required\n{"accepts":[{"amount":"1000","payTo":"0x7f3f..."}]}',
     },
     {
       num: "03",
-      title: "Agent authorizes USDC",
-      body: "Circle Transfer fires onchain. Tx confirms on Base Sepolia (Arc when Circle enables it) in seconds.",
-      code: "tx 0xe37676... ✓ CONFIRMED",
+      title: "Agent pays USDC",
+      body: "The bot authorizes a transfer. Circle Wallets settles onchain on Base Sepolia. Confirmation in seconds.",
+      code: "POST /api/articles/arc-primer\nX-PAYMENT: eyJ4NDAyVmVyc2lvbi...",
     },
     {
       num: "04",
-      title: "Content served + cached",
-      body: "A 5-minute HMAC receipt attaches. Next 50 reads from that agent skip the facilitator. One tx, many hits.",
-      code: "X-Tollgate-Receipt-Set: v1.ey...",
+      title: "Content + receipt",
+      body: "200 OK with the article JSON plus an HMAC receipt. Next 50 reads from this agent skip onchain settlement entirely.",
+      code: "HTTP/1.1 200 OK\nX-Tollgate-Receipt-Set: v1.eyJzaXRlIj...",
     },
   ];
   return (
-    <section id="how" style={{ padding: "80px 28px", maxWidth: 1200, margin: "0 auto" }}>
-      <SectionHeader kicker="How it works" title="Four steps between request and revenue" />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          gap: 16,
-          marginTop: 40,
-        }}
-      >
+    <section id="how" className="lp-section lp-section-dark">
+      <SectionKicker>How it works</SectionKicker>
+      <h2 className="lp-section-title">
+        Four HTTP exchanges,<br />
+        one economic atom.
+      </h2>
+      <div className="lp-steps">
         {steps.map((s) => (
-          <div
-            key={s.num}
-            style={{
-              padding: 24,
-              border: "1px solid var(--border)",
-              borderRadius: 12,
-              background: "var(--bg-card)",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "Instrument Serif, serif",
-                fontSize: 34,
-                color: "var(--pink-bright)",
-                marginBottom: 12,
-              }}
-            >
-              {s.num}
-            </div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text-1)", marginBottom: 10 }}>
-              {s.title}
-            </div>
-            <p style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.55, margin: "0 0 14px" }}>
-              {s.body}
-            </p>
-            <div
-              style={{
-                fontFamily: "JetBrains Mono, monospace",
-                fontSize: 11,
-                padding: "7px 10px",
-                border: "1px solid var(--border-s)",
-                borderRadius: 6,
-                background: "rgba(0,0,0,0.35)",
-                color: "var(--text-1)",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {s.code}
+          <div key={s.num} className="lp-step">
+            <div className="lp-step-num">{s.num}</div>
+            <div className="lp-step-body">
+              <div className="lp-step-title">{s.title}</div>
+              <p className="lp-step-copy">{s.body}</p>
+              <pre className="lp-step-code">{s.code}</pre>
             </div>
           </div>
         ))}
@@ -323,186 +205,102 @@ function HowItWorks() {
   );
 }
 
-function Pricing() {
+function WhyArc() {
   return (
-    <section
-      id="pricing"
-      style={{ padding: "80px 28px", maxWidth: 1200, margin: "0 auto" }}
-    >
-      <SectionHeader
-        kicker="Unit economics"
-        title="Only Arc makes per-request paywalls profitable"
-      />
-      <p
-        style={{
-          fontSize: 15,
-          color: "var(--text-2)",
-          maxWidth: 680,
-          marginTop: 12,
-          lineHeight: 1.6,
-        }}
-      >
-        A single $0.001 API call shipped onchain. Same load, four chains. Arc is the only place
-        where the spreadsheet is green &mdash; by a factor of 125.
+    <section id="economics" className="lp-section">
+      <SectionKicker>Economics</SectionKicker>
+      <h2 className="lp-section-title">
+        Only Arc makes<br />
+        the spreadsheet green.
+      </h2>
+      <p className="lp-section-lede">
+        A single $0.001 API call, settled onchain, across four chains. Arc is the only L1
+        where per-request pricing is mathematically profitable &mdash; by a factor of 125 over
+        Base, 500 over Polygon, and 25,000 over Ethereum.
       </p>
-      <div
-        style={{
-          marginTop: 32,
-          border: "1px solid var(--border)",
-          borderRadius: 14,
-          overflow: "hidden",
-          background: "var(--bg-card)",
-        }}
-      >
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+      <div className="lp-econ">
+        <table className="lp-econ-table">
           <thead>
             <tr>
-              {["Chain", "Gas / tx", "Net / request", "Margin", "Verdict"].map((h) => (
-                <th
-                  key={h}
-                  style={{
-                    textAlign: "left",
-                    padding: "14px 20px",
-                    fontSize: 11,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    color: "var(--text-3)",
-                    fontWeight: 500,
-                    borderBottom: "1px solid var(--border)",
-                    background: "rgba(255,255,255,0.015)",
-                  }}
-                >
-                  {h}
-                </th>
-              ))}
+              <th>Chain</th>
+              <th>Gas / tx</th>
+              <th>Net / request</th>
+              <th>Margin</th>
             </tr>
           </thead>
           <tbody>
-            <PricingRow chain="Arc (USDC native gas)" gas="$0.00002" net="+$0.00098" margin="99.2%" verdict="Tollgate ships here" tone="good" />
-            <PricingRow chain="Solana" gas="$0.00025" net="+$0.00075" margin="75%" verdict="Works but stablecoin gas is different" tone="ok" />
-            <PricingRow chain="Polygon" gas="$0.0016" net="−$0.0006" margin="−60%" verdict="Gas exceeds revenue" tone="bad" />
-            <PricingRow chain="Ethereum L1" gas="$0.50" net="−$0.499" margin="−49,900%" verdict="Every call loses half a dollar" tone="bad" />
+            <tr className="good">
+              <td><strong>Arc (USDC native)</strong></td>
+              <td>$0.00002</td>
+              <td>+$0.00098</td>
+              <td>99.2%</td>
+            </tr>
+            <tr>
+              <td>Solana</td>
+              <td>$0.00025</td>
+              <td>+$0.00075</td>
+              <td>75%</td>
+            </tr>
+            <tr className="warn">
+              <td>Base</td>
+              <td>$0.0002</td>
+              <td>+$0.0008</td>
+              <td>80%</td>
+            </tr>
+            <tr className="bad">
+              <td>Polygon PoS</td>
+              <td>$0.0016</td>
+              <td>−$0.0006</td>
+              <td>−60%</td>
+            </tr>
+            <tr className="bad">
+              <td>Ethereum L1</td>
+              <td>$0.50</td>
+              <td>−$0.499</td>
+              <td>−49,900%</td>
+            </tr>
           </tbody>
         </table>
+        <p className="lp-footnote">
+          Base estimates per-request gas at 20 gwei × 65k gas units, USDC-denominated.
+          Full derivation in{" "}
+          <a
+            href="https://github.com/brn-mwai/tollgate/blob/main/docs/MARGIN.md"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            docs/MARGIN.md
+          </a>.
+        </p>
       </div>
-      <p style={{ marginTop: 16, fontSize: 12, color: "var(--text-3)" }}>
-        Figures assume $0.001 revenue per request. Full derivation + compression math in the{" "}
-        <a
-          href="https://github.com/brn-mwai/tollgate/blob/main/docs/MARGIN.md"
-          style={{ color: "var(--pink-bright)" }}
-        >
-          MARGIN.md
-        </a>{" "}
-        doc.
-      </p>
     </section>
-  );
-}
-
-function PricingRow({
-  chain,
-  gas,
-  net,
-  margin,
-  verdict,
-  tone,
-}: {
-  chain: string;
-  gas: string;
-  net: string;
-  margin: string;
-  verdict: string;
-  tone: "good" | "ok" | "bad";
-}) {
-  const color = tone === "good" ? "#06A77D" : tone === "ok" ? "#F2A541" : "#E84A53";
-  return (
-    <tr style={{ borderTop: "1px solid var(--border-s)" }}>
-      <td style={{ padding: "16px 20px", color: "var(--text-1)", fontWeight: 500 }}>{chain}</td>
-      <td style={{ padding: "16px 20px", fontFamily: "JetBrains Mono, monospace", color: "var(--text-2)" }}>
-        {gas}
-      </td>
-      <td style={{ padding: "16px 20px", fontFamily: "JetBrains Mono, monospace", color }}>{net}</td>
-      <td style={{ padding: "16px 20px", fontFamily: "JetBrains Mono, monospace", color, fontWeight: 600 }}>
-        {margin}
-      </td>
-      <td style={{ padding: "16px 20px", fontSize: 13, color: "var(--text-2)" }}>{verdict}</td>
-    </tr>
   );
 }
 
 function Stack() {
   const products = [
-    {
-      name: "Arc L1",
-      line: "Stablecoin-native gas",
-      body: "USDC is the native gas token. Per-request settlement clears sub-cent. Deterministic margin.",
-    },
-    {
-      name: "Circle Wallets",
-      line: "Custodial publisher treasury",
-      body: "One-click provision, zero key management. USDC lands directly. CCTP-ready for multi-chain off-ramp.",
-    },
-    {
-      name: "Circle Nanopayments",
-      line: "Onchain settlement rail",
-      body: "Every x402 payment produces a real Base Sepolia (Arc-ready) transaction. Idempotent, retry-safe.",
-    },
-    {
-      name: "Gemini 3 Flash",
-      line: "Live quote pricing",
-      body: "Function Calling chains tools: agent reputation, site rules, recent activity. Reasoning captured per-quote.",
-    },
-    {
-      name: "x402 Standard",
-      line: "Open protocol",
-      body: "Linux Foundation + Coinbase standard. HTTP 402 response body, X-PAYMENT header, receipt caching.",
-    },
-    {
-      name: "ERC-8004 Reputation",
-      line: "Agent identity layer",
-      body: "Onchain reputation scores feed the pricer. Trusted bots pay less; flagged bots pay more.",
-    },
+    { name: "Arc L1", line: "Stablecoin-native settlement", body: "USDC is the native gas token. Per-request clearing runs at sub-cent cost." },
+    { name: "Circle Wallets", line: "Custodial treasury", body: "One-click provisioned publisher wallets. Zero key management." },
+    { name: "Circle Nanopayments", line: "Onchain rail", body: "Every x402 quote becomes a real Circle Transfer tx." },
+    { name: "Circle CCTP", line: "Multi-chain off-ramp", body: "Bridge earnings to Base, Ethereum, Solana via Circle infrastructure." },
+    { name: "Gemini 3 Flash", line: "Live quote pricing", body: "Function Calling chains 3 tools: reputation, rules, activity." },
+    { name: "x402 Standard", line: "Open protocol", body: "HTTP 402 body, X-PAYMENT header, 5-minute HMAC receipts." },
+    { name: "ERC-8004", line: "Agent reputation", body: "Onchain reputation feeds the pricer. Trusted agents pay less." },
+    { name: "Convex", line: "Reactive backend", body: "11 tables, 50+ functions, real-time dashboard queries." },
   ];
   return (
-    <section id="stack" style={{ padding: "80px 28px", maxWidth: 1200, margin: "0 auto" }}>
-      <SectionHeader
-        kicker="Stack"
-        title="Every product in the Circle + Google + x402 lineup"
-      />
-      <div
-        style={{
-          marginTop: 40,
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: 16,
-        }}
-      >
+    <section id="stack" className="lp-section">
+      <SectionKicker>Stack</SectionKicker>
+      <h2 className="lp-section-title">
+        Every product Circle,<br />
+        Google &amp; the standard body ship.
+      </h2>
+      <div className="lp-stack-grid">
         {products.map((p) => (
-          <div
-            key={p.name}
-            style={{
-              padding: 22,
-              border: "1px solid var(--border)",
-              borderRadius: 12,
-              background: "var(--bg-card)",
-            }}
-          >
-            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text-1)", marginBottom: 4 }}>
-              {p.name}
-            </div>
-            <div
-              style={{
-                fontSize: 11,
-                fontFamily: "JetBrains Mono, monospace",
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-                color: "var(--pink-bright)",
-                marginBottom: 12,
-              }}
-            >
-              {p.line}
-            </div>
-            <p style={{ fontSize: 13, color: "var(--text-2)", margin: 0, lineHeight: 1.55 }}>{p.body}</p>
+          <div key={p.name} className="lp-stack-card">
+            <div className="lp-stack-name">{p.name}</div>
+            <div className="lp-stack-line">{p.line}</div>
+            <p className="lp-stack-body">{p.body}</p>
           </div>
         ))}
       </div>
@@ -510,198 +308,97 @@ function Stack() {
   );
 }
 
-function CTA() {
+function Testimonial() {
   return (
-    <section
-      style={{
-        padding: "100px 28px",
-        maxWidth: 1200,
-        margin: "0 auto",
-      }}
-    >
-      <div
-        style={{
-          padding: "64px 48px",
-          border: "1px solid var(--border)",
-          borderRadius: 20,
-          background:
-            "linear-gradient(155deg, rgba(255,60,192,0.08), rgba(39,117,202,0.06) 60%)",
-          position: "relative",
-          overflow: "hidden",
-          textAlign: "center",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: -100,
-            right: -100,
-            width: 320,
-            height: 320,
-            background: "radial-gradient(circle, rgba(255,60,192,0.18), transparent 70%)",
-            pointerEvents: "none",
-          }}
-        />
-        <h2
-          style={{
-            fontFamily: "Instrument Serif, serif",
-            fontSize: "clamp(36px, 5vw, 58px)",
-            fontWeight: 400,
-            lineHeight: 1.1,
-            letterSpacing: "-0.02em",
-            margin: "0 0 18px",
-            position: "relative",
-          }}
-        >
+    <section className="lp-section lp-section-dark">
+      <div className="lp-quote">
+        <blockquote>
+          The grand unification of AI and crypto is about to happen.
+        </blockquote>
+        <cite>
+          — Marc Andreessen<br />
+          <small>Every per-request payment rail has been waiting for Arc.</small>
+        </cite>
+      </div>
+    </section>
+  );
+}
+
+function FinalCTA() {
+  return (
+    <section className="lp-section">
+      <div className="lp-cta">
+        <h2 className="lp-cta-title">
           Stop blocking bots.<br />
-          <span style={{ color: "var(--pink-bright)" }}>Start charging them.</span>
+          Start charging them.
         </h2>
-        <p
-          style={{
-            fontSize: 16,
-            color: "var(--text-2)",
-            maxWidth: 560,
-            margin: "0 auto 32px",
-            lineHeight: 1.55,
-            position: "relative",
-          }}
-        >
-          Install the middleware. Provision a Circle Wallet in one click. Watch your first
-          settlement land on basescan within 60 seconds.
+        <p className="lp-cta-sub">
+          Install the middleware, provision a Circle Wallet, watch your first settlement land
+          on basescan within 60 seconds. MIT licensed. No waitlist.
         </p>
-        <div
-          style={{
-            display: "inline-flex",
-            gap: 12,
-            flexWrap: "wrap",
-            justifyContent: "center",
-            position: "relative",
-          }}
-        >
+        <div className="lp-cta-actions">
           <SignedOut>
-            <Link href="/sign-up" style={primaryBtnLarge}>Create free account →</Link>
-            <a
-              href="https://github.com/brn-mwai/tollgate"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={ghostBtnLarge}
-            >
-              View on GitHub
-            </a>
+            <Link href="/sign-up" className="lp-btn lp-btn-primary lp-btn-lg">
+              Create free account <Arrow />
+            </Link>
           </SignedOut>
           <SignedIn>
-            <Link href="/app" style={primaryBtnLarge}>Open dashboard →</Link>
+            <Link href="/app" className="lp-btn lp-btn-primary lp-btn-lg">
+              Open dashboard <Arrow />
+            </Link>
           </SignedIn>
+          <a
+            href="https://github.com/brn-mwai/tollgate"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="lp-btn lp-btn-ghost lp-btn-lg"
+          >
+            View source
+          </a>
         </div>
       </div>
     </section>
   );
 }
 
-function SectionHeader({ kicker, title }: { kicker: string; title: string }) {
+function SiteFooter() {
   return (
-    <div>
-      <div
-        style={{
-          fontFamily: "JetBrains Mono, monospace",
-          fontSize: 11,
-          letterSpacing: "0.15em",
-          textTransform: "uppercase",
-          color: "var(--pink-bright)",
-          marginBottom: 14,
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <span style={{ width: 22, height: 1, background: "var(--pink-bright)" }} />
-        {kicker}
+    <footer className="lp-footer">
+      <div className="lp-footer-inner">
+        <div className="lp-footer-brand">
+          <Link href="/" className="lp-brand">
+            <svg width="20" height="24" viewBox="0 0 129 155" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15.5 21.5L0 38V116.5L15.5 133.5V21.5Z" fill="#FF00AA" />
+              <path d="M63.5 21.5L32 38V116.5L63.5 133.5V21.5Z" fill="#FF00AA" />
+              <path d="M129 21.5L80 38V116.5L129 133.5V21.5Z" fill="#FF00AA" />
+            </svg>
+            <span>Tollgate</span>
+          </Link>
+          <p>
+            HTTP 402 payment rail for the agent economy. Built by Brian Mwai for the Agentic
+            Economy on Arc hackathon.
+          </p>
+        </div>
+        <FooterCol title="Product" links={[
+          { label: "Sign up", href: "/sign-up" },
+          { label: "Dashboard", href: "/app" },
+          { label: "Install SDK", href: "/app/install" },
+        ]} />
+        <FooterCol title="Live" links={[
+          { label: "Realtime stream", href: "/app/realtime" },
+          { label: "Demo publisher", href: "https://demo-news.brianmwai.com" },
+          { label: "GitHub", href: "https://github.com/brn-mwai/tollgate" },
+        ]} />
+        <FooterCol title="Stack" links={[
+          { label: "Arc", href: "https://docs.arc.network" },
+          { label: "Circle Wallets", href: "https://developers.circle.com/w3s" },
+          { label: "x402", href: "https://github.com/coinbase/x402" },
+          { label: "Gemini", href: "https://ai.google.dev" },
+        ]} />
       </div>
-      <h2
-        style={{
-          fontFamily: "Instrument Serif, serif",
-          fontSize: "clamp(30px, 4vw, 44px)",
-          fontWeight: 400,
-          lineHeight: 1.1,
-          letterSpacing: "-0.02em",
-          margin: 0,
-          color: "var(--text-1)",
-          maxWidth: 700,
-        }}
-      >
-        {title}
-      </h2>
-    </div>
-  );
-}
-
-function Footer() {
-  return (
-    <footer
-      style={{
-        padding: "60px 28px 32px",
-        borderTop: "1px solid var(--border)",
-        background: "var(--bg-card)",
-      }}
-    >
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "minmax(0, 1.4fr) repeat(3, minmax(0, 1fr))",
-            gap: 40,
-            marginBottom: 36,
-          }}
-        >
-          <div>
-            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-              <svg width="22" height="26" viewBox="0 0 129 155" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15.5 21.5L0 38V116.5L15.5 133.5V21.5Z" fill="#FF00AA" />
-                <path d="M63.5 21.5L32 38V116.5L63.5 133.5V21.5Z" fill="#FF00AA" />
-                <path d="M129 21.5L80 38V116.5L129 133.5V21.5Z" fill="#FF00AA" />
-              </svg>
-              <span style={{ fontSize: 17, fontWeight: 700, color: "var(--text-1)" }}>Tollgate</span>
-            </Link>
-            <p style={{ fontSize: 12.5, color: "var(--text-3)", lineHeight: 1.6, margin: 0, maxWidth: 340 }}>
-              HTTP 402 payment rail for the agent economy. Built by Brian Mwai for the Agentic Economy on
-              Arc hackathon, April 2026.
-            </p>
-          </div>
-          <FooterCol title="Product" links={[
-            { label: "Sign up", href: "/sign-up" },
-            { label: "Sign in", href: "/sign-in" },
-            { label: "Dashboard", href: "/app" },
-            { label: "Install SDK", href: "/app/install" },
-          ]} />
-          <FooterCol title="Live" links={[
-            { label: "Realtime stream", href: "/app/realtime" },
-            { label: "Demo publisher", href: "https://demo-news.brianmwai.com" },
-            { label: "GitHub", href: "https://github.com/brn-mwai/tollgate" },
-            { label: "Hackathon", href: "https://lablab.ai/ai-hackathons/nano-payments-arc" },
-          ]} />
-          <FooterCol title="Stack" links={[
-            { label: "Arc docs", href: "https://docs.arc.network" },
-            { label: "Circle Wallets", href: "https://developers.circle.com/w3s" },
-            { label: "x402 spec", href: "https://github.com/coinbase/x402" },
-            { label: "Gemini Function Calling", href: "https://ai.google.dev/gemini-api/docs/function-calling" },
-          ]} />
-        </div>
-        <div
-          style={{
-            paddingTop: 20,
-            borderTop: "1px solid var(--border-s)",
-            display: "flex",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 12,
-            fontFamily: "JetBrains Mono, monospace",
-            fontSize: 11,
-            color: "var(--text-3)",
-          }}
-        >
-          <span>© 2026 Brian Mwai · Tollgate is MIT licensed</span>
-          <span>tollgate.brianmwai.com</span>
-        </div>
+      <div className="lp-footer-bar">
+        <span>© 2026 Brian Mwai · MIT licensed</span>
+        <span>tollgate.brianmwai.com</span>
       </div>
     </footer>
   );
@@ -709,32 +406,18 @@ function Footer() {
 
 function FooterCol({ title, links }: { title: string; links: Array<{ label: string; href: string }> }) {
   return (
-    <div>
-      <div
-        style={{
-          fontSize: 10.5,
-          fontFamily: "JetBrains Mono, monospace",
-          textTransform: "uppercase",
-          letterSpacing: "0.1em",
-          color: "var(--text-3)",
-          marginBottom: 14,
-        }}
-      >
-        {title}
-      </div>
-      <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+    <div className="lp-footer-col">
+      <div className="lp-footer-col-title">{title}</div>
+      <ul>
         {links.map((l) => {
           const external = l.href.startsWith("http");
-          const Cmp = external ? "a" : Link;
           return (
             <li key={l.href}>
-              <Cmp
-                href={l.href}
-                {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                style={{ fontSize: 13, color: "var(--text-1)", textDecoration: "none" }}
-              >
-                {l.label}
-              </Cmp>
+              {external ? (
+                <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
+              ) : (
+                <Link href={l.href}>{l.label}</Link>
+              )}
             </li>
           );
         })}
@@ -743,49 +426,479 @@ function FooterCol({ title, links }: { title: string; links: Array<{ label: stri
   );
 }
 
-// ───── styles ─────
+function SectionKicker({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="lp-kicker">
+      <span className="lp-kicker-line" />
+      {children}
+    </div>
+  );
+}
 
-const navLink: React.CSSProperties = {
-  fontSize: 13,
-  color: "var(--text-2)",
-  textDecoration: "none",
-};
+function Arrow() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M5 12h14m-6-6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
-const primaryBtn: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 6,
-  padding: "8px 16px",
-  fontSize: 13,
-  fontWeight: 600,
-  color: "#FFFFFF",
-  background: "linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%)",
-  border: "1px solid #B3007D",
-  borderRadius: 7,
-  textDecoration: "none",
-  fontFamily: "inherit",
-};
+// ───────── Landing-scoped styles ─────────
 
-const primaryBtnLarge: React.CSSProperties = {
-  ...primaryBtn,
-  padding: "14px 28px",
-  fontSize: 14.5,
-};
+const styles = `
+.lp-root {
+  color: var(--text-1);
+  background: #0A0B10;
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.lp-root a { color: inherit; text-decoration: none; }
 
-const ghostBtn: React.CSSProperties = {
-  padding: "8px 14px",
-  fontSize: 13,
-  fontWeight: 500,
-  color: "var(--text-1)",
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid var(--border)",
-  borderRadius: 7,
-  textDecoration: "none",
-  fontFamily: "inherit",
-};
+/* Nav */
+.lp-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--border-s);
+  background: rgba(10,11,16,0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.lp-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.lp-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.lp-nav-links { display: flex; gap: 26px; font-size: 13.5px; color: var(--text-2); }
+.lp-nav-links a:hover { color: var(--text-1); }
+.lp-nav-cta { display: flex; gap: 8px; }
+@media (max-width: 860px) {
+  .lp-nav-links { display: none; }
+}
 
-const ghostBtnLarge: React.CSSProperties = {
-  ...ghostBtn,
-  padding: "14px 24px",
-  fontSize: 14.5,
-};
+/* Buttons */
+.lp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform .1s ease, background .15s ease;
+}
+.lp-btn:active { transform: translateY(1px); }
+.lp-btn-primary {
+  background: linear-gradient(155deg, #FF3CC0 0%, #FF00AA 55%, #E60098 100%);
+  border-color: #B3007D;
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 1px 3px rgba(230,0,152,0.3);
+}
+.lp-btn-primary:hover { filter: brightness(1.1); }
+.lp-btn-ghost {
+  background: rgba(255,255,255,0.03);
+  border-color: var(--border);
+  color: var(--text-1);
+}
+.lp-btn-ghost:hover { background: rgba(255,255,255,0.06); }
+.lp-btn-sm { padding: 7px 14px; font-size: 13px; }
+.lp-btn-lg { padding: 14px 26px; font-size: 15px; }
+
+/* Hero */
+.lp-hero {
+  position: relative;
+  padding: 96px 28px 112px;
+  overflow: hidden;
+}
+.lp-hero::before, .lp-hero::after {
+  content: "";
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+}
+.lp-hero::before { top: -200px; right: -100px; background: rgba(255,60,192,0.18); }
+.lp-hero::after { bottom: -300px; left: -200px; background: rgba(39,117,202,0.12); }
+.lp-hero-inner {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  text-align: center;
+}
+.lp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,60,192,0.35);
+  background: rgba(255,60,192,0.06);
+  font-size: 12px;
+  font-family: "JetBrains Mono", monospace;
+  color: var(--pink-bright);
+  letter-spacing: 0.02em;
+  margin-bottom: 28px;
+}
+.lp-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #06A77D;
+  box-shadow: 0 0 8px #06A77D;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.lp-hero-title {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: clamp(52px, 8vw, 112px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.028em;
+  margin: 0 0 28px;
+}
+.lp-hero-title em {
+  font-style: italic;
+  color: var(--pink-bright);
+}
+.lp-hero-sub {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--text-2);
+  max-width: 680px;
+  margin: 0 auto 36px;
+}
+.lp-hero-cta {
+  display: inline-flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.lp-hero-meta {
+  margin-top: 36px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11.5px;
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.lp-hero-meta i { color: var(--border); font-style: normal; }
+
+/* Section scaffolding */
+.lp-section {
+  position: relative;
+  padding: 96px 28px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.lp-section-tight { padding: 0 28px 80px; max-width: 1200px; margin: 0 auto; }
+.lp-section-dark {
+  background: #08090E;
+  border-top: 1px solid var(--border-s);
+  border-bottom: 1px solid var(--border-s);
+  max-width: 100%;
+  padding: 96px 28px;
+}
+.lp-section-dark > * { max-width: 1200px; margin-left: auto; margin-right: auto; }
+
+.lp-kicker {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pink-bright);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.lp-kicker-line {
+  width: 24px;
+  height: 1px;
+  background: var(--pink-bright);
+}
+.lp-section-title {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+  margin: 0 0 16px;
+  max-width: 820px;
+}
+.lp-section-lede {
+  font-size: 17px;
+  color: var(--text-2);
+  line-height: 1.55;
+  max-width: 680px;
+  margin: 0 0 40px;
+}
+
+/* Value prop grid */
+.lp-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.lp-value-card {
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.02);
+}
+.lp-value-title {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 22px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  color: var(--text-1);
+}
+.lp-value-body {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Steps */
+.lp-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 40px;
+}
+.lp-step {
+  display: flex;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.015);
+}
+.lp-step-num {
+  flex-shrink: 0;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--pink-bright);
+  min-width: 42px;
+}
+.lp-step-body { flex: 1; min-width: 0; }
+.lp-step-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.lp-step-copy { font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin: 0 0 14px; }
+.lp-step-code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  padding: 10px 12px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border-s);
+  border-radius: 6px;
+  color: var(--text-1);
+  white-space: pre;
+  overflow-x: auto;
+  margin: 0;
+}
+
+/* Economics table */
+.lp-econ {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.02);
+}
+.lp-econ-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.lp-econ-table th {
+  text-align: left;
+  padding: 16px 22px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.015);
+}
+.lp-econ-table td {
+  padding: 16px 22px;
+  border-top: 1px solid var(--border-s);
+  color: var(--text-2);
+  font-family: "JetBrains Mono", monospace;
+}
+.lp-econ-table td:first-child {
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  color: var(--text-1);
+}
+.lp-econ-table tr.good td { color: #06A77D; }
+.lp-econ-table tr.good td:first-child { color: var(--text-1); }
+.lp-econ-table tr.warn td:last-child,
+.lp-econ-table tr.warn td:nth-child(3) { color: #F2A541; }
+.lp-econ-table tr.bad td:last-child,
+.lp-econ-table tr.bad td:nth-child(3) { color: #E84A53; }
+.lp-footnote {
+  padding: 14px 22px;
+  font-size: 12px;
+  color: var(--text-3);
+  border-top: 1px solid var(--border-s);
+  margin: 0;
+}
+.lp-footnote a { color: var(--pink-bright); }
+
+/* Stack grid */
+.lp-stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 40px;
+}
+.lp-stack-card {
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.015);
+}
+.lp-stack-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.lp-stack-line {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pink-bright);
+  margin-bottom: 12px;
+}
+.lp-stack-body { font-size: 13px; color: var(--text-2); line-height: 1.55; margin: 0; }
+
+/* Quote */
+.lp-quote {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+.lp-quote blockquote {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: clamp(30px, 4.5vw, 48px);
+  line-height: 1.2;
+  font-style: italic;
+  margin: 0 0 22px;
+  letter-spacing: -0.015em;
+}
+.lp-quote cite {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12.5px;
+  font-style: normal;
+  color: var(--text-3);
+  display: block;
+}
+.lp-quote cite small { color: var(--text-3); font-size: 11.5px; }
+
+/* Final CTA */
+.lp-cta {
+  padding: 72px 48px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(255,60,192,0.08), rgba(39,117,202,0.05) 60%);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.lp-cta::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255,60,192,0.22), transparent 70%);
+  pointer-events: none;
+}
+.lp-cta > * { position: relative; }
+.lp-cta-title {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: clamp(38px, 5vw, 62px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+  margin: 0 0 18px;
+}
+.lp-cta-sub {
+  font-size: 16px;
+  color: var(--text-2);
+  line-height: 1.55;
+  max-width: 540px;
+  margin: 0 auto 32px;
+}
+.lp-cta-actions { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+/* Footer */
+.lp-footer {
+  border-top: 1px solid var(--border);
+  background: #08090E;
+  padding: 56px 28px 28px;
+}
+.lp-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  gap: 40px;
+}
+.lp-footer-brand p {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: var(--text-3);
+  line-height: 1.6;
+  max-width: 320px;
+}
+.lp-footer-col-title {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+  margin-bottom: 14px;
+}
+.lp-footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.lp-footer-col a { font-size: 13px; color: var(--text-2); }
+.lp-footer-col a:hover { color: var(--text-1); }
+.lp-footer-bar {
+  max-width: 1200px;
+  margin: 36px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-s);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--text-3);
+}
+@media (max-width: 720px) {
+  .lp-footer-inner { grid-template-columns: 1fr 1fr; }
+}
+`;

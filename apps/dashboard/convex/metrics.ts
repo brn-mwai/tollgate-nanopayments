@@ -169,6 +169,41 @@ export const feed = query({
   },
 });
 
+// Public landing-page snapshot. No auth required — aggregates the whole
+// deployment so anonymous visitors to tollgate.brianmwai.com see the rail
+// tick without needing to sign in. Only non-PII counts + truncated tx hashes.
+export const publicSnapshot = query({
+  args: {},
+  handler: async (
+    ctx,
+  ): Promise<{
+    totalOnchainTx: number;
+    totalEarnedUuUsdc: number;
+    recent: Array<{ id: string; at: number; priceUuUsdc: number; domain: string; txHash: string | null }>;
+  }> => {
+    const allQuotes = await ctx.db
+      .query("quotes")
+      .withIndex("by_status_expiry", (q) => q.eq("status", "settled"))
+      .order("desc")
+      .take(400);
+    const totalOnchainTx = allQuotes.length;
+    const totalEarnedUuUsdc = allQuotes.reduce((a, q) => a + q.priceMicroUsdc, 0);
+
+    const sites = await ctx.db.query("sites").collect();
+    const siteDomains = new Map(sites.map((s) => [s._id.toString(), s.domain]));
+
+    const recent = allQuotes.slice(0, 8).map((q) => ({
+      id: q._id as unknown as string,
+      at: q._creationTime,
+      priceUuUsdc: q.priceMicroUsdc,
+      domain: siteDomains.get(q.siteId.toString()) ?? "unknown",
+      txHash: q.txHash ?? null,
+    }));
+
+    return { totalOnchainTx, totalEarnedUuUsdc, recent };
+  },
+});
+
 // Tool-usage proof for the hackathon track. Returns which integrations
 // produced data in the current publisher's feed — so the judges page can
 // render green pills ("Arc ✓", "Circle Gateway ✓", "Gemini ✓") only when
