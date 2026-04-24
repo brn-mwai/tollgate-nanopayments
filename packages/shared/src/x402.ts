@@ -2,8 +2,8 @@
 // OWNER: x402-protocol-agent (see .claude/agents/11-x402-protocol-agent.md).
 // No other file may implement 402 semantics. Import from here.
 
-import { RECEIPT_TTL_SEC, RECEIPT_VERSION } from "./constants.js";
-import type { Response402, SupportedChain } from "./types.js";
+import { RECEIPT_TTL_SEC, RECEIPT_VERSION } from "./constants";
+import type { Response402, SupportedChain } from "./types";
 
 export function build402Response(args: {
   priceUuUsdc: number;

@@ -13,7 +13,7 @@
 //   }));
 
 import type { Request, Response, NextFunction } from "express";
-import { MiddlewareConfigSchema, runTollgate, type MiddlewareConfig } from "./core.js";
+import { MiddlewareConfigSchema, runTollgate, type MiddlewareConfig } from "./core";
 
 export function tollgate(input: Partial<MiddlewareConfig>) {
   const cfg = MiddlewareConfigSchema.parse(input);

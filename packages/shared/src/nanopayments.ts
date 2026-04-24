@@ -6,7 +6,7 @@
 // Scheme: x402 "exact" — payer transfers an exact USDC amount to payTo.
 // The facilitator verifies the onchain transaction and returns its hash.
 
-import { CIRCLE_GATEWAY, facilitatorUrlFor, type SupportedChain } from "./constants.js";
+import { CIRCLE_GATEWAY, facilitatorUrlFor, type SupportedChain } from "./constants";
 
 export type X402Scheme = "exact";
 

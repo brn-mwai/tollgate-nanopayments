@@ -7,7 +7,7 @@
 //   app.use("/api/*", tollgate({ siteId, chain, hmacSecret, convexUrl, convexSiteKey }));
 
 import type { MiddlewareHandler } from "hono";
-import { MiddlewareConfigSchema, runTollgate, type MiddlewareConfig } from "./core.js";
+import { MiddlewareConfigSchema, runTollgate, type MiddlewareConfig } from "./core";
 
 export function tollgate(input: Partial<MiddlewareConfig>): MiddlewareHandler {
   const cfg = MiddlewareConfigSchema.parse(input);

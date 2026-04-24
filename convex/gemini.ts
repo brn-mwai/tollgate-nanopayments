@@ -305,8 +305,10 @@ async function runFunctionCallingPricer(args: {
 
   // Multi-turn loop — Gemini may chain tool calls.
   for (let turn = 0; turn < 4; turn++) {
+    // Gemini 3 Flash typically returns in 600-1500ms. Bumped from 3s to 8s
+    // because the Function Calling multi-turn loop can chain 2-3 tool calls.
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3000);
+    const timer = setTimeout(() => controller.abort(), 8000);
     let res: Response;
     try {
       res = await fetch(url, {

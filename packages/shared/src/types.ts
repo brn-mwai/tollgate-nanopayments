@@ -2,7 +2,7 @@
 // Validated with zod at every trust boundary (see each SDK's adapter).
 
 import { z } from "zod";
-import type { SupportedChain } from "./constants.js";
+import type { SupportedChain } from "./constants";
 
 export const Price = z
   .string()
