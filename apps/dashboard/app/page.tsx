@@ -192,23 +192,25 @@ function HowItWorks() {
     },
   ];
   return (
-    <section id="how" className="lp-section lp-section-dark">
-      <SectionKicker>How it works</SectionKicker>
-      <h2 className="lp-section-title">
-        Four HTTP exchanges,<br />
-        one economic atom.
-      </h2>
-      <div className="lp-steps">
-        {steps.map((s) => (
-          <div key={s.num} className="lp-step">
-            <div className="lp-step-num">{s.num}</div>
-            <div className="lp-step-body">
-              <div className="lp-step-title">{s.title}</div>
-              <p className="lp-step-copy">{s.body}</p>
-              <pre className="lp-step-code">{s.code}</pre>
+    <section id="how" className="lp-section-dark">
+      <div className="lp-section-inner">
+        <SectionKicker>How it works</SectionKicker>
+        <h2 className="lp-section-title">
+          Four HTTP exchanges,<br />
+          one economic atom.
+        </h2>
+        <div className="lp-steps">
+          {steps.map((s) => (
+            <div key={s.num} className="lp-step">
+              <div className="lp-step-num">{s.num}</div>
+              <div className="lp-step-body">
+                <div className="lp-step-title">{s.title}</div>
+                <p className="lp-step-copy">{s.body}</p>
+                <pre className="lp-step-code">{s.code}</pre>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -325,15 +327,17 @@ function Stack() {
 
 function Testimonial() {
   return (
-    <section className="lp-section lp-section-dark">
-      <div className="lp-quote">
-        <blockquote>
-          The grand unification of AI and crypto is about to happen.
-        </blockquote>
-        <cite>
-          — Marc Andreessen<br />
-          <small>Every per-request payment rail has been waiting for Arc.</small>
-        </cite>
+    <section className="lp-section-dark">
+      <div className="lp-section-inner">
+        <div className="lp-quote">
+          <blockquote>
+            The grand unification of AI and crypto is about to happen.
+          </blockquote>
+          <cite>
+            — Marc Andreessen<br />
+            <small>Every per-request payment rail has been waiting for Arc.</small>
+          </cite>
+        </div>
       </div>
     </section>
   );
@@ -677,10 +681,12 @@ const styles = `
   background: #08090E;
   border-top: 1px solid var(--border-s);
   border-bottom: 1px solid var(--border-s);
-  max-width: 100%;
   padding: 96px 28px;
 }
-.lp-section-dark > * { max-width: 1200px; margin-left: auto; margin-right: auto; }
+.lp-section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
 .lp-kicker {
   font-family: "JetBrains Mono", monospace;
