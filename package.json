@@ -20,8 +20,8 @@
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
-    "convex:dev": "pnpm -C apps/dashboard exec convex dev",
-    "convex:deploy": "pnpm -C apps/dashboard exec convex deploy",
+    "convex:dev": "convex dev --env-file apps/dashboard/.env.local",
+    "convex:deploy": "convex deploy --env-file apps/dashboard/.env.local",
     "dashboard": "pnpm -C apps/dashboard dev"
   },
   "dependencies": {

@@ -65,19 +65,57 @@ export const request = mutation({
 // Webhook confirms and transitions to `sent` or `failed`.
 export const execute = action({
   args: { withdrawalId: v.id("withdrawals") },
-  handler: async (ctx, { withdrawalId }): Promise<{ circleTxId: string }> => {
+  handler: async (ctx, { withdrawalId }): Promise<{ circleTxId: string; state: string }> => {
     const w = await ctx.runQuery(internal.withdrawals._get, { withdrawalId });
     if (!w) throw new Error("withdrawal not found");
     if (w.status !== "pending") throw new Error(`cannot execute ${w.status}`);
 
-    // TODO: Circle Wallets transfer + optional CCTP bridge via
-    // packages/shared/circle. Idempotency key = withdrawal id.
-    const circleTxId = `tx_pending_${withdrawalId}`;
+    const publisher = await ctx.runQuery(internal.withdrawals._publisher, {
+      publisherId: w.publisherId,
+    });
+    if (!publisher) throw new Error("publisher missing");
+    if (!publisher.circleWalletId) throw new Error("no Circle wallet provisioned");
+
+    // Circle requires a UUID-format idempotencyKey. Convex document IDs are
+    // 32 alphanumerics, not UUID-shaped — so we generate a UUID once and
+    // persist it. Retries reuse the same key → Circle treats them as a
+    // single attempt.
+    let idempotencyKey = w.circleIdempotencyKey;
+    if (!idempotencyKey) {
+      idempotencyKey = crypto.randomUUID();
+      await ctx.runMutation(internal.withdrawals._setIdempotencyKey, {
+        withdrawalId,
+        idempotencyKey,
+      });
+    }
+
+    // uUSDC (string) → human USDC decimal with 6 decimals. BigInt-safe.
+    const amt = BigInt(w.amountMicroUsdc);
+    const whole = amt / 1_000_000n;
+    const frac = (amt % 1_000_000n).toString().padStart(6, "0");
+    const amountUsdc = `${whole}.${frac}`.replace(/\.?0+$/, "") || "0";
+
+    // Look up the USDC token id on this wallet's chain. Circle's transfer
+    // API needs an explicit tokenId (not symbol). The helper inspects the
+    // wallet's balances and returns the USDC entry.
+    const tokenId = await ctx.runAction(internal.circle.getUsdcTokenId, {
+      walletId: publisher.circleWalletId,
+    });
+    if (!tokenId) throw new Error("wallet has no USDC token entry — fund it first");
+
+    const tx = await ctx.runAction(internal.circle.createTransfer, {
+      fromWalletId: publisher.circleWalletId,
+      destinationAddress: w.destination,
+      amountUsdc,
+      tokenId,
+      idempotencyKey,
+    });
+
     await ctx.runMutation(internal.withdrawals._attachCircleTx, {
       withdrawalId,
-      circleTxId,
+      circleTxId: tx.id,
     });
-    return { circleTxId };
+    return { circleTxId: tx.id, state: tx.state };
   },
 });
 
@@ -113,9 +151,60 @@ export const _get = internalQuery({
   handler: async (ctx, { withdrawalId }) => ctx.db.get(withdrawalId),
 });
 
+export const _publisher = internalQuery({
+  args: { publisherId: v.id("publishers") },
+  handler: async (ctx, { publisherId }) => ctx.db.get(publisherId),
+});
+
 export const _attachCircleTx = internalMutation({
   args: { withdrawalId: v.id("withdrawals"), circleTxId: v.string() },
   handler: async (ctx, { withdrawalId, circleTxId }) => {
     await ctx.db.patch(withdrawalId, { circleTxId });
+  },
+});
+
+export const _setIdempotencyKey = internalMutation({
+  args: { withdrawalId: v.id("withdrawals"), idempotencyKey: v.string() },
+  handler: async (ctx, { withdrawalId, idempotencyKey }) => {
+    await ctx.db.patch(withdrawalId, { circleIdempotencyKey: idempotencyKey });
+  },
+});
+
+// Webhook sink. Circle posts transfers.created / transfers.updated events;
+// we collapse them onto our three-state withdrawal status.
+//   COMPLETE | CONFIRMED → sent
+//   FAILED  | DENIED     → failed
+//   anything else         → pending (no-op)
+export const _ingestCircleEvent = internalMutation({
+  args: {
+    circleTxId: v.string(),
+    state: v.string(),
+    txHash: v.optional(v.string()),
+  },
+  handler: async (ctx, { circleTxId, state, txHash }) => {
+    const w = await ctx.db
+      .query("withdrawals")
+      .filter((q) => q.eq(q.field("circleTxId"), circleTxId))
+      .first();
+    if (!w) return;
+
+    const normalized = state.toUpperCase();
+    const next: "sent" | "failed" | null =
+      normalized === "COMPLETE" || normalized === "CONFIRMED"
+        ? "sent"
+        : normalized === "FAILED" || normalized === "DENIED"
+          ? "failed"
+          : null;
+    if (!next) return;
+
+    await ctx.db.patch(w._id, { status: next });
+    await ctx.db.insert("auditLog", {
+      actor: "circle-webhook",
+      action: `withdrawal.${next}`,
+      entity: "withdrawals",
+      entityId: w._id,
+      meta: { circleTxId, state, txHash: txHash ?? null },
+      occurredAt: Date.now(),
+    });
   },
 });

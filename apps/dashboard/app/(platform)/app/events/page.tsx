@@ -3,6 +3,8 @@
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { relativeTime, shortHash } from "@/lib/format";
+import { arcTxUrl } from "@/lib/links";
+import { ArrowSquareOut } from "@phosphor-icons/react";
 
 export default function EventsPage() {
   const events = useQuery(api.events.recent, { limit: 100 });
@@ -80,15 +82,28 @@ export default function EventsPage() {
                     )}
                   </Td>
                   <Td>
-                    <span
-                      style={{
-                        fontFamily: "JetBrains Mono, monospace",
-                        fontSize: 11,
-                        color: "var(--arc-bright)",
-                      }}
-                    >
-                      {shortHash(e.txHash ?? "—")}
-                    </span>
+                    {e.txHash ? (
+                      <a
+                        href={arcTxUrl(e.txHash) ?? "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          fontFamily: "JetBrains Mono, monospace",
+                          fontSize: 11,
+                          color: "var(--arc-bright)",
+                          textDecoration: "none",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                        title="Verify on Arc block explorer"
+                      >
+                        {shortHash(e.txHash)}
+                        <ArrowSquareOut size={10} />
+                      </a>
+                    ) : (
+                      <span style={{ color: "var(--text-3)" }}>—</span>
+                    )}
                   </Td>
                   <Td>
                     <StatusPill status={e.status} />

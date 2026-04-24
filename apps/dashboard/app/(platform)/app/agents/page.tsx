@@ -5,7 +5,6 @@ import { api } from "@convex/_generated/api";
 import { shortAddr } from "@/lib/format";
 
 export default function AgentsPage() {
-  // Paginated query — initial 50 for the hackathon.
   const res = useQuery(api.agents.listAll, { paginationOpts: { numItems: 50, cursor: null } });
   const agents = res?.page;
 

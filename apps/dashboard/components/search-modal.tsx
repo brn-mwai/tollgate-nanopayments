@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MagnifyingGlass, GlobeHemisphereWest, Robot, Receipt } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
+import { MagnifyingGlass, GlobeHemisphereWest, Receipt, Wallet } from "@phosphor-icons/react";
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
-import { shortAddr } from "@/lib/format";
 
 export function SearchModal() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const sites = useQuery(api.sites.list);
@@ -26,9 +27,20 @@ export function SearchModal() {
 
   if (!open) return null;
 
-  const filtered = (sites ?? []).filter((s) =>
+  const siteMatches = (sites ?? []).filter((s) =>
     q ? s.domain.toLowerCase().includes(q.toLowerCase()) : true,
   );
+  const quickLinks = [
+    { href: "/app", label: "Overview", Icon: Receipt },
+    { href: "/app/events", label: "Events", Icon: Receipt },
+    { href: "/app/wallet", label: "Wallet", Icon: Wallet },
+    { href: "/app/withdrawals", label: "Withdrawals", Icon: Wallet },
+  ].filter((l) => (q ? l.label.toLowerCase().includes(q.toLowerCase()) : true));
+
+  function go(href: string) {
+    setOpen(false);
+    router.push(href);
+  }
 
   return (
     <div
@@ -82,21 +94,35 @@ export function SearchModal() {
           </button>
         </div>
         <div style={{ flex: 1, overflowY: "auto", padding: 8 }}>
-          {filtered.length > 0 && (
+          {quickLinks.length > 0 && (
             <>
-              <GroupLabel>Sites</GroupLabel>
-              {filtered.map((s) => (
+              <GroupLabel>Pages</GroupLabel>
+              {quickLinks.map((l) => (
                 <ResultRow
-                  key={s._id}
-                  Icon={GlobeHemisphereWest}
-                  text={s.domain}
-                  meta={`${s.status}`}
-                  onClick={() => setOpen(false)}
+                  key={l.href}
+                  Icon={l.Icon}
+                  text={l.label}
+                  meta={l.href}
+                  onClick={() => go(l.href)}
                 />
               ))}
             </>
           )}
-          {filtered.length === 0 && (
+          {siteMatches.length > 0 && (
+            <>
+              <GroupLabel>Sites</GroupLabel>
+              {siteMatches.map((s) => (
+                <ResultRow
+                  key={s._id}
+                  Icon={GlobeHemisphereWest}
+                  text={s.domain}
+                  meta={s.status}
+                  onClick={() => go("/app/sites")}
+                />
+              ))}
+            </>
+          )}
+          {quickLinks.length === 0 && siteMatches.length === 0 && (
             <div
               style={{
                 padding: 32,
@@ -105,7 +131,7 @@ export function SearchModal() {
                 fontSize: 13,
               }}
             >
-              {q ? "No matches." : "Start typing to search sites, agents, or events."}
+              No matches.
             </div>
           )}
         </div>

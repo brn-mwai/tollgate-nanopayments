@@ -1,9 +1,11 @@
 "use client";
 
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
+import type { Id } from "@convex/_generated/dataModel";
 import { useState } from "react";
-import { Plus, Check, Copy, Key } from "@phosphor-icons/react";
+import { Plus, Check, Copy, Key, ArrowRight } from "@phosphor-icons/react";
+import Link from "next/link";
 
 export default function SitesPage() {
   const sites = useQuery(api.sites.list);
@@ -54,9 +56,17 @@ export default function SitesPage() {
               placeholder="demo-news.brianmwai.com"
               style={inputStyle}
             />
+            <div style={{ fontSize: 11, color: "var(--text-3)", marginTop: 6, lineHeight: 1.5 }}>
+              Apex or subdomain. Protocol, path, and port are stripped automatically.
+              {domain && previewDomain(domain) && previewDomain(domain) !== domain.trim().toLowerCase() && (
+                <div style={{ marginTop: 4, fontFamily: "JetBrains Mono, monospace", color: "var(--text-2)" }}>
+                  → saved as <span style={{ color: "#FF3CC0" }}>{previewDomain(domain)}</span>
+                </div>
+              )}
+            </div>
             {err && <div style={{ color: "var(--red)", fontSize: 12, marginTop: 8 }}>{err}</div>}
             <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
-              <button type="button" style={primaryBtn} onClick={submit} disabled={!domain}>
+              <button type="button" style={primaryBtn} onClick={submit} disabled={!domain || !previewDomain(domain)}>
                 Create
               </button>
               <button type="button" style={ghostBtn} onClick={() => setAdding(false)}>
@@ -92,14 +102,27 @@ export default function SitesPage() {
                 <MetaItem label="Fail-open" value={s.failOpenOnFacilitator ? "yes" : "no"} />
                 <MetaItem label="Token" value={s.verifyToken.slice(0, 12) + "…"} muted />
               </div>
-              <div style={{ display: "flex", gap: 6, borderTop: "1px solid var(--border-s)", paddingTop: 12 }}>
+              <div style={{ display: "flex", gap: 6, borderTop: "1px solid var(--border-s)", paddingTop: 12, alignItems: "center" }}>
                 {s.status === "unverified" ? (
                   <VerifyBtn siteId={s._id} />
                 ) : (
-                  <button type="button" style={ghostBtn}>
-                    <Key size={15} /> Rotate key
-                  </button>
+                  <RotateKeyBtn siteId={s._id} domain={s.domain} onRotated={(k) => setIssued({ apiKey: k, domain: s.domain })} />
                 )}
+                <Link
+                  href={`/app/sites/${s._id}`}
+                  style={{
+                    marginLeft: "auto",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                    fontSize: 12,
+                    fontWeight: 500,
+                    color: "var(--pink-bright)",
+                    textDecoration: "none",
+                  }}
+                >
+                  Open <ArrowRight size={12} weight="bold" />
+                </Link>
               </div>
             </div>
           ))}
@@ -109,11 +132,62 @@ export default function SitesPage() {
   );
 }
 
-function VerifyBtn({ siteId }: { siteId: any }) {
-  const verify = useMutation(api.sites.rotateKey); // placeholder; actions need client wiring differently
+function VerifyBtn({ siteId }: { siteId: Id<"sites"> }) {
+  const verify = useAction(api.sites.verify);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  async function onClick() {
+    setBusy(true);
+    setMsg(null);
+    try {
+      const res = await verify({ siteId });
+      setMsg(res.ok ? "Verified." : `Failed: ${res.reason ?? "unknown"}`);
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "verify failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
-    <button type="button" style={primaryBtn}>
-      <Check size={15} /> Verify ownership
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <button type="button" style={primaryBtn} onClick={onClick} disabled={busy}>
+        <Check size={15} /> {busy ? "Verifying…" : "Verify ownership"}
+      </button>
+      {msg && <span style={{ fontSize: 11, color: "var(--text-3)" }}>{msg}</span>}
+    </div>
+  );
+}
+
+function RotateKeyBtn({
+  siteId,
+  domain,
+  onRotated,
+}: {
+  siteId: Id<"sites">;
+  domain: string;
+  onRotated: (apiKey: string) => void;
+}) {
+  const rotate = useMutation(api.sites.rotateKey);
+  const [busy, setBusy] = useState(false);
+
+  async function onClick() {
+    if (!confirm(`Rotate API key for ${domain}? The current key stops working immediately.`)) return;
+    setBusy(true);
+    try {
+      const res = await rotate({ siteId });
+      onRotated(res.apiKey);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "rotate failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <button type="button" style={ghostBtn} onClick={onClick} disabled={busy}>
+      <Key size={15} /> {busy ? "Rotating…" : "Rotate key"}
     </button>
   );
 }
@@ -197,6 +271,22 @@ function MetaItem({ label, value, muted }: { label: string; value: string; muted
       </span>
     </div>
   );
+}
+
+// Client-side mirror of the server-side normalizer in convex/sites.ts.
+// Keep in sync.
+function previewDomain(input: string): string | null {
+  let s = input.trim().toLowerCase();
+  if (!s) return null;
+  s = s.replace(/^[a-z][a-z0-9+.-]*:\/\//, "");
+  s = s.replace(/^[^@/]+@/, "");
+  s = s.split(/[\/?#]/)[0] ?? s;
+  s = s.split(":")[0] ?? s;
+  if (!s) return null;
+  if (!/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(s)) {
+    return null;
+  }
+  return s;
 }
 
 function EmptyHint({ text }: { text: string }) {

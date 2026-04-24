@@ -1,7 +1,16 @@
-import { action, internalMutation, internalQuery, query } from "./_generated/server";
+import { action, internalAction, internalMutation, internalQuery, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { getCurrentPublisher, requirePublisher } from "./lib/helpers";
+
+// Arc is not yet in Circle's public blockchain enum. Configure via env;
+// default to BASE-SEPOLIA so provisioning works without tweaks. Swap to
+// ARC-SEPOLIA once Circle exposes it.
+function circleBlockchain(): string {
+  return process.env.CIRCLE_BLOCKCHAIN ?? "BASE-SEPOLIA";
+}
+
+const ARC_TESTNET_USDC = "0x3600000000000000000000000000000000000000";
 
 // Read: dashboard shows wallet address + last-known balance from Convex.
 // Live balance is fetched through `balance` action on demand.
@@ -18,8 +27,7 @@ export const get = query({
   },
 });
 
-// Action: calls Circle Wallets API to provision the publisher's wallet on Arc.
-// Internal mutation does the Convex write after we have Circle's response.
+// Provisions a Circle-custodied wallet for the current publisher. Idempotent.
 export const provision = action({
   args: {},
   handler: async (ctx): Promise<{ walletId: string; address: string }> => {
@@ -29,48 +37,78 @@ export const provision = action({
       return { walletId: pub.circleWalletId, address: pub.arcAddress };
     }
 
-    const apiKey = process.env.CIRCLE_API_KEY;
-    const entitySecret = process.env.CIRCLE_ENTITY_SECRET;
-    const walletSetId = process.env.CIRCLE_WALLET_SET_ID;
-    if (!apiKey || !entitySecret || !walletSetId) {
-      throw new Error("Circle env not configured");
-    }
-
-    // NOTE: Circle's full provisioning requires an entity secret ciphertext
-    // computed at request time. For the hackathon we surface what the
-    // circle-integration-agent owns — implementation lives in
-    // packages/shared/circle once imported server-side.
-    // Stub: create deterministic placeholder values for UI testing before
-    // the SDK wiring lands.
-    const walletId = `wallet_pending_${pub._id}`;
-    const address = "0x0000000000000000000000000000000000000000";
+    const wallet = await ctx.runAction(internal.circle.createWallet, {
+      blockchain: circleBlockchain(),
+      refId: pub._id,
+    });
 
     await ctx.runMutation(internal.wallets._persist, {
       publisherId: pub._id,
-      walletId,
-      address,
+      walletId: wallet.id,
+      address: wallet.address,
     });
 
-    return { walletId, address };
+    return { walletId: wallet.id, address: wallet.address };
   },
 });
 
-// Action: Live balance (skeleton — calls Circle Wallets + caches).
+// Live balance read. Calls Circle, caches on the publisher row.
+// Matches USDC by token symbol rather than address so we work across Arc,
+// Base Sepolia, Ethereum Sepolia, and future Circle-supported chains without
+// maintaining a per-chain USDC address map.
 export const balance = action({
   args: {},
   handler: async (ctx): Promise<{ uUsdc: string; chain: "arc-testnet" | "arc-mainnet" }> => {
     const pub = await ctx.runQuery(internal.wallets._me);
     if (!pub || !pub.circleWalletId) throw new Error("wallet not provisioned");
-    // TODO: call Circle API GET /v1/w3s/wallets/{id}/balances
-    return { uUsdc: pub.balanceUsdc, chain: "arc-testnet" };
+    const uUsdc = await ctx.runAction(internal.circle.getUsdcBalance, {
+      walletId: pub.circleWalletId,
+    });
+    await ctx.runMutation(internal.wallets._cacheBalance, {
+      publisherId: pub._id,
+      balanceUsdc: uUsdc,
+    });
+    return { uUsdc, chain: "arc-testnet" };
   },
 });
 
-// ───────── internal helpers ─────────
+// Internal variant: callable from webhook handler (no auth context).
+export const balanceForPublisher = internalAction({
+  args: { publisherId: v.id("publishers") },
+  handler: async (ctx, { publisherId }): Promise<string> => {
+    const pub = await ctx.runQuery(internal.wallets._byId, { publisherId });
+    if (!pub || !pub.circleWalletId) return "0";
+    const uUsdc = await ctx.runAction(internal.circle.getUsdcBalance, {
+      walletId: pub.circleWalletId,
+    });
+    await ctx.runMutation(internal.wallets._cacheBalance, {
+      publisherId: pub._id,
+      balanceUsdc: uUsdc,
+    });
+    return uUsdc;
+  },
+});
+
+// ───────── internal ─────────
 
 export const _me = internalQuery({
   args: {},
   handler: async (ctx) => requirePublisher(ctx),
+});
+
+export const _byId = internalQuery({
+  args: { publisherId: v.id("publishers") },
+  handler: async (ctx, { publisherId }) => ctx.db.get(publisherId),
+});
+
+export const _findByWalletId = internalQuery({
+  args: { walletId: v.string() },
+  handler: async (ctx, { walletId }) => {
+    return await ctx.db
+      .query("publishers")
+      .filter((q) => q.eq(q.field("circleWalletId"), walletId))
+      .unique();
+  },
 });
 
 export const _persist = internalMutation({
@@ -88,5 +126,12 @@ export const _persist = internalMutation({
       meta: { walletId, address },
       occurredAt: Date.now(),
     });
+  },
+});
+
+export const _cacheBalance = internalMutation({
+  args: { publisherId: v.id("publishers"), balanceUsdc: v.string() },
+  handler: async (ctx, { publisherId, balanceUsdc }) => {
+    await ctx.db.patch(publisherId, { balanceUsdc });
   },
 });

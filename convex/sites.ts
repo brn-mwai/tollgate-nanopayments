@@ -28,9 +28,11 @@ export const create = mutation({
   handler: async (ctx, { domain }) => {
     const pub = await requirePublisher(ctx);
 
-    const normalized = domain.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/$/, "");
-    if (!/^[a-z0-9][a-z0-9.-]+\.[a-z]{2,}$/.test(normalized)) {
-      throw new Error("invalid domain");
+    const normalized = normalizeDomain(domain);
+    if (!normalized) {
+      throw new Error(
+        `invalid domain: "${domain.trim()}". expected example.com, www.example.com, or sub.example.co.uk (no paths, no ports).`,
+      );
     }
 
     const existing = await ctx.db
@@ -123,3 +125,50 @@ export const _markActive = internalMutation({
     await ctx.db.patch(siteId, { status: "active" });
   },
 });
+
+// Edge authentication: middleware SDK sends the plaintext site key in
+// x-tollgate-site-key; the router hashes it and calls this to resolve the
+// siteId. Returns null when the key is unknown.
+export const _findByKeyHash = internalQuery({
+  args: { hash: v.string() },
+  handler: async (ctx, { hash }) => {
+    const site = await ctx.db
+      .query("sites")
+      .withIndex("by_keyhash", (q) => q.eq("apiKeyHash", hash))
+      .unique();
+    return site?._id ?? null;
+  },
+});
+
+// ───────── domain normalization ─────────
+// Accepts:
+//   example.com
+//   https://example.com
+//   https://sub.example.com/path/segment
+//   example.com:8080
+//   https://WWW.Example.COM/?query=1
+// Returns the lowercase host or null if unparseable.
+
+function normalizeDomain(input: string): string | null {
+  let s = input.trim().toLowerCase();
+  if (!s) return null;
+
+  // Strip protocol.
+  s = s.replace(/^[a-z][a-z0-9+.-]*:\/\//, "");
+  // Strip credentials.
+  s = s.replace(/^[^@/]+@/, "");
+  // Strip path, query, fragment.
+  s = s.split(/[\/?#]/)[0] ?? s;
+  // Strip port.
+  s = s.split(":")[0] ?? s;
+  // Strip www. if caller typed it; canonical form is bare apex or named sub.
+  // We keep it if user explicitly typed a non-www subdomain.
+
+  if (!s) return null;
+  // Basic host validation: must have at least one dot, alphanum labels, TLD
+  // with 2+ letters. IDN punycode (xn--) allowed.
+  if (!/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(s)) {
+    return null;
+  }
+  return s;
+}

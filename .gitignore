@@ -46,4 +46,6 @@ __pycache__
 # secrets
 *.pem
 *.key
+*.dat
 circle-credentials.json
+.secrets/

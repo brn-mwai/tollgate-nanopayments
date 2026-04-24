@@ -27,20 +27,25 @@ function normalize(chain: string): ChainKey {
 
 const ICONS: Record<ChainKey, React.ComponentType<{ size: number }>> = {
   arc: ({ size }) => (
-    <svg width={size} height={size} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
-      <circle cx="16" cy="16" r="15" fill="#0A0B10" stroke="#2775CA" strokeWidth="1.5" />
-      <path
-        d="M5 18a11 11 0 0 1 22 0"
-        stroke="#2775CA"
-        strokeWidth="2.5"
-        fill="none"
-        strokeLinecap="round"
-      />
-      <circle cx="16" cy="16" r="3" fill="#2775CA" />
-    </svg>
+    // Official Arc favicon, mirrored locally in /public so we avoid a
+    // third-party CDN on every render.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/arc-logo.png"
+      alt="Arc"
+      width={size}
+      height={size}
+      style={{ flexShrink: 0, display: "block", borderRadius: "50%" }}
+    />
   ),
-  "arc-testnet": ({ size }) => ICONS.arc({ size }),
-  "arc-mainnet": ({ size }) => ICONS.arc({ size }),
+  "arc-testnet": (props) => {
+    const ArcIcon = ICONS.arc;
+    return <ArcIcon {...props} />;
+  },
+  "arc-mainnet": (props) => {
+    const ArcIcon = ICONS.arc;
+    return <ArcIcon {...props} />;
+  },
   base: ({ size }) => (
     <svg width={size} height={size} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
       <circle cx="16" cy="16" r="16" fill="#0052FF" />

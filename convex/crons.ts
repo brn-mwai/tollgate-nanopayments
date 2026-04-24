@@ -20,4 +20,8 @@ crons.daily(
 // 1 minute; Convex retains 24h for audit before cron trims.
 crons.cron("cleanup-nonces", "*/10 * * * *", internal.nonces.cleanup);
 
+// Every 5 minutes: Gemini 3 Pro scans recent agent activity for abuse patterns
+// and adjusts reputation scores. No-op when GEMINI_API_KEY is unset.
+crons.cron("gemini-abuse-review", "*/5 * * * *", internal.gemini.reviewAbuse);
+
 export default crons;

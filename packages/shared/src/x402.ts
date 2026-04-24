@@ -74,7 +74,7 @@ export async function verifyReceipt(
 ): Promise<ReceiptVerifyResult> {
   const parts = receipt.split(".");
   if (parts.length !== 3) return { ok: false, reason: "malformed" };
-  const [version, encoded, sig] = parts;
+  const [version, encoded, sig] = parts as [string, string, string];
   if (version !== RECEIPT_VERSION) return { ok: false, reason: "bad version" };
 
   const expected = await hmacHex(secret, encoded);

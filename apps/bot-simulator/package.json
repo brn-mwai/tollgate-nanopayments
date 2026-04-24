@@ -1,0 +1,23 @@
+{
+  "name": "@tollgate/bot-simulator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Spawn N simulated AI agents that pay Tollgate publishers per request. Generates 50+ onchain USDC transactions on Arc for the hackathon demo.",
+  "scripts": {
+    "dev": "tsx src/run.ts",
+    "start": "tsx src/run.ts",
+    "burst": "tsx src/run.ts --agents 20 --requests 5",
+    "mega": "tsx src/run.ts --agents 30 --requests 8",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tollgate/sdk-node": "workspace:*",
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

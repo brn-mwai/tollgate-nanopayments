@@ -12,7 +12,8 @@
     "./constants": "./src/constants.ts",
     "./chain": "./src/chain.ts",
     "./circle": "./src/circle.ts",
-    "./x402": "./src/x402.ts"
+    "./x402": "./src/x402.ts",
+    "./nanopayments": "./src/nanopayments.ts"
   },
   "dependencies": {
     "viem": "^2.21.0",

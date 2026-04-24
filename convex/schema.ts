@@ -106,6 +106,7 @@ export default defineSchema({
     ),
     status: v.union(v.literal("pending"), v.literal("sent"), v.literal("failed")),
     circleTxId: v.optional(v.string()),
+    circleIdempotencyKey: v.optional(v.string()),
     requestedAt: v.number(),
   }).index("by_publisher_time", ["publisherId", "requestedAt"]),
 
@@ -131,4 +132,51 @@ export default defineSchema({
   })
     .index("by_actor_time", ["actor", "occurredAt"])
     .index("by_entity_time", ["entity", "entityId", "occurredAt"]),
+
+  // Active 402 offers. Row lives from quote creation until settle or expiry.
+  // nonce is the stable quote id emitted in the 402 response.
+  quotes: defineTable({
+    nonce: v.string(),
+    siteId: v.id("sites"),
+    path: v.string(),
+    priceMicroUsdc: v.number(),
+    payTo: v.string(),
+    agentWallet: v.optional(v.string()),
+    pricerTrace: v.optional(v.string()), // Gemini reasoning captured at quote time
+    expiresAt: v.number(),
+    status: v.union(
+      v.literal("open"),
+      v.literal("settled"),
+      v.literal("failed"),
+      v.literal("expired"),
+    ),
+    circleTxId: v.optional(v.string()), // Circle transaction UUID (immediate)
+    txHash: v.optional(v.string()), // Base Sepolia tx hash (after Circle webhook)
+    createdAt: v.number(),
+  })
+    .index("by_nonce", ["nonce"])
+    .index("by_circle_tx", ["circleTxId"])
+    .index("by_site_time", ["siteId", "createdAt"])
+    .index("by_status_expiry", ["status", "expiresAt"]),
+
+  // Dashboard-initiated bot burst runs — the publisher's "run a demo" button.
+  // One row per run; botRunSteps rows below carry the per-step execution log.
+  botRuns: defineTable({
+    publisherId: v.id("publishers"),
+    siteId: v.id("sites"),
+    iterations: v.number(),
+    settled: v.number(),
+    failed: v.number(),
+    status: v.union(v.literal("running"), v.literal("complete"), v.literal("failed")),
+    startedAt: v.number(),
+    finishedAt: v.optional(v.number()),
+  }).index("by_publisher_time", ["publisherId", "startedAt"]),
+
+  botRunSteps: defineTable({
+    runId: v.id("botRuns"),
+    kind: v.string(),
+    message: v.string(),
+    meta: v.any(),
+    occurredAt: v.number(),
+  }).index("by_run_time", ["runId", "occurredAt"]),
 });

@@ -1,11 +1,5 @@
 import Link from "next/link";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export default function LandingPage() {
   return (
@@ -55,12 +49,8 @@ export default function LandingPage() {
 
         <div style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
           <SignedOut>
-            <SignInButton mode="modal">
-              <button type="button" style={ghostBtn}>Sign in</button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button type="button" style={primaryBtn}>Sign up</button>
-            </SignUpButton>
+            <Link href="/sign-in" style={ghostBtn}>Sign in</Link>
+            <Link href="/sign-up" style={primaryBtn}>Sign up</Link>
           </SignedOut>
           <SignedIn>
             <Link href="/app" style={primaryBtn}>Go to dashboard</Link>
@@ -113,16 +103,12 @@ export default function LandingPage() {
             }}
           >
             <SignedOut>
-              <SignUpButton mode="modal">
-                <button type="button" style={primaryBtnLarge}>
-                  Start monetising bot traffic
-                </button>
-              </SignUpButton>
-              <SignInButton mode="modal">
-                <button type="button" style={ghostBtnLarge}>
-                  Sign in
-                </button>
-              </SignInButton>
+              <Link href="/sign-up" style={primaryBtnLarge}>
+                Start monetising bot traffic
+              </Link>
+              <Link href="/sign-in" style={ghostBtnLarge}>
+                Sign in
+              </Link>
             </SignedOut>
             <SignedIn>
               <Link href="/app" style={primaryBtnLarge}>

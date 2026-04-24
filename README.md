@@ -62,7 +62,23 @@ MIT. See [`LICENSE`](LICENSE).
 
 ## Hackathon submission
 
-- **Track:** [Agentic Economy on Arc](https://lablab.ai/ai-hackathons/nano-payments-arc) (Circle / LabLab / Arc House / Google DeepMind, April 20-26, 2026, $10K prize pool)
-- **Circle products used:** Arc L1, USDC, Nanopayments, Wallets, Gateway, Bridge Kit (CCTP), x402, Circle-titanoboa, Developer Console, Developer Blog
+- **Event:** [Agentic Economy on Arc](https://lablab.ai/ai-hackathons/nano-payments-arc) — Circle / LabLab / Arc House / Google DeepMind, April 20-26, 2026
+- **Primary track:** Per-API Monetization Engine
+- **Secondary track:** Agent-to-Agent Payment Loop (see `apps/bot-simulator`)
+- **Gemini track:** Gemini 3 Flash Function Calling powers every quote (see `convex/gemini.ts`)
+- **Circle products used:** Arc L1, USDC, Circle Nanopayments + Gateway x402, Circle Wallets (developer-controlled), Circle CCTP (Bridge Kit) for off-ramp, x402 standard end-to-end
+- **Required-evidence endpoints:**
+  - `/app/realtime` — live traffic + provider health + unit economics + streaming event feed with per-quote Gemini reasoning and arcscan links
+  - `/app/wallet` — Circle Wallets live balance + Arc explorer link
+  - `/app/withdrawals` — Circle Transfer execute button + CCTP destination chain picker
+  - `/app/sites/[id]` — per-site quote history w/ Gemini pricing trace
+- **Demo script:**
+  1. `pnpm install && pnpm convex:dev`
+  2. Seed: `npx convex run dev:seedDemo` → returns `siteId`, `apiKey`, `hmacSecret` for `.env.local`
+  3. Run demo-news: `pnpm -C apps/demo-news dev` (http://localhost:4001)
+  4. Run simulator: `pnpm -C apps/bot-simulator burst` → 60 onchain settles
+  5. Verify on `https://testnet.arcscan.app` via any tx hash link on `/app/realtime`
+- **Margin proof:** see [`docs/MARGIN.md`](docs/MARGIN.md)
+- **Circle feedback (for $500 bonus):** see [`docs/CIRCLE-FEEDBACK.md`](docs/CIRCLE-FEEDBACK.md)
 - **Author:** Brian Mwai ([brianmwai.com](https://brianmwai.com))
 - **Demo:** [tollgate.brianmwai.com](https://tollgate.brianmwai.com)

@@ -1,9 +1,8 @@
 "use client";
 
 import { useClerk, useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-
-const THEME_KEY = "tollgate-theme";
 import {
   CaretUp,
   User,
@@ -16,11 +15,14 @@ import {
   SignOut,
 } from "@phosphor-icons/react";
 
+const THEME_KEY = "tollgate-theme";
+
 type Theme = "light" | "system" | "dark";
 
 export function AccountPopup() {
   const { user } = useUser();
   const { signOut, openUserProfile } = useClerk();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>("dark");
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -88,9 +90,9 @@ export function AccountPopup() {
             boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
           }}
         >
-          <MenuItem onClick={() => openUserProfile()} Icon={User}>View profile</MenuItem>
-          <MenuItem Icon={CreditCard}>Billing</MenuItem>
-          <MenuItem Icon={Key}>API keys</MenuItem>
+          <MenuItem onClick={() => { setOpen(false); openUserProfile(); }} Icon={User}>View profile</MenuItem>
+          <MenuItem onClick={() => { setOpen(false); router.push("/app/settings"); }} Icon={CreditCard}>Billing</MenuItem>
+          <MenuItem onClick={() => { setOpen(false); router.push("/app/settings"); }} Icon={Key}>API keys</MenuItem>
           <MenuItem Icon={BookOpenText} onClick={() => window.open("https://github.com/brn-mwai/tollgate", "_blank")}>
             Docs
           </MenuItem>

@@ -2,15 +2,22 @@
 
 import { useAction, useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
-import { useState } from "react";
-import { ArrowUpRight, ArrowSquareOut, Copy } from "@phosphor-icons/react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ArrowUpRight, ArrowSquareOut, Copy, ArrowClockwise } from "@phosphor-icons/react";
 import { uUsdcToUsd } from "@/lib/format";
 import { ChainIcon } from "@/components/chain-icon";
+
+// Base Sepolia explorer — our Circle blockchain default is BASE-SEPOLIA.
+// When Circle enables ARC-SEPOLIA on Wallets, swap to testnet.arcscan.app.
+const EXPLORER = "https://sepolia.basescan.org";
 
 export default function WalletPage() {
   const wallet = useQuery(api.wallets.get);
   const provision = useAction(api.wallets.provision);
+  const refresh = useAction(api.wallets.balance);
   const [busy, setBusy] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   async function onProvision() {
     setBusy(true);
@@ -20,6 +27,26 @@ export default function WalletPage() {
       setBusy(false);
     }
   }
+
+  async function onRefresh() {
+    setRefreshing(true);
+    try {
+      await refresh();
+    } catch (e) {
+      console.error("balance refresh failed", e);
+    } finally {
+      setRefreshing(false);
+    }
+  }
+
+  // Auto-refresh balance when the wallet page first loads with a provisioned
+  // wallet. Avoids the "I faucet-dripped but nothing shows" moment.
+  useEffect(() => {
+    if (wallet?.walletId && !refreshing) {
+      onRefresh();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wallet?.walletId]);
 
   return (
     <div>
@@ -36,12 +63,21 @@ export default function WalletPage() {
         </div>
         {wallet?.address && (
           <div style={{ display: "flex", gap: 8 }}>
-            <button type="button" style={ghostBtn} disabled={!wallet.address}>
+            <button type="button" style={ghostBtn} onClick={onRefresh} disabled={refreshing}>
+              <ArrowClockwise size={15} className={refreshing ? "spin" : undefined} />
+              {refreshing ? "Refreshing…" : "Refresh"}
+            </button>
+            <a
+              href={`${EXPLORER}/address/${wallet.address}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={ghostBtn}
+            >
               <ArrowSquareOut size={15} /> Explorer
-            </button>
-            <button type="button" style={primaryBtn}>
+            </a>
+            <Link href="/app/withdrawals" style={primaryBtn}>
               <ArrowUpRight size={15} /> Withdraw
-            </button>
+            </Link>
           </div>
         )}
       </div>

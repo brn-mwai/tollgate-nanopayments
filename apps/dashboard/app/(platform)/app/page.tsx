@@ -9,10 +9,12 @@ import { OnboardingCard } from "@/components/onboarding";
 import { KpiCard } from "@/components/kpi-card";
 import { ActivityChart } from "@/components/charts/activity-chart";
 import { StatusDonut } from "@/components/charts/status-donut";
+import { MarginPanel } from "@/components/margin-panel";
 import { bucketByTime, bucketSumByTime, delta } from "@/lib/delta";
 import { relativeTime, shortAddr, shortHash } from "@/lib/format";
+import { arcTxUrl } from "@/lib/links";
 import Link from "next/link";
-import { ArrowRight } from "@phosphor-icons/react";
+import { ArrowRight, ArrowSquareOut } from "@phosphor-icons/react";
 
 const HOUR = 3600_000;
 const DAY = 24 * HOUR;
@@ -195,44 +197,7 @@ export default function OverviewPage() {
 
       <RecentEvents events={(events ?? []).slice(0, 10)} />
 
-      <div
-        style={{
-          border: "1px solid var(--border)",
-          borderRadius: 10,
-          padding: 32,
-          background: "var(--bg-card)",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "JetBrains Mono, monospace",
-            fontSize: 10.5,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-            color: "var(--pink-bright)",
-            marginBottom: 8,
-          }}
-        >
-          Why Arc
-        </div>
-        <div
-          style={{
-            fontFamily: "Instrument Serif, serif",
-            fontSize: 26,
-            lineHeight: 1.1,
-            marginBottom: 10,
-          }}
-        >
-          The only chain where sub-cent per-request math closes.
-        </div>
-        <div style={{ fontSize: 12.5, color: "var(--text-2)", lineHeight: 1.55, maxWidth: 680 }}>
-          Arc denominates gas in USDC. Gas cost is fixed at design time, not probabilistic at
-          runtime. Every other chain&apos;s native-token gas wipes the margin before the article
-          loads.
-        </div>
-      </div>
+      <MarginPanel />
     </div>
   );
 }
@@ -310,7 +275,28 @@ function RecentEvents({ events }: { events: Array<{
                 <Td mono accent>
                   {e.priceMicroUsdc > 0 ? `+${e.priceMicroUsdc} uUSDC` : "—"}
                 </Td>
-                <Td mono link>{shortHash(e.txHash ?? "—")}</Td>
+                <Td mono link>
+                  {e.txHash ? (
+                    <a
+                      href={arcTxUrl(e.txHash) ?? "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: "var(--arc-bright)",
+                        textDecoration: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4,
+                      }}
+                      title="Verify on Arc block explorer"
+                    >
+                      {shortHash(e.txHash)}
+                      <ArrowSquareOut size={10} />
+                    </a>
+                  ) : (
+                    "—"
+                  )}
+                </Td>
                 <Td>
                   <StatusPill status={e.status} />
                 </Td>
