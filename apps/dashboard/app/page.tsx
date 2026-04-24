@@ -74,22 +74,22 @@ function Hero() {
         </div>
 
         <h1 className="lp-hero-title">
-          <span className="lp-hero-line">The payment rail</span>
+          <span className="lp-hero-line">Charge AI bots</span>
           <span className="lp-hero-line">
-            for <em>agentic</em> commerce.
+            <em>per request</em> in USDC.
           </span>
         </h1>
 
         <p className="lp-hero-sub">
-          Tollgate turns every HTTP 402 into a USDC micropayment. Publishers charge bots
-          per request. Bots pay in cryptographic receipts. Settlement is onchain,
-          sub-second, sub-cent. Running code, not a pitch deck.
+          A dashboard and middleware library for publishers. Install the package, connect
+          a Circle Wallet, and every protected URL starts billing bots in USDC via the
+          open x402 standard. Priced live by Gemini. Settled onchain on Arc.
         </p>
 
         <div className="lp-hero-cta">
           <SignedOut>
             <Link href="/sign-up" className="lp-btn lp-btn-primary lp-btn-lg">
-              <span>Start monetising bots</span>
+              <span>Start charging bots</span>
               <Arrow />
             </Link>
           </SignedOut>
@@ -105,18 +105,18 @@ function Hero() {
             rel="noopener noreferrer"
             className="lp-btn lp-btn-ghost lp-btn-lg"
           >
-            <span>See it live</span>
+            <span>See a live publisher</span>
           </a>
         </div>
 
         <div className="lp-hero-tech">
+          <span>x402</span>
+          <span className="lp-hero-tech-sep" aria-hidden />
           <span>Circle Wallets</span>
           <span className="lp-hero-tech-sep" aria-hidden />
           <span>Arc</span>
           <span className="lp-hero-tech-sep" aria-hidden />
           <span>Gemini Function Calling</span>
-          <span className="lp-hero-tech-sep" aria-hidden />
-          <span>x402</span>
           <span className="lp-hero-tech-sep" aria-hidden />
           <span>Convex</span>
         </div>
@@ -128,29 +128,31 @@ function Hero() {
 function ValueProp() {
   const bullets = [
     {
-      title: "Sub-cent pricing, finally profitable",
-      body: "At $0.001 per request, Arc's USDC-native gas runs at 99% margin. The same request on Ethereum L1 costs $0.50 to settle — gas consumes 500x the revenue.",
+      title: "Sue or license — both broken",
+      body: "The NYT has been in court with OpenAI since December 2023. News Corp got $250M over five years. For the 99% of publishers who can't afford either, there is no option today.",
     },
     {
-      title: "No cards. No humans. No OAuth.",
-      body: "Bots have wallets. Wallets hold USDC. Wallets sign payment intents. The entire payment surface collapses to one HTTP status code — 402.",
+      title: "The standard already exists",
+      body: "HTTP 402 has been reserved since 1999. Coinbase + the Linux Foundation shipped x402 in 2024. Circle shipped Arc with USDC-native gas. The rail is built. The publisher-facing product wasn't.",
     },
     {
-      title: "Receipts collapse onchain cost",
-      body: "One onchain settlement unlocks 50 cached reads via 5-minute HMAC receipts. Publishers keep 99% margin. Bots pay list price. Everyone wins.",
+      title: "Tollgate is the publisher product",
+      body: "Middleware for Express, Hono, and Next.js. Dashboard with Circle Wallet provisioning, dynamic Gemini-priced quotes, receipt caching, audit trail, multi-chain off-ramp. MIT licensed. Running today.",
     },
   ];
   return (
     <section className="lp-section">
-      <SectionKicker>Why Tollgate</SectionKicker>
+      <SectionKicker>The problem</SectionKicker>
       <h2 className="lp-section-title">
-        The agent economy is here.<br />
-        Its payment rails don't exist yet.
+        AI scraping,<br />
+        no payment recourse.
       </h2>
       <p className="lp-section-lede">
-        70% of 2026 web traffic is non-human. LLM pipelines, research agents, scrapers &mdash; all
-        extracting billions in uncompensated content. Tollgate is the rail that lets
-        publishers charge for it without blocking it.
+        AI labs extract billions of dollars of content annually. Publishers have two
+        options today: sue (years in court), or license (reserved for the top 0.01%).
+        Every lawsuit from{" "}
+        <a href="https://github.com/brn-mwai/tollgate/blob/main/docs/PROBLEM.md" target="_blank" rel="noopener noreferrer">NYT vs OpenAI</a>{" "}
+        to Thomson Reuters vs Ross to Reddit vs Anthropic proves the model is broken.
       </p>
       <div className="lp-grid-3">
         {bullets.map((b) => (
@@ -296,22 +298,27 @@ function WhyArc() {
 
 function Stack() {
   const products = [
-    { name: "Arc L1", line: "Stablecoin-native settlement", body: "USDC is the native gas token. Per-request clearing runs at sub-cent cost." },
-    { name: "Circle Wallets", line: "Custodial treasury", body: "One-click provisioned publisher wallets. Zero key management." },
-    { name: "Circle Nanopayments", line: "Onchain rail", body: "Every x402 quote becomes a real Circle Transfer tx." },
-    { name: "Circle CCTP", line: "Multi-chain off-ramp", body: "Bridge earnings to Base, Ethereum, Solana via Circle infrastructure." },
-    { name: "Gemini 3 Flash", line: "Live quote pricing", body: "Function Calling chains 3 tools: reputation, rules, activity." },
-    { name: "x402 Standard", line: "Open protocol", body: "HTTP 402 body, X-PAYMENT header, 5-minute HMAC receipts." },
-    { name: "ERC-8004", line: "Agent reputation", body: "Onchain reputation feeds the pricer. Trusted agents pay less." },
-    { name: "Convex", line: "Reactive backend", body: "11 tables, 50+ functions, real-time dashboard queries." },
+    { name: "x402 (Coinbase + Linux Foundation)", line: "Open standard · we conform", body: "HTTP 402 response body, X-PAYMENT header, EIP-3009 signing scheme. Facilitators at x402.org + Coinbase CDP." },
+    { name: "Arc L1 (Circle)", line: "Settlement · USDC-native gas", body: "The only L1 where per-request pricing is mathematically profitable. Sub-cent per-action clearing." },
+    { name: "Circle Wallets", line: "Publisher treasury", body: "Developer-controlled custodial wallets provisioned from the Tollgate dashboard in one click." },
+    { name: "Circle Nanopayments", line: "Transfer API", body: "Every settled x402 quote fires a real Circle Transfer onchain. Idempotent, retry-safe, basescan-verifiable." },
+    { name: "Circle CCTP", line: "Multi-chain off-ramp", body: "Publishers withdraw to Base, Ethereum, or Solana using Circle's existing infrastructure." },
+    { name: "Gemini 3 Flash", line: "Per-quote pricing · Function Calling", body: "Three callable tools: agent reputation, site rules, recent activity. Reasoning trace persisted per quote." },
+    { name: "ERC-8004 (draft)", line: "Agent reputation", body: "Onchain reputation scores. Trusted agents get discounts, flagged ones pay premiums." },
+    { name: "Convex", line: "Reactive backend", body: "13 tables, 60+ functions. Live dashboard queries without manual WebSocket plumbing." },
   ];
   return (
     <section id="stack" className="lp-section">
       <SectionKicker>Stack</SectionKicker>
       <h2 className="lp-section-title">
-        Every product Circle,<br />
-        Google &amp; the standard body ship.
+        Built on what Circle,<br />
+        Coinbase &amp; Google shipped.
       </h2>
+      <p className="lp-section-lede">
+        We did not invent the rail. The x402 standard, Circle's settlement stack, and
+        Gemini's Function Calling were already there. Tollgate is the publisher layer on
+        top: middleware, dashboard, receipt caching, reputation routing.
+      </p>
       <div className="lp-stack-grid">
         {products.map((p) => (
           <div key={p.name} className="lp-stack-card">
@@ -331,11 +338,15 @@ function Testimonial() {
       <div className="lp-section-inner">
         <div className="lp-quote">
           <blockquote>
-            The grand unification of AI and crypto is about to happen.
+            We didn&rsquo;t build the rail.<br />
+            We built the building at the end of it.
           </blockquote>
           <cite>
-            — Marc Andreessen<br />
-            <small>Every per-request payment rail has been waiting for Arc.</small>
+            Tollgate thesis<br />
+            <small>
+              x402 is the standard. Circle is the settlement layer. Tollgate is the
+              publisher product that makes them usable on day one.
+            </small>
           </cite>
         </div>
       </div>
