@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://demo-news.brianmwai.com"),
   title: "The Nanopayer Times — AI-era journalism, priced per read",
   description:
     "Every article on this site is HTTP 402-gated. Humans read free. Bots pay $0.001 per request in USDC on Circle infrastructure. Powered by Tollgate.",
@@ -10,6 +11,8 @@ export const metadata: Metadata = {
     title: "The Nanopayer Times",
     description:
       "AI-era journalism, priced per read. HTTP 402 paywall · Circle · Arc.",
+    url: "https://demo-news.brianmwai.com",
+    type: "website",
   },
 };
 
