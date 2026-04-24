@@ -138,19 +138,36 @@ export function LiveTicker() {
 }
 .lp-ticker-feed li {
   display: grid;
-  grid-template-columns: 80px 120px 1fr 140px;
-  gap: 14px;
+  grid-template-columns: 90px 120px minmax(0, 1fr) auto;
+  gap: 16px;
   align-items: center;
+  padding: 6px 0;
   font-family: "JetBrains Mono", monospace;
   font-size: 12px;
+  line-height: 1.4;
 }
 .lp-ticker-feed-time { color: var(--text-3); }
-.lp-ticker-feed-price { color: #06A77D; }
-.lp-ticker-feed-domain { color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lp-ticker-feed-tx { color: var(--pink-bright); justify-self: end; }
+.lp-ticker-feed-price { color: #06A77D; text-align: right; }
+.lp-ticker-feed-domain {
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.lp-ticker-feed-tx {
+  color: var(--pink-bright);
+  justify-self: end;
+  white-space: nowrap;
+}
 .lp-ticker-feed-tx.muted { color: var(--text-3); }
-@media (max-width: 600px) {
-  .lp-ticker-feed li { grid-template-columns: 1fr 1fr; }
+@media (max-width: 720px) {
+  .lp-ticker-feed li {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 16px;
+  }
+  .lp-ticker-feed-domain { grid-column: 1 / -1; }
+  .lp-ticker-feed-tx { justify-self: start; }
 }
 `}</style>
     </div>
