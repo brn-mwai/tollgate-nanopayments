@@ -10,7 +10,7 @@ Everything you need to paste into the submission form. Field-by-field.
 **Tollgate — a publisher dashboard + middleware for charging AI bots per request in USDC**
 
 ### Short Description (255 chars max)
-A dashboard and middleware library for publishers. Install the package, connect a Circle Wallet, and every protected URL charges AI bots per request in USDC via the open x402 standard. Priced by Gemini. Settled on Arc. 180+ live onchain txs.
+A dashboard and middleware library for publishers. Install the package, connect a Circle Wallet, and every protected URL charges AI bots per request in USDC via the open x402 standard. Priced by Gemini. Settled on Arc. 66+ live onchain txs.
 
 ### Long Description
 
@@ -22,7 +22,7 @@ The other option is licensing. OpenAI paid News Corp roughly $250 million over f
 
 **What Tollgate adds.** The publisher-side product that turns the rail into a business. A Next.js dashboard that provisions a Circle Wallet, configures pricing rules, watches realtime settlements, rotates keys, and handles multi-chain off-ramp via CCTP. A middleware library (`@tollgate/middleware`) that drops into Express, Hono, or Next.js with one line of configuration. A Gemini 3 Flash pricer that computes every quote via Function Calling over three callable tools (agent reputation, site pricing rules, recent activity). A 5-minute HMAC receipt cache that collapses 50 repeat reads into 1 onchain transaction, making sub-cent pricing mathematically profitable. A reputation-tier routing system built on ERC-8004.
 
-**Proof.** 180+ real onchain USDC settlements on Base Sepolia, visible on basescan. A live publisher dashboard at tollgate.brianmwai.com. A bot-facing demo site at demo-news.brianmwai.com with ten editorial articles gated behind real 402 responses. A bot simulator that produces additional settlements on demand. Every transaction is verifiable on the Arc block explorer. Every Gemini pricing call captures its reasoning trace in the Convex database. MIT licensed, production-ready, no waitlist.
+**Proof.** 66+ real onchain USDC settlements on Base Sepolia, visible on basescan. A live publisher dashboard at tollgate.brianmwai.com. A bot-facing demo site at demo-news.brianmwai.com with ten editorial articles gated behind real 402 responses. A bot simulator that produces additional settlements on demand. Every transaction is verifiable on the Arc block explorer. Every Gemini pricing call captures its reasoning trace in the Convex database. MIT licensed, production-ready, no waitlist.
 
 **Target audience.** Publishers, API providers, data vendors, developer-documentation sites, and any operator whose content is being scraped by LLM training pipelines. Tollgate turns that traffic from an extraction pipeline into a revenue stream — without blocking a single bot.
 
@@ -101,7 +101,7 @@ Quick shots of the x402 spec (github.com/coinbase/x402), Circle Wallets docs, Ar
 
 **1:00–2:30 · Live demo**
 - Navigate to `tollgate.brianmwai.com/app/realtime`
-- Point at StatBand: "180+ real onchain settlements on Base Sepolia"
+- Point at StatBand: "66+ real onchain settlements on Base Sepolia"
 - Click **Run burst**
 - Watch 12 requests stream live through the execution log
 - Click one Arc tx hash → opens `sepolia.basescan.org` showing the actual USDC transfer
@@ -132,7 +132,7 @@ Read the "Built vs. pre-existing" table from README. Stress the positioning: "We
 3. **Existing rail** — HTTP 402 (1999) · x402 (Coinbase + Linux Foundation, 2024) · Arc + USDC (Circle, 2024) · AIsa already on x402 · Cloudflare Pay-per-crawl (July 2025). *The rail is shipped.*
 4. **The gap** — No turnkey publisher-side product. Every x402 implementation in the wild is a CLI demo or a CDN-layer lock-in. The missing layer is the publisher SaaS with wallet, rules, pricing intelligence, off-ramp
 5. **Architecture** — System diagram from README (mermaid rendered as image)
-6. **Proof** — 180+ real txs · $0.001 per request · 99.2% margin · Gemini reasoning per quote · live at tollgate.brianmwai.com
+6. **Proof** — 66+ real txs · $0.001 per request · 99.2% margin · Gemini reasoning per quote · live at tollgate.brianmwai.com
 7. **Stack** — Arc · USDC · Circle Wallets · Circle Nanopayments · Circle CCTP · Gemini Function Calling · x402 · ERC-8004 · Convex · Clerk · Next.js · Vercel
 8. **Ask** — Use the demo, audit the code, ship your own paywall tomorrow. repo: github.com/brn-mwai/tollgate · live: tollgate.brianmwai.com · author: brianmwai.com
 
@@ -140,7 +140,7 @@ Read the "Built vs. pre-existing" table from README. Stress the positioning: "We
 
 ## 6. Compliance checklist
 
-- [x] ≥ 50 onchain transactions — **180+**, basescan-verifiable
+- [x] ≥ 50 onchain transactions — **66+**, basescan-verifiable
 - [x] ≤ $0.01 per-action pricing — default 1,000 uUSDC ($0.001), cap enforced at 10,000 uUSDC ($0.01)
 - [x] Margin explanation — `docs/MARGIN.md` + Unit Economics panel on `/app/realtime`
 - [x] Circle products — Arc, USDC, Wallets, Nanopayments, CCTP, Developer Console all used

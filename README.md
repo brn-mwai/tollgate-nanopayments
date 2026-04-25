@@ -29,7 +29,7 @@
 </p>
 
 <p align="center">
-  <img alt="Onchain settlements" src="https://img.shields.io/badge/onchain%20settlements-240%2B-06A77D?style=flat-square&labelColor=1F2937" />
+  <img alt="Onchain settlements" src="https://img.shields.io/badge/onchain%20settlements-66%2B-06A77D?style=flat-square&labelColor=1F2937" />
   <img alt="Per-request" src="https://img.shields.io/badge/per--request-%240.001-FF3CC0?style=flat-square&labelColor=1F2937" />
   <img alt="Margin" src="https://img.shields.io/badge/margin%20on%20Arc-99.2%25-06A77D?style=flat-square&labelColor=1F2937" />
   <img alt="Compression" src="https://img.shields.io/badge/receipt%20compression-50%3A1-2775CA?style=flat-square&labelColor=1F2937" />
@@ -63,7 +63,7 @@ Three supporting pieces:
 
 3. **`convex/`** — the reactive backend. Stores sites, quotes, events, agent reputations, and the live metrics the dashboard reads.
 4. **`apps/demo-news/`** — a sample publisher ("The Nanopayer Times") running the middleware in production, showing the end-to-end flow with 10 editorial articles.
-5. **`apps/bot-simulator/`** — a Node.js agent that hits demo-news, signs x402 payments, and produces real onchain settlements. 180+ verifiable transactions so far.
+5. **`apps/bot-simulator/`** — a Node.js agent that hits demo-news, signs x402 payments, and produces real onchain settlements. 66+ verifiable transactions so far.
 
 ## What we built vs. what was already there
 
@@ -390,7 +390,7 @@ succeed — see [docs/GO-LIVE.md](docs/GO-LIVE.md) for the full list:
 
 ## Proof points
 
-- **180+ real onchain USDC settlements** on Base Sepolia, Circle wallet `0x7f3fa02d63779354f51b172d3f4a29b73763fbd4`
+- **66+ real onchain USDC settlements** on Base Sepolia, Circle wallet `0x7f3fa02d63779354f51b172d3f4a29b73763fbd4`
 - **Price per request**: 1,000 uUSDC ($0.001). Cap enforced at 10,000 uUSDC ($0.01)
 - **Margin math** documented in [docs/MARGIN.md](docs/MARGIN.md): 99.2% on Arc, −19,900% on Ethereum L1 at the same load
 - **Every tx** is clickable from the dashboard's `/app/realtime` feed → basescan.org
