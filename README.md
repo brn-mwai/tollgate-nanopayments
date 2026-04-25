@@ -210,7 +210,156 @@ docs/
   GO-LIVE.md              Production env + keys checklist
 ```
 
-## Quick start (local)
+## Try the live demo
+
+You can run the entire flow against the production deployment without installing anything.
+Every step works against `tollgate.brianmwai.com` (publisher dashboard) and
+`demo-news.brianmwai.com` (a sample publisher running the middleware).
+
+### 1. Visit the demo publisher
+
+Open [demo-news.brianmwai.com](https://demo-news.brianmwai.com) in your browser.
+You'll see "The Nanopayer Times", a fake newspaper with 10 long-form articles.
+The articles render normally for humans — no paywall blocks the page.
+
+### 2. See the 402
+
+Visit the same site as a bot would, by hitting the API directly:
+
+```
+https://demo-news.brianmwai.com/api/articles/arc-primer
+```
+
+You'll get back an HTTP `402 Payment Required` with an x402-compliant body:
+
+```json
+{
+  "x402Version": 1,
+  "accepts": [
+    {
+      "amount": "1000",
+      "asset": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+      "network": "eip155:84532",
+      "payTo": "0x7f3fa02d63779354f51b172d3f4a29b73763fbd4",
+      "extra": {
+        "nonce": "n_moe...",
+        "reasoning": "matched rule \"/api/articles/*\"; price=1000uUSDC"
+      }
+    }
+  ]
+}
+```
+
+The `reasoning` field is the Gemini 3 Flash trace. Every quote carries one.
+
+### 3. Pay the 402 with the bot CLI
+
+```bash
+git clone https://github.com/brn-mwai/tollgate.git
+cd tollgate
+pnpm install
+```
+
+Read one article (random):
+
+```bash
+pnpm -C apps/bot-simulator read
+```
+
+Or pick a specific article:
+
+```bash
+pnpm -C apps/bot-simulator read --article arc-primer
+```
+
+Or walk every article in one go:
+
+```bash
+pnpm -C apps/bot-simulator read-all
+```
+
+Each invocation spawns a fresh keypair, hits demo-news, gets the 402, signs
+the payment proof, sends it back, and prints the article body. The bot's
+private key only signs the nonce — actual USDC moves from a Circle-custodied
+bot fleet wallet, server-side, so no wallet funding is required.
+
+The bot prints each step:
+
+```
+▸ GET https://demo-news.brianmwai.com/api/articles/arc-primer
+▸ 402 Payment Required
+  nonce    n_moebvab1_45edaf15d2def71d10fda82e18598643
+  price    1000 uUSDC  (0.001000 USDC)
+  payTo    0x7f3fa02d63779354f51b172d3f4a29b73763fbd4
+  reason   matched rule "/api/articles/*"; price=1000uUSDC
+▸ signing payment proof
+▸ re-requesting with X-Payment header
+▸ paid · HTTP 200 in 2007ms
+  circleTx dd3b41e8-2ca8-5f46-85c6-a23a70f1475d
+```
+
+### 4. Watch the publisher dashboard react
+
+Open [tollgate.brianmwai.com/app/realtime](https://tollgate.brianmwai.com/app/realtime).
+Sign in with Clerk. Within a few seconds you'll see your bot's wallet appear
+in the event stream with status `paid_onchain`, the price you paid, and the
+on-chain tx hash linking out to basescan.
+
+The "Money path" panel at the top shows the bot fleet wallet on the left
+sending to the publisher wallet on the right. The publisher's USDC balance
+ticks up in real time.
+
+### 5. Trigger a burst from the dashboard
+
+On `/app/realtime`, set iterations to 12 and click **Run burst**.
+Twelve agent requests fire at once, each one quoted, signed, and settled
+on chain. The live execution log shows every step:
+
+```
+run_started        Spawning 12 agent requests against demo-news.brianmwai.com
+agent_request      Agent GET /api/articles/arc-primer
+quote_received     402 · 1000 uUSDC · n_moea967c_cf8b341caaaa0a1ef1c8535a5ffda3b7
+settle_initiated   Calling Circle Transfer
+settle_confirmed   Settled · circleTxId dd3b41e8…
+...
+run_complete       Done · 12 settled · 0 failed
+```
+
+The four StatBand cards at the top tick up: onchain settlements, USDC earned,
+unique agents, margin percentage.
+
+### 6. Add your own site
+
+On [tollgate.brianmwai.com/app/sites](https://tollgate.brianmwai.com/app/sites),
+click **Add a real domain** and enter your domain (e.g. `mysite.com`).
+The dashboard generates an `apiKeyHash`, a `verifyToken`, and a default
+pricing rule (`/* → 500 uUSDC`).
+
+To verify ownership, your site must serve the verify token at
+`/.well-known/tollgate-verify.txt` as plain text. The token is shown in the
+site card. Once it's serving, click **Verify ownership**. The dashboard
+fetches the URL, compares the body to the stored token, and flips the site
+to **active**.
+
+For a sandbox site without a real domain, add anything ending in `.local`,
+`.test`, `.example`, `.demo`, or `.localhost` — those skip the verify step
+and boot straight to active.
+
+### 7. Delete a site (resetting between takes)
+
+Every site card has a red **Delete** button. Clicking it removes the site
+and cascades the delete across `pricingRules`, `events`, `hourlyRollup`,
+`receipts`, `nonceLog`, `quotes`, `botRuns`, and `botRunSteps`. There is
+no undo. After delete you can immediately re-add the same domain — the
+verify token endpoint pulls live from Convex, so the new token is served
+without a redeploy.
+
+---
+
+## Quick start (local dev)
+
+To run the dashboard, demo publisher, and bot-simulator against your own
+Convex deployment:
 
 ```bash
 pnpm install
@@ -218,13 +367,26 @@ pnpm convex:dev            # boots Convex dev deployment
 pnpm -C apps/dashboard dev # dashboard on :3000
 pnpm -C apps/demo-news dev # publisher on :4001
 
-# Seed the demo publisher, then fire a burst
+# Seed the demo publisher, then fire a burst against localhost
 npx convex run dev:seedDemo
-TOLLGATE_AGENT_PRIVATE_KEY=0x... DEMO_PUBLISHER_URL=http://localhost:4001 \
+DEMO_PUBLISHER_URL=http://localhost:4001 \
   pnpm -C apps/bot-simulator burst
 ```
 
-Full bring-up sequence in [docs/GO-LIVE.md](docs/GO-LIVE.md).
+You'll need to set these Convex environment variables before settles will
+succeed — see [docs/GO-LIVE.md](docs/GO-LIVE.md) for the full list:
+
+| Variable | Source |
+|---|---|
+| `CIRCLE_API_KEY` | Circle Console → Keys |
+| `CIRCLE_ENTITY_SECRET` | Circle Console → Wallets → Configurator |
+| `CIRCLE_WALLET_SET_ID` | Circle Console → Wallets → Wallet Sets |
+| `TOLLGATE_BOT_FLEET_WALLET_ID` | Circle wallet to fund the bot fleet from |
+| `TOLLGATE_BOT_FLEET_ADDRESS` | The same wallet's onchain address |
+| `CLERK_JWT_ISSUER_DOMAIN` | Clerk dashboard → JWT templates |
+| `CLERK_WEBHOOK_SECRET` | Clerk dashboard → Webhooks |
+| `GEMINI_API_KEY` | aistudio.google.com/apikey (optional; fallback pricer) |
+| `DEV_SEED_ALLOWED` | `true` (gates dev-only seeders + helpers) |
 
 ## Proof points
 
