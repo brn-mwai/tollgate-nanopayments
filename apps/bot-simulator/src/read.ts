@@ -28,7 +28,7 @@ const c = {
   pink: "\x1b[95m",
 };
 
-type Args = { publisher: string; article: string; loop: number };
+type Args = { publisher: string; article: string; loop: number; all: boolean };
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
@@ -44,24 +44,56 @@ async function main(): Promise<void> {
   line("dashboard", "https://tollgate.brianmwai.com/app/realtime", c.dim);
   console.log();
 
-  for (let i = 0; i < args.loop; i++) {
-    const slug = args.article === "random" ? randomArticle() : args.article;
-    if (args.loop > 1) {
-      console.log(`${c.dim}─── round ${i + 1}/${args.loop} ───${c.reset}`);
+  const slugs = args.all
+    ? [...ARTICLES]
+    : Array.from({ length: args.loop }, () =>
+        args.article === "random" ? randomArticle() : args.article,
+      );
+
+  let paid = 0;
+  let cached = 0;
+  let failed = 0;
+  let totalUu = 0;
+  const startedAt = Date.now();
+
+  for (let i = 0; i < slugs.length; i++) {
+    if (slugs.length > 1) {
+      console.log(`${c.dim}─── ${i + 1}/${slugs.length} · ${slugs[i]} ───${c.reset}`);
     }
-    await read(args.publisher, slug, account);
+    const r = await read(args.publisher, slugs[i]!, account);
+    if (r.kind === "paid") {
+      paid++;
+      totalUu += r.priceUu;
+    } else if (r.kind === "cached") cached++;
+    else failed++;
     console.log();
-    if (i < args.loop - 1) await sleep(800);
+    if (i < slugs.length - 1) await sleep(800);
   }
 
-  console.log(`${c.dim}check the dashboard event stream — your wallet ${shortAddr(account.address)} should appear in the latest row.${c.reset}`);
+  if (slugs.length > 1) {
+    const elapsedMs = Date.now() - startedAt;
+    console.log(`${c.bold}summary${c.reset}`);
+    kv("paid", `${paid} requests`, c.green);
+    if (cached > 0) kv("cached", `${cached} requests`, c.blue);
+    if (failed > 0) kv("failed", `${failed} requests`, c.red);
+    kv("spent", `${totalUu} uUSDC  (${(totalUu / 1_000_000).toFixed(6)} USDC)`, c.green);
+    kv("elapsed", `${elapsedMs}ms`, c.dim);
+    console.log();
+  }
+
+  console.log(`${c.dim}check the dashboard event stream — your wallet ${shortAddr(account.address)} should appear in the latest rows.${c.reset}`);
 }
+
+type ReadResult =
+  | { kind: "paid"; priceUu: number }
+  | { kind: "cached" }
+  | { kind: "failed" };
 
 async function read(
   publisher: string,
   slug: string,
   account: ReturnType<typeof privateKeyToAccount>,
-): Promise<void> {
+): Promise<ReadResult> {
   const url = `${publisher}/api/articles/${slug}`;
   step(`GET ${url}`, c.bold);
 
@@ -72,9 +104,15 @@ async function read(
     },
   });
 
+  if (cold.status === 200) {
+    const cachedSet = cold.headers.get("x-tollgate-receipt-set");
+    step(`200 OK (no paywall hit)`, c.blue);
+    if (cachedSet) kv("receipt", "served from cache", c.blue);
+    return { kind: "cached" };
+  }
   if (cold.status !== 402) {
     step(`unexpected cold status ${cold.status}`, c.red);
-    return;
+    return { kind: "failed" };
   }
 
   const quote = (await cold.json()) as {
@@ -89,7 +127,7 @@ async function read(
   const accepted = quote.accepts?.[0];
   if (!accepted || !accepted.extra?.nonce) {
     step("malformed 402 (no accepts[0].extra.nonce)", c.red);
-    return;
+    return { kind: "failed" };
   }
 
   step(`402 Payment Required`, c.yellow);
@@ -134,12 +172,13 @@ async function read(
     step(`paid response failed: HTTP ${paid.status}`, c.red);
     const text = await paid.text().catch(() => "");
     if (text) console.log(`${c.dim}${text.slice(0, 240)}${c.reset}`);
-    return;
+    return { kind: "failed" };
   }
 
   const txRef = paid.headers.get("x-tollgate-tx");
   const receiptSet = paid.headers.get("x-tollgate-receipt-set");
   step(`paid · HTTP ${paid.status} in ${elapsedMs}ms`, c.green);
+  let kind: ReadResult = { kind: "paid", priceUu: Number(accepted.amount) };
   if (txRef) {
     const looksLikeHash = txRef.startsWith("0x") && txRef.length === 66;
     if (looksLikeHash) {
@@ -150,6 +189,7 @@ async function read(
     }
   } else if (receiptSet) {
     kv("receipt", "cached (no new onchain tx)", c.blue);
+    kind = { kind: "cached" };
   }
 
   const article = (await paid.json()) as { title?: string; body?: string };
@@ -161,6 +201,7 @@ async function read(
     const snippet = article.body.replace(/\s+/g, " ").trim().slice(0, 280);
     console.log(`${c.dim}${snippet}${article.body.length > 280 ? "..." : ""}${c.reset}`);
   }
+  return kind;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -172,7 +213,8 @@ function parseArgs(argv: string[]): Args {
     get("--publisher") ?? process.env.DEMO_PUBLISHER_URL ?? "https://demo-news.brianmwai.com";
   const article = get("--article") ?? "random";
   const loop = Number(get("--loop") ?? "1");
-  return { publisher, article, loop };
+  const all = argv.includes("--all");
+  return { publisher, article, loop, all };
 }
 
 function randomArticle(): string {

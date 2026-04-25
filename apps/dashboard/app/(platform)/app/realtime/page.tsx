@@ -9,6 +9,7 @@ import { api } from "@convex/_generated/api";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
+  ArrowRight,
   ArrowSquareOut,
   CheckCircle,
   Circle,
@@ -118,14 +119,15 @@ function WalletPair({
         />
         <div
           style={{
-            fontFamily: "JetBrains Mono, monospace",
-            fontSize: 13,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 6,
             color: "var(--pink-bright)",
-            textAlign: "center",
-            letterSpacing: "0.05em",
           }}
         >
-          ──→ <span style={{ fontSize: 11, color: "var(--text-3)", display: "block", marginTop: 4 }}>
+          <ArrowRight size={28} weight="bold" color="#FF3CC0" />
+          <span style={{ fontSize: 11, color: "var(--text-3)", fontFamily: "JetBrains Mono, monospace" }}>
             0.001 USDC
           </span>
         </div>
