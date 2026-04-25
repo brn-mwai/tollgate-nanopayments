@@ -10,6 +10,7 @@
 
 import type * as _devpeek from "../_devpeek.js";
 import type * as agents from "../agents.js";
+import type * as arc from "../arc.js";
 import type * as bots from "../bots.js";
 import type * as circle from "../circle.js";
 import type * as crons from "../crons.js";
@@ -43,6 +44,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   _devpeek: typeof _devpeek;
   agents: typeof agents;
+  arc: typeof arc;
   bots: typeof bots;
   circle: typeof circle;
   crons: typeof crons;
