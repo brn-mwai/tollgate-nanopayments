@@ -184,8 +184,13 @@ async function read(
     if (looksLikeHash) {
       kv("onchain", `https://sepolia.basescan.org/tx/${txRef}`, c.green);
     } else {
-      kv("circleTx", txRef, c.green);
-      kv("onchain", "settled async via Circle (watch dashboard for the resolved tx hash)", c.dim);
+      kv("circleTx", txRef, c.dim);
+      const hash = await pollForTxHash(txRef);
+      if (hash) {
+        kv("onchain", `https://sepolia.basescan.org/tx/${hash}`, c.green);
+      } else {
+        kv("onchain", "settled async via Circle (watch dashboard for the resolved tx hash)", c.dim);
+      }
     }
   } else if (receiptSet) {
     kv("receipt", "cached (no new onchain tx)", c.blue);
@@ -246,6 +251,38 @@ function shortAddr(a: string): string {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+// Resolve on-chain tx hash via the public Convex action, which proactively
+// pulls from Circle if the cron hasn't backfilled yet. Tries every 2s up
+// to 30s; some Circle testnet settles take a while to land in a block.
+async function pollForTxHash(circleTxId: string): Promise<string | null> {
+  const convexUrl =
+    process.env.TOLLGATE_CONVEX_URL?.replace(/\/$/, "") ??
+    "https://hallowed-ram-675.convex.cloud";
+  const url = `${convexUrl}/api/action`;
+  const body = JSON.stringify({
+    path: "quotes:resolveTxHash",
+    args: { circleTxId },
+    format: "json",
+  });
+  for (let i = 0; i < 15; i++) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body,
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { status?: string; value?: string | null };
+        if (data.status === "success" && data.value) return data.value;
+      }
+    } catch {
+      /* ignore, retry */
+    }
+    await sleep(2000);
+  }
+  return null;
 }
 
 main().catch((err) => {

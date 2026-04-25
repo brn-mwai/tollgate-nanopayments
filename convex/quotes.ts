@@ -12,7 +12,7 @@
 // OWNER: x402-protocol-agent.
 
 import { action, internalAction, internalMutation, internalQuery, query } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { v } from "convex/values";
 import { Doc, Id } from "./_generated/dataModel";
 
@@ -499,6 +499,47 @@ function formatAsUuid(hex: string): string {
   const h = hex.slice(0, 32).padEnd(32, "0");
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`;
 }
+
+// Public, unauthenticated lookup so the bot CLI (or any agent SDK) can
+// poll for the resolved on-chain tx hash after settle. Returns null while
+// Circle still has the transaction queued; non-null once the webhook or
+// reconcile cron has backfilled the hash.
+export const txHashByCircleId = query({
+  args: { circleTxId: v.string() },
+  handler: async (ctx, { circleTxId }): Promise<string | null> => {
+    const quote = await ctx.db
+      .query("quotes")
+      .withIndex("by_circle_tx", (q) => q.eq("circleTxId", circleTxId))
+      .unique();
+    return quote?.txHash ?? null;
+  },
+});
+
+// Public action that proactively pulls the tx hash from Circle's
+// /transactions/{id} endpoint and writes it back to the quote row.
+// Used by the bot CLI so it doesn't have to wait for the per-minute
+// reconcile cron. Idempotent — calling again on an already-resolved
+// quote just returns the stored hash.
+export const resolveTxHash = action({
+  args: { circleTxId: v.string() },
+  handler: async (ctx, { circleTxId }): Promise<string | null> => {
+    const cached: string | null = await ctx.runQuery(api.quotes.txHashByCircleId, {
+      circleTxId,
+    });
+    if (cached) return cached;
+    const tx = await ctx.runAction(internal.circle.getTransaction, {
+      id: circleTxId,
+    });
+    if (tx && tx.txHash) {
+      await ctx.runMutation(internal.quotes._attachOnchainTxHash, {
+        circleTxId,
+        txHash: tx.txHash,
+      });
+      return tx.txHash;
+    }
+    return null;
+  },
+});
 
 export const _byId = internalQuery({
   args: { quoteId: v.id("quotes") },
