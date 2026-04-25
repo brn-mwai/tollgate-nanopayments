@@ -9,6 +9,7 @@
     "start": "tsx src/run.ts",
     "burst": "tsx src/run.ts --agents 10 --requests 12",
     "mega": "tsx src/run.ts --agents 20 --requests 15",
+    "read": "tsx src/read.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
