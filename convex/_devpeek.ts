@@ -1,8 +1,10 @@
 // Dev-only read helpers for CLI inspection. Gated by DEV_SEED_ALLOWED so
 // they never run in prod.
 
-import { internalMutation, internalQuery } from "./_generated/server";
+import { internalAction, internalMutation, internalQuery } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
+import { generateApiKey } from "./lib/apiKey";
 
 export const allPublishers = internalQuery({
   args: {},
@@ -71,6 +73,51 @@ export const siteByDomain = internalQuery({
       verifyToken: site.verifyToken,
       publisherId: site.publisherId,
     };
+  },
+});
+
+// Dev-only: rotate the API key for a site by domain, returning the
+// fresh plaintext so we can re-sync the publisher app's env var.
+// Used to recover from key drift between Convex and the demo-news
+// TOLLGATE_SITE_KEY env after dashboard activity.
+export const rotateSiteKeyByDomain = internalAction({
+  args: { domain: v.string() },
+  handler: async (
+    ctx,
+    { domain },
+  ): Promise<{ ok: boolean; apiKey?: string; reason?: string }> => {
+    if (process.env.DEV_SEED_ALLOWED !== "true") {
+      return { ok: false, reason: "DEV_SEED_ALLOWED not set" };
+    }
+    const site = await ctx.runQuery(internal._devpeek._siteByDomainInternal, {
+      domain,
+    });
+    if (!site) return { ok: false, reason: "site not found" };
+    const { plaintext, hash } = await generateApiKey("live");
+    await ctx.runMutation(internal._devpeek._patchSiteKeyHash, {
+      siteId: site._id,
+      hash,
+    });
+    return { ok: true, apiKey: plaintext };
+  },
+});
+
+export const _siteByDomainInternal = internalQuery({
+  args: { domain: v.string() },
+  handler: async (ctx, { domain }) => {
+    const site = await ctx.db
+      .query("sites")
+      .withIndex("by_domain", (q) => q.eq("domain", domain))
+      .unique();
+    if (!site) return null;
+    return { _id: site._id, domain: site.domain };
+  },
+});
+
+export const _patchSiteKeyHash = internalMutation({
+  args: { siteId: v.id("sites"), hash: v.string() },
+  handler: async (ctx, { siteId, hash }) => {
+    await ctx.db.patch(siteId, { apiKeyHash: hash });
   },
 });
 
