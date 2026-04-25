@@ -445,19 +445,35 @@ export const _settleViaCircle = internalAction({
     const idempotencyKey = formatAsUuid(seed);
 
     try {
-      // Transfer the quote amount (in USDC, 6-decimal) to a burn address.
-      // Circle's testnet minimum accepted amount is above 1 uUSDC, so we
-      // can't do truly dust-free settlement — instead we send the actual
-      // quoted price to a burn address, matching the economic model
-      // (publisher "spends" exactly what the bot paid).
+      // Real x402 economic model: bot operator pays publisher.
+      // Source wallet = bot fleet (a separate Circle wallet pre-funded with
+      // USDC, configured via TOLLGATE_BOT_FLEET_WALLET_ID env var).
+      // Destination = publisher's onchain Arc/Base address.
+      // Result: publisher's USDC balance grows with every settled quote.
+      const fromWalletId =
+        process.env.TOLLGATE_BOT_FLEET_WALLET_ID ?? ctxInfo.circleWalletId;
+      const destinationAddress = ctxInfo.arcAddress;
+      if (!destinationAddress) {
+        return { ok: false, reason: "publisher_arc_address_missing" };
+      }
       const amountUsd = (quote.priceMicroUsdc / 1_000_000).toFixed(6);
+
+      // Bot fleet uses its own USDC tokenId (same chain as publisher, but
+      // tokenId is per-wallet on Circle). Look it up if we have a fleet.
+      const fleetTokenId = process.env.TOLLGATE_BOT_FLEET_WALLET_ID
+        ? await ctx.runAction(internal.circle.getUsdcTokenId, {
+            walletId: process.env.TOLLGATE_BOT_FLEET_WALLET_ID,
+          })
+        : tokenId;
+      if (!fleetTokenId) return { ok: false, reason: "bot_fleet_no_usdc" };
+
       const tx: { id: string; state: string } = await ctx.runAction(
         internal.circle.createTransfer,
         {
-          fromWalletId: ctxInfo.circleWalletId,
-          destinationAddress: "0x000000000000000000000000000000000000dEaD",
+          fromWalletId,
+          destinationAddress,
           amountUsdc: amountUsd,
-          tokenId,
+          tokenId: fleetTokenId,
           idempotencyKey,
         },
       );

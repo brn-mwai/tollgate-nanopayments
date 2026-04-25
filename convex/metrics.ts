@@ -204,6 +204,32 @@ export const publicSnapshot = query({
   },
 });
 
+// Wallet pair snapshot for the Realtime page and the demo walkthrough. Pulls
+// live Circle balances for both the bot fleet (who pays) and the publisher
+// (who receives) so the UI can render "money moving" in real time.
+export const walletPair = query({
+  args: {},
+  handler: async (
+    ctx,
+  ): Promise<{
+    publisher: { walletId: string | null; address: string | null; uUsdc: string };
+    botFleet: { walletId: string | null; address: string | null };
+  }> => {
+    const pub = await getCurrentPublisher(ctx);
+    return {
+      publisher: {
+        walletId: pub?.circleWalletId ?? null,
+        address: pub?.arcAddress ?? null,
+        uUsdc: pub?.balanceUsdc ?? "0",
+      },
+      botFleet: {
+        walletId: process.env.TOLLGATE_BOT_FLEET_WALLET_ID ?? null,
+        address: process.env.TOLLGATE_BOT_FLEET_ADDRESS ?? null,
+      },
+    };
+  },
+});
+
 // Tool-usage proof for the hackathon track. Returns which integrations
 // produced data in the current publisher's feed — so the judges page can
 // render green pills ("Arc ✓", "Circle Gateway ✓", "Gemini ✓") only when

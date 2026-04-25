@@ -7,7 +7,7 @@
 import { useAction, useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowSquareOut,
   CheckCircle,
@@ -27,6 +27,7 @@ export default function RealtimePage() {
   const feed = useQuery(api.metrics.feed, { limit: 30 });
   const tools = useQuery(api.metrics.toolsUsed);
   const wallet = useQuery(api.wallets.get);
+  const pair = useQuery(api.metrics.walletPair);
 
   const ready = summary && feed && tools;
 
@@ -60,6 +61,7 @@ export default function RealtimePage() {
             marginEth={summary.marginPctOnEthereum}
             avgPriceUu={summary.avgPriceUuUsdc}
           />
+          <WalletPair pair={pair} />
           <BurstControl />
           <ProviderHealth tools={tools} walletAddress={wallet?.address ?? null} />
           <UnitEconomics
@@ -75,6 +77,168 @@ export default function RealtimePage() {
       )}
     </div>
   );
+}
+
+function WalletPair({
+  pair,
+}: {
+  pair:
+    | {
+        publisher: { walletId: string | null; address: string | null; uUsdc: string };
+        botFleet: { walletId: string | null; address: string | null };
+      }
+    | undefined;
+}) {
+  if (!pair || !pair.botFleet.address) return null;
+  const publisherUsd = (Number(pair.publisher.uUsdc) / 1_000_000).toFixed(4);
+  return (
+    <div
+      style={{
+        border: "1px solid var(--border)",
+        borderRadius: 12,
+        background: "var(--bg-card)",
+        padding: 18,
+        marginBottom: 20,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <div style={{ fontSize: 13, fontWeight: 600 }}>Money path</div>
+        <div style={{ fontSize: 11, color: "var(--text-3)", fontFamily: "JetBrains Mono, monospace" }}>
+          bot fleet → publisher · every settled quote
+        </div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 18, alignItems: "center" }}>
+        <WalletCell
+          label="Bot fleet"
+          sub="(the agent operator)"
+          address={pair.botFleet.address}
+          walletId={pair.botFleet.walletId ?? undefined}
+          tone="#F2A541"
+          uUsdcLive
+        />
+        <div
+          style={{
+            fontFamily: "JetBrains Mono, monospace",
+            fontSize: 13,
+            color: "var(--pink-bright)",
+            textAlign: "center",
+            letterSpacing: "0.05em",
+          }}
+        >
+          ──→ <span style={{ fontSize: 11, color: "var(--text-3)", display: "block", marginTop: 4 }}>
+            0.001 USDC
+          </span>
+        </div>
+        <WalletCell
+          label="Publisher"
+          sub="(you, receiving)"
+          address={pair.publisher.address ?? "—"}
+          walletId={pair.publisher.walletId ?? undefined}
+          tone="#06A77D"
+          cachedUsd={publisherUsd}
+        />
+      </div>
+    </div>
+  );
+}
+
+function WalletCell({
+  label,
+  sub,
+  address,
+  walletId,
+  tone,
+  cachedUsd,
+  uUsdcLive,
+}: {
+  label: string;
+  sub: string;
+  address: string;
+  walletId?: string;
+  tone: string;
+  cachedUsd?: string;
+  uUsdcLive?: boolean;
+}) {
+  const liveBal = useLiveBalance(uUsdcLive ? walletId : null);
+  return (
+    <div
+      style={{
+        padding: 16,
+        border: `1px solid ${tone}33`,
+        borderRadius: 10,
+        background: `${tone}0A`,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 6 }}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: tone }}>{label}</div>
+        <div style={{ fontSize: 11, color: "var(--text-3)" }}>{sub}</div>
+      </div>
+      <div
+        style={{
+          fontFamily: "JetBrains Mono, monospace",
+          fontSize: 11.5,
+          color: "var(--text-2)",
+          marginBottom: 10,
+          wordBreak: "break-all",
+        }}
+      >
+        {address.slice(0, 10)}…{address.slice(-6)}
+      </div>
+      {cachedUsd !== undefined && (
+        <div style={{ fontFamily: "Instrument Serif, serif", fontSize: 26, color: tone }}>
+          ${cachedUsd}
+        </div>
+      )}
+      {uUsdcLive && (
+        <div style={{ fontFamily: "Instrument Serif, serif", fontSize: 26, color: tone }}>
+          {liveBal ?? "—"}
+        </div>
+      )}
+      {address !== "—" && (
+        <a
+          href={`https://sepolia.basescan.org/address/${address}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            fontSize: 11,
+            color: tone,
+            textDecoration: "none",
+            fontFamily: "JetBrains Mono, monospace",
+            display: "inline-flex",
+            gap: 4,
+            alignItems: "center",
+          }}
+        >
+          basescan <ArrowSquareOut size={10} />
+        </a>
+      )}
+    </div>
+  );
+}
+
+function useLiveBalance(walletId: string | null | undefined): string | null {
+  const [bal, setBal] = useState<string | null>(null);
+  useEffect(() => {
+    if (!walletId) return;
+    let stopped = false;
+    const fetchBal = async () => {
+      try {
+        const res = await fetch(`/api/wallet-balance?id=${walletId}`);
+        if (!res.ok) return;
+        const { usdc } = (await res.json()) as { usdc: string };
+        if (!stopped) setBal(`$${usdc}`);
+      } catch {
+        /* ignore */
+      }
+    };
+    fetchBal();
+    const t = setInterval(fetchBal, 5000);
+    return () => {
+      stopped = true;
+      clearInterval(t);
+    };
+  }, [walletId]);
+  return bal;
 }
 
 function BurstControl() {
