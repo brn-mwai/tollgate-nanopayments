@@ -23,6 +23,21 @@ export const get = query({
   },
 });
 
+// Public, unauthenticated lookup of a site's verifyToken by domain.
+// Used by the publisher's own .well-known/tollgate-verify.txt endpoint
+// so the token always reflects whatever the dashboard last issued,
+// removing the manual env-var sync step from the demo flow.
+export const publicVerifyToken = query({
+  args: { domain: v.string() },
+  handler: async (ctx, { domain }): Promise<string | null> => {
+    const site = await ctx.db
+      .query("sites")
+      .withIndex("by_domain", (q) => q.eq("domain", domain))
+      .unique();
+    return site?.verifyToken ?? null;
+  },
+});
+
 export const create = mutation({
   args: { domain: v.string() },
   handler: async (ctx, { domain }) => {

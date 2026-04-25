@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/tollgate-logo-white.svg" alt="Tollgate" width="380" />
+  <img src="docs/images/banner.png" alt="Tollgate — Charge AI bots per request in USDC" />
 </p>
 
 <p align="center">
