@@ -1,7 +1,8 @@
 // Dev-only read helpers for CLI inspection. Gated by DEV_SEED_ALLOWED so
 // they never run in prod.
 
-import { internalQuery } from "./_generated/server";
+import { internalMutation, internalQuery } from "./_generated/server";
+import { v } from "convex/values";
 
 export const allPublishers = internalQuery({
   args: {},
@@ -11,7 +12,31 @@ export const allPublishers = internalQuery({
   },
 });
 
-import { internalMutation } from "./_generated/server";
+// Move a site (and all its quotes/events/pricing rules) from one publisher
+// to another. Used to give the live demo data to the operator's Clerk
+// account so they can see real metrics in the dashboard without re-seeding.
+export const reassignSite = internalMutation({
+  args: {
+    siteId: v.id("sites"),
+    toPublisherId: v.id("publishers"),
+  },
+  handler: async (ctx, { siteId, toPublisherId }) => {
+    if (process.env.DEV_SEED_ALLOWED !== "true") return { ok: false, reason: "gated" };
+    const site = await ctx.db.get(siteId);
+    if (!site) return { ok: false, reason: "site_missing" };
+    const fromPub = site.publisherId;
+    await ctx.db.patch(siteId, { publisherId: toPublisherId });
+    await ctx.db.insert("auditLog", {
+      actor: "dev_reassign",
+      action: "site.reassign",
+      entity: "sites",
+      entityId: siteId,
+      meta: { from: fromPub, to: toPublisherId },
+      occurredAt: Date.now(),
+    });
+    return { ok: true, siteId, fromPublisherId: fromPub, toPublisherId };
+  },
+});
 
 export const wipe = internalMutation({
   args: {},

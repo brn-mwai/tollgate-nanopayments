@@ -44,11 +44,20 @@ export const create = mutation({
     const { plaintext, hash } = await generateApiKey("live");
     const verifyToken = `tg_verify_${await randomHex(16)}`;
 
+    // Test domains skip verification so a publisher can ship a sandbox site
+    // without owning a real domain. Anything ending in .local, .test,
+    // .example, .demo, .localhost, or being a literal localhost address
+    // boots straight to active.
+    const isTestDomain =
+      /\.(local|test|example|demo|localhost)$/.test(normalized) ||
+      normalized === "localhost";
+    const initialStatus = isTestDomain ? ("active" as const) : ("unverified" as const);
+
     const siteId = await ctx.db.insert("sites", {
       publisherId: pub._id,
       domain: normalized,
       apiKeyHash: hash,
-      status: "unverified",
+      status: initialStatus,
       verifyToken,
       failOpenOnFacilitator: false,
     });

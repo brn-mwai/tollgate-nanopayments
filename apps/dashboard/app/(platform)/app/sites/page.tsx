@@ -81,7 +81,18 @@ export default function SitesPage() {
 
       {sites === undefined && <EmptyHint text="Loading sites..." />}
       {sites && sites.length === 0 && !adding && (
-        <EmptyHint text="No sites yet. Add your first to start monetising bot traffic." />
+        <EmptyState
+          onAdd={() => setAdding(true)}
+          onSeedDemo={async () => {
+            setErr(null);
+            try {
+              const res = await create({ domain: `demo-${Math.random().toString(36).slice(2, 8)}.example.com` });
+              setIssued({ apiKey: res.apiKey, domain: `demo-${res.siteId.slice(0, 6)}.example.com` });
+            } catch (e) {
+              setErr(e instanceof Error ? e.message : "failed");
+            }
+          }}
+        />
       )}
 
       {sites && sites.length > 0 && (
@@ -193,22 +204,37 @@ function RotateKeyBtn({
 }
 
 function ApiKeyCallout({ apiKey, domain, onClose }: { apiKey: string; domain: string; onClose: () => void }) {
+  const installSnippet = `# 1. Install the middleware
+pnpm add @tollgate/middleware
+
+# 2. Add to your Express / Hono / Next.js app
+import { tollgate } from "@tollgate/middleware/express";
+
+app.use("/api", tollgate({
+  siteId: "${domain}",
+  chain: "arc-testnet",
+  hmacSecret: process.env.TOLLGATE_HMAC_SECRET!,
+  convexUrl: "https://hallowed-ram-675.convex.cloud",
+  convexSiteKey: "${apiKey}",
+}));`;
+
   return (
     <div
       style={{
         border: "1px solid #B3007D",
-        background: "linear-gradient(155deg, rgba(255,60,192,0.12), rgba(230,0,152,0.08))",
-        borderRadius: 10,
-        padding: 20,
+        background: "linear-gradient(155deg, rgba(255,60,192,0.12), rgba(230,0,152,0.06))",
+        borderRadius: 12,
+        padding: 22,
         marginBottom: 16,
       }}
     >
-      <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 6 }}>
-        API key for {domain} — shown once
+      <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 6 }}>
+        Site key for <code style={{ fontFamily: "JetBrains Mono, monospace" }}>{domain}</code> · shown once
       </div>
-      <div style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 10 }}>
-        Copy it now. We only store a SHA-256 hash. If you lose it, rotate from the site detail page.
+      <div style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 14 }}>
+        Stored as SHA-256 hash. If you lose this string, rotate the key from the site detail page.
       </div>
+
       <div
         style={{
           display: "flex",
@@ -218,33 +244,81 @@ function ApiKeyCallout({ apiKey, domain, onClose }: { apiKey: string; domain: st
           borderRadius: 6,
           padding: "10px 12px",
           fontFamily: "JetBrains Mono, monospace",
-          fontSize: 12,
+          fontSize: 12.5,
           alignItems: "center",
+          marginBottom: 18,
         }}
       >
-        <code style={{ flex: 1, wordBreak: "break-all" }}>{apiKey}</code>
+        <code style={{ flex: 1, wordBreak: "break-all", color: "var(--text-1)" }}>{apiKey}</code>
         <button
           type="button"
           onClick={() => navigator.clipboard.writeText(apiKey)}
-          style={{
-            background: "none",
-            border: "1px solid var(--border)",
-            color: "var(--text-2)",
-            padding: "4px 8px",
-            borderRadius: 4,
-            cursor: "pointer",
-            fontSize: 11,
-          }}
+          style={iconBtnStyle}
+          title="Copy key"
         >
           <Copy size={13} />
         </button>
       </div>
-      <button type="button" onClick={onClose} style={{ ...ghostBtn, marginTop: 12 }}>
-        I copied it
-      </button>
+
+      <div
+        style={{
+          fontSize: 11,
+          color: "var(--text-3)",
+          textTransform: "uppercase",
+          letterSpacing: "0.08em",
+          fontFamily: "JetBrains Mono, monospace",
+          marginBottom: 8,
+        }}
+      >
+        Install snippet · Express
+      </div>
+      <div style={{ position: "relative" }}>
+        <pre
+          style={{
+            margin: 0,
+            background: "rgba(0,0,0,0.45)",
+            border: "1px solid var(--border)",
+            borderRadius: 6,
+            padding: "14px 16px",
+            fontFamily: "JetBrains Mono, monospace",
+            fontSize: 11.5,
+            lineHeight: 1.55,
+            color: "var(--text-1)",
+            overflowX: "auto",
+            whiteSpace: "pre",
+          }}
+        >{installSnippet}</pre>
+        <button
+          type="button"
+          onClick={() => navigator.clipboard.writeText(installSnippet)}
+          style={{ ...iconBtnStyle, position: "absolute", top: 8, right: 8 }}
+          title="Copy snippet"
+        >
+          <Copy size={13} />
+        </button>
+      </div>
+
+      <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+        <Link href="/app/install" style={ghostBtn}>
+          Hono / Next.js / bot SDK
+        </Link>
+        <button type="button" onClick={onClose} style={ghostBtn}>
+          I copied it
+        </button>
+      </div>
     </div>
   );
 }
+
+const iconBtnStyle: React.CSSProperties = {
+  background: "var(--bg-shell)",
+  border: "1px solid var(--border)",
+  color: "var(--text-2)",
+  padding: "5px 9px",
+  borderRadius: 5,
+  cursor: "pointer",
+  fontSize: 11,
+};
 
 function MetaItem({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
   return (
@@ -302,6 +376,62 @@ function EmptyHint({ text }: { text: string }) {
       }}
     >
       {text}
+    </div>
+  );
+}
+
+function EmptyState({
+  onAdd,
+  onSeedDemo,
+}: {
+  onAdd: () => void;
+  onSeedDemo: () => void;
+}) {
+  return (
+    <div
+      style={{
+        border: "1px solid var(--border)",
+        borderRadius: 14,
+        padding: "48px 36px",
+        background: "linear-gradient(160deg, rgba(255,60,192,0.04), rgba(39,117,202,0.03) 60%)",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          fontFamily: "Instrument Serif, serif",
+          fontSize: 32,
+          lineHeight: 1.1,
+          marginBottom: 10,
+          color: "var(--text-1)",
+        }}
+      >
+        Add your first site
+      </div>
+      <p
+        style={{
+          fontSize: 14,
+          color: "var(--text-2)",
+          maxWidth: 480,
+          margin: "0 auto 24px",
+          lineHeight: 1.55,
+        }}
+      >
+        Each site is a domain you want to monetise. We hash a per-site API key, generate
+        a verification token, and seed a default pricing rule. Test domains
+        (<code style={{ fontSize: 12 }}>.local</code> ·{" "}
+        <code style={{ fontSize: 12 }}>.test</code> ·{" "}
+        <code style={{ fontSize: 12 }}>.example.com</code> ·{" "}
+        <code style={{ fontSize: 12 }}>.demo</code>) skip ownership verification.
+      </p>
+      <div style={{ display: "inline-flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+        <button type="button" style={primaryBtn} onClick={onAdd}>
+          <Plus size={15} /> Add a real domain
+        </button>
+        <button type="button" style={ghostBtn} onClick={onSeedDemo}>
+          Spin up a sandbox site (no verification)
+        </button>
+      </div>
     </div>
   );
 }
