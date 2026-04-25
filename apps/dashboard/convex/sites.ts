@@ -23,6 +23,21 @@ export const get = query({
   },
 });
 
+// Public, unauthenticated lookup of a site's verifyToken by domain.
+// Used by the publisher's own .well-known/tollgate-verify.txt endpoint
+// so the token always reflects whatever the dashboard last issued,
+// removing the manual env-var sync step from the demo flow.
+export const publicVerifyToken = query({
+  args: { domain: v.string() },
+  handler: async (ctx, { domain }): Promise<string | null> => {
+    const site = await ctx.db
+      .query("sites")
+      .withIndex("by_domain", (q) => q.eq("domain", domain))
+      .unique();
+    return site?.verifyToken ?? null;
+  },
+});
+
 export const create = mutation({
   args: { domain: v.string() },
   handler: async (ctx, { domain }) => {
@@ -99,6 +114,104 @@ export const rotateKey = mutation({
       occurredAt: Date.now(),
     });
     return { apiKey: plaintext };
+  },
+});
+
+// Hard-delete a site and every row that references it. The publisher
+// owns this; we cascade across pricingRules, events, hourlyRollup,
+// receipts, nonceLog, quotes, botRuns, and botRunSteps so re-adding
+// the same domain is clean. There is no soft-delete here on purpose:
+// the dashboard treats "delete" as final.
+export const remove = mutation({
+  args: { siteId: v.id("sites") },
+  handler: async (ctx, { siteId }): Promise<{ ok: boolean; deleted: number }> => {
+    const site = await requireSiteOwnedByMe(ctx, siteId);
+    let deleted = 0;
+
+    const rules = await ctx.db
+      .query("pricingRules")
+      .withIndex("by_site_priority", (q) => q.eq("siteId", siteId))
+      .collect();
+    for (const r of rules) {
+      await ctx.db.delete(r._id);
+      deleted++;
+    }
+
+    const events = await ctx.db
+      .query("events")
+      .withIndex("by_site_time", (q) => q.eq("siteId", siteId))
+      .collect();
+    for (const e of events) {
+      await ctx.db.delete(e._id);
+      deleted++;
+    }
+
+    const rollups = await ctx.db
+      .query("hourlyRollup")
+      .withIndex("by_site_hour", (q) => q.eq("siteId", siteId))
+      .collect();
+    for (const r of rollups) {
+      await ctx.db.delete(r._id);
+      deleted++;
+    }
+
+    const receipts = await ctx.db
+      .query("receipts")
+      .withIndex("by_site", (q) => q.eq("siteId", siteId))
+      .collect();
+    for (const r of receipts) {
+      await ctx.db.delete(r._id);
+      deleted++;
+    }
+
+    const nonces = await ctx.db
+      .query("nonceLog")
+      .filter((q) => q.eq(q.field("siteId"), siteId))
+      .collect();
+    for (const n of nonces) {
+      await ctx.db.delete(n._id);
+      deleted++;
+    }
+
+    const quotes = await ctx.db
+      .query("quotes")
+      .withIndex("by_site_time", (q) => q.eq("siteId", siteId))
+      .collect();
+    for (const q of quotes) {
+      await ctx.db.delete(q._id);
+      deleted++;
+    }
+
+    const runs = await ctx.db
+      .query("botRuns")
+      .filter((q) => q.eq(q.field("siteId"), siteId))
+      .collect();
+    for (const run of runs) {
+      const steps = await ctx.db
+        .query("botRunSteps")
+        .withIndex("by_run_time", (q) => q.eq("runId", run._id))
+        .collect();
+      for (const step of steps) {
+        await ctx.db.delete(step._id);
+        deleted++;
+      }
+      await ctx.db.delete(run._id);
+      deleted++;
+    }
+
+    await ctx.db.delete(siteId);
+    deleted++;
+
+    await ctx.db.insert("auditLog", {
+      actor: site.publisherId,
+      action: "site.remove",
+      entity: "sites",
+      entityId: siteId,
+      meta: { domain: site.domain, deletedRows: deleted },
+      occurredAt: Date.now(),
+    });
+
+    return { ok: true, deleted };
   },
 });
 

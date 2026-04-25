@@ -55,6 +55,25 @@ export const wipe = internalMutation({
   },
 });
 
+export const siteByDomain = internalQuery({
+  args: { domain: v.string() },
+  handler: async (ctx, { domain }) => {
+    if (process.env.DEV_SEED_ALLOWED !== "true") return null;
+    const site = await ctx.db
+      .query("sites")
+      .withIndex("by_domain", (q) => q.eq("domain", domain))
+      .unique();
+    if (!site) return null;
+    return {
+      _id: site._id,
+      domain: site.domain,
+      status: site.status,
+      verifyToken: site.verifyToken,
+      publisherId: site.publisherId,
+    };
+  },
+});
+
 export const quoteStats = internalQuery({
   args: {},
   handler: async (ctx) => {

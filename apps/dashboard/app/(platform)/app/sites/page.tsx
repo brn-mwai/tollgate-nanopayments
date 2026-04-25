@@ -4,7 +4,7 @@ import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import type { Id } from "@convex/_generated/dataModel";
 import { useState } from "react";
-import { Plus, Check, Copy, Key, ArrowRight } from "@phosphor-icons/react";
+import { Plus, Check, Copy, Key, ArrowRight, Trash } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export default function SitesPage() {
@@ -119,6 +119,7 @@ export default function SitesPage() {
                 ) : (
                   <RotateKeyBtn siteId={s._id} domain={s.domain} onRotated={(k) => setIssued({ apiKey: k, domain: s.domain })} />
                 )}
+                <RemoveBtn siteId={s._id} domain={s.domain} />
                 <Link
                   href={`/app/sites/${s._id}`}
                   style={{
@@ -199,6 +200,41 @@ function RotateKeyBtn({
   return (
     <button type="button" style={ghostBtn} onClick={onClick} disabled={busy}>
       <Key size={15} /> {busy ? "Rotating…" : "Rotate key"}
+    </button>
+  );
+}
+
+function RemoveBtn({ siteId, domain }: { siteId: Id<"sites">; domain: string }) {
+  const remove = useMutation(api.sites.remove);
+  const [busy, setBusy] = useState(false);
+
+  async function onClick() {
+    if (
+      !confirm(
+        `Delete ${domain}? This permanently removes the site and every quote, event, rollup, and bot run tied to it. Cannot be undone.`,
+      )
+    ) {
+      return;
+    }
+    setBusy(true);
+    try {
+      await remove({ siteId });
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "delete failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      style={{ ...ghostBtn, color: "var(--red, #E84A53)" }}
+      onClick={onClick}
+      disabled={busy}
+      title={`Delete ${domain}`}
+    >
+      <Trash size={15} /> {busy ? "Deleting…" : "Delete"}
     </button>
   );
 }
