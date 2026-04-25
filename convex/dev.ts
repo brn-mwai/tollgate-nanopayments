@@ -9,9 +9,10 @@
 // Returns { siteId, apiKey, verifyToken, hmacSecret } — paste these into
 // apps/demo-news/.env.local.
 
-import { internalMutation } from "./_generated/server";
+import { internalAction, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 import type { Doc } from "./_generated/dataModel";
+import { internal } from "./_generated/api";
 import { generateApiKey, randomHex } from "./lib/apiKey";
 
 const DEMO_EMAIL = "demo@tollgate.brianmwai.com";
@@ -113,5 +114,69 @@ export const seedDemo = internalMutation({
       domain: DEMO_DOMAIN,
       arcAddress: publisher.arcAddress ?? DEMO_ARC_ADDRESS,
     };
+  },
+});
+
+// One-shot: move native ETH-Sepolia from the publisher Circle wallet to the
+// bot fleet wallet so the bot fleet can pay gas on the publisher-bound
+// USDC transfers. Avoids requiring the operator to manually drip from
+// faucet.circle.com when both wallets are already entity-controlled.
+export const fundBotFleetGas = internalAction({
+  args: {
+    fromWalletId: v.string(),
+    amountEth: v.optional(v.string()),
+  },
+  handler: async (
+    ctx,
+    { fromWalletId, amountEth },
+  ): Promise<{ ok: boolean; txId?: string; reason?: string }> => {
+    if (process.env.DEV_SEED_ALLOWED !== "true") {
+      throw new Error("DEV_SEED_ALLOWED must be set to true in Convex env");
+    }
+    const destinationAddress = process.env.TOLLGATE_BOT_FLEET_ADDRESS;
+    if (!destinationAddress) {
+      return { ok: false, reason: "TOLLGATE_BOT_FLEET_ADDRESS env missing" };
+    }
+    const amount = amountEth ?? "0.005";
+    const idempotencyKey = crypto.randomUUID();
+
+    // tokenId omitted = native asset; pass blockchain so Circle knows which.
+    const tx = await ctx.runAction(internal.circle.createTransfer, {
+      fromWalletId,
+      destinationAddress,
+      amountUsdc: amount,
+      blockchain: "BASE-SEPOLIA",
+      idempotencyKey,
+    });
+    return { ok: true, txId: tx.id };
+  },
+});
+
+// Smoke test: do one direct bot fleet → publisher USDC transfer to confirm
+// the gas top-up actually unblocks settles before the user re-runs a burst.
+export const testBotPay = internalAction({
+  args: { amountUsdc: v.optional(v.string()) },
+  handler: async (
+    ctx,
+    { amountUsdc },
+  ): Promise<{ ok: boolean; txId?: string; reason?: string }> => {
+    if (process.env.DEV_SEED_ALLOWED !== "true") {
+      throw new Error("DEV_SEED_ALLOWED must be set to true in Convex env");
+    }
+    const fromWalletId = process.env.TOLLGATE_BOT_FLEET_WALLET_ID;
+    if (!fromWalletId) return { ok: false, reason: "TOLLGATE_BOT_FLEET_WALLET_ID env missing" };
+    const destinationAddress = "0x7f3fa02d63779354f51b172d3f4a29b73763fbd4"; // publisher arc address
+    const tokenId = await ctx.runAction(internal.circle.getUsdcTokenId, {
+      walletId: fromWalletId,
+    });
+    if (!tokenId) return { ok: false, reason: "no_usdc_token_on_bot_fleet" };
+    const tx = await ctx.runAction(internal.circle.createTransfer, {
+      fromWalletId,
+      destinationAddress,
+      amountUsdc: amountUsdc ?? "0.001",
+      tokenId,
+      idempotencyKey: crypto.randomUUID(),
+    });
+    return { ok: true, txId: tx.id };
   },
 });

@@ -58,11 +58,12 @@ export const createTransfer = internalAction({
     destinationAddress: v.string(),
     amountUsdc: v.string(), // human amount e.g. "1.23" — Circle expects decimal
     tokenId: v.optional(v.string()),
+    blockchain: v.optional(v.string()),
     idempotencyKey: v.string(),
   },
   handler: async (
     _ctx,
-    { fromWalletId, destinationAddress, amountUsdc, tokenId, idempotencyKey },
+    { fromWalletId, destinationAddress, amountUsdc, tokenId, blockchain, idempotencyKey },
   ): Promise<{ id: string; state: string }> => {
     const { apiKey, entitySecret } = readEnv();
     const ciphertext = encryptEntitySecret(entitySecret, await getPublicKeyPem(apiKey));
@@ -76,6 +77,7 @@ export const createTransfer = internalAction({
       feeLevel: "MEDIUM",
     };
     if (tokenId) body.tokenId = tokenId;
+    if (blockchain) body.blockchain = blockchain;
 
     const res = await circleFetch("/developer/transactions/transfer", {
       method: "POST",

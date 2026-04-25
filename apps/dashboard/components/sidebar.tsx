@@ -18,7 +18,7 @@ import {
   Gear,
   Plus,
   Star,
-  Pulse,
+  Monitor,
 } from "@phosphor-icons/react";
 
 type BadgeVariant = "arc" | "gold" | "green" | "pink";
@@ -64,7 +64,7 @@ export function Sidebar() {
   const nav: NavItem[][] = [
     [
       { href: "/app", label: "Overview", Icon: SquaresFour },
-      { href: "/app/realtime", label: "Realtime", Icon: Pulse },
+      { href: "/app/realtime", label: "Realtime", Icon: Monitor },
       {
         href: "/app/sites",
         label: "Sites",
