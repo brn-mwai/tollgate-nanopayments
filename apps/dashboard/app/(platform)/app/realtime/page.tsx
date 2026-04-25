@@ -766,6 +766,7 @@ function EventStream({
     priceMicroUsdc: number;
     status: string;
     txHash?: string;
+    arcTxHash?: string;
     nonce: string;
     pricerTrace: string | null;
     siteDomain: string;
@@ -788,7 +789,7 @@ function EventStream({
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
-              {["Time", "Agent", "Site · path", "Status", "Price", "Arc tx", "Pricing trace"].map((h) => (
+              {["Time", "Agent", "Site · path", "Status", "Price", "Arc tx", "Base tx", "Pricing trace"].map((h) => (
                 <th
                   key={h}
                   style={{
@@ -824,12 +825,27 @@ function EventStream({
                   {e.priceMicroUsdc > 0 ? `${e.priceMicroUsdc} uUSDC` : "—"}
                 </Td>
                 <Td>
-                  {e.txHash ? (
+                  {e.arcTxHash ? (
                     <a
-                      href={arcTxUrl(e.txHash) ?? "#"}
+                      href={`https://testnet.arcscan.app/tx/${e.arcTxHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ fontFamily: "JetBrains Mono, monospace", color: "var(--arc-bright)", textDecoration: "none", fontSize: 11, display: "inline-flex", alignItems: "center", gap: 4 }}
+                    >
+                      {shortHash(e.arcTxHash)}
+                      <ArrowSquareOut size={11} />
+                    </a>
+                  ) : (
+                    <span style={{ color: "var(--text-3)" }}>—</span>
+                  )}
+                </Td>
+                <Td>
+                  {e.txHash ? (
+                    <a
+                      href={`https://sepolia.basescan.org/tx/${e.txHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontFamily: "JetBrains Mono, monospace", color: "var(--text-3)", textDecoration: "none", fontSize: 11, display: "inline-flex", alignItems: "center", gap: 4 }}
                     >
                       {shortHash(e.txHash)}
                       <ArrowSquareOut size={11} />

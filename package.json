@@ -27,7 +27,8 @@
   "dependencies": {
     "@clerk/backend": "^1.21.0",
     "convex": "^1.31.0",
-    "svix": "^1.45.0"
+    "svix": "^1.45.0",
+    "viem": "^2.21.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

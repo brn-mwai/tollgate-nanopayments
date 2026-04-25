@@ -143,6 +143,15 @@ export const runBurst = action({
       meta: { settled, failed, iterations },
     });
 
+    // Inline reconcile so the basescan tx hashes show up in the event
+    // stream within seconds of `run_complete` rather than waiting up to
+    // a minute for the cron tick. Best-effort; failures don't surface.
+    try {
+      await ctx.runAction(internal.quotes.reconcileSettlements, { limit: 50 });
+    } catch {
+      /* ignore — cron will pick it up */
+    }
+
     return { runId, settled, failed };
   },
 });

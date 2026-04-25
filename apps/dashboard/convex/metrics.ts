@@ -117,6 +117,7 @@ export const feed = query({
       priceMicroUsdc: number;
       status: string;
       txHash?: string;
+      arcTxHash?: string;
       nonce: string;
       pricerTrace: string | null;
       siteDomain: string;
@@ -159,6 +160,7 @@ export const feed = query({
           priceMicroUsdc: e.priceMicroUsdc,
           status: e.status,
           txHash: e.txHash,
+          arcTxHash: quote?.arcTxHash,
           nonce: e.nonce,
           pricerTrace: quote?.pricerTrace ?? null,
           siteDomain: domains.get(e.siteId.toString()) ?? "unknown",

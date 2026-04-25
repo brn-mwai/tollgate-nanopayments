@@ -152,6 +152,42 @@ export const fundBotFleetGas = internalAction({
   },
 });
 
+// One-shot: move USDC from the publisher Circle wallet to the bot fleet
+// wallet so the demo can fire many bursts without running out of funds.
+// Use case is the inverse of fundBotFleetGas: that one moves native ETH
+// for gas, this one moves the asset that gets transferred per settle.
+export const fundBotFleetUsdc = internalAction({
+  args: {
+    fromWalletId: v.string(),
+    amountUsdc: v.optional(v.string()),
+  },
+  handler: async (
+    ctx,
+    { fromWalletId, amountUsdc },
+  ): Promise<{ ok: boolean; txId?: string; reason?: string }> => {
+    if (process.env.DEV_SEED_ALLOWED !== "true") {
+      throw new Error("DEV_SEED_ALLOWED must be set to true in Convex env");
+    }
+    const destinationAddress = process.env.TOLLGATE_BOT_FLEET_ADDRESS;
+    if (!destinationAddress) {
+      return { ok: false, reason: "TOLLGATE_BOT_FLEET_ADDRESS env missing" };
+    }
+    const tokenId = await ctx.runAction(internal.circle.getUsdcTokenId, {
+      walletId: fromWalletId,
+    });
+    if (!tokenId) return { ok: false, reason: "no_usdc_token_on_source" };
+    const amount = amountUsdc ?? "5.0";
+    const tx = await ctx.runAction(internal.circle.createTransfer, {
+      fromWalletId,
+      destinationAddress,
+      amountUsdc: amount,
+      tokenId,
+      idempotencyKey: crypto.randomUUID(),
+    });
+    return { ok: true, txId: tx.id };
+  },
+});
+
 // Smoke test: do one direct bot fleet → publisher USDC transfer to confirm
 // the gas top-up actually unblocks settles before the user re-runs a burst.
 export const testBotPay = internalAction({

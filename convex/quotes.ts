@@ -477,11 +477,41 @@ export const _settleViaCircle = internalAction({
           idempotencyKey,
         },
       );
+
+      // Best-effort parallel leg on Arc Sepolia. Circle's createTransfer
+      // is forced onto BASE-SEPOLIA today; this mirrors the same value
+      // movement on Arc so testnet.arcscan.app shows the settle. If the
+      // Arc leg fails the Circle settle is still authoritative.
+      try {
+        const arc: { ok: boolean; txHash?: string } = await ctx.runAction(
+          internal.arc.transferUsdc,
+          {
+            destinationAddress,
+            amountUsdc: amountUsd,
+          },
+        );
+        if (arc.ok && arc.txHash) {
+          await ctx.runMutation(internal.quotes._attachArcTxHash, {
+            quoteId,
+            arcTxHash: arc.txHash,
+          });
+        }
+      } catch {
+        /* Arc leg is best-effort */
+      }
+
       return { ok: true, txId: tx.id };
     } catch (err) {
       const reason = err instanceof Error ? err.message : "circle_transfer_failed";
       return { ok: false, reason };
     }
+  },
+});
+
+export const _attachArcTxHash = internalMutation({
+  args: { quoteId: v.id("quotes"), arcTxHash: v.string() },
+  handler: async (ctx, { quoteId, arcTxHash }) => {
+    await ctx.db.patch(quoteId, { arcTxHash });
   },
 });
 
@@ -515,6 +545,26 @@ export const txHashByCircleId = query({
   },
 });
 
+// Both legs of the settle: Base Sepolia (via Circle Wallets) and Arc Sepolia
+// (via the operator hot wallet). Bot CLI prints both — basescan link plus
+// arcscan link — so the audit trail is end to end on both chains.
+export const settleHashesByCircleId = query({
+  args: { circleTxId: v.string() },
+  handler: async (
+    ctx,
+    { circleTxId },
+  ): Promise<{ baseHash: string | null; arcHash: string | null }> => {
+    const quote = await ctx.db
+      .query("quotes")
+      .withIndex("by_circle_tx", (q) => q.eq("circleTxId", circleTxId))
+      .unique();
+    return {
+      baseHash: quote?.txHash ?? null,
+      arcHash: quote?.arcTxHash ?? null,
+    };
+  },
+});
+
 // Public action that proactively pulls the tx hash from Circle's
 // /transactions/{id} endpoint and writes it back to the quote row.
 // Used by the bot CLI so it doesn't have to wait for the per-minute
@@ -538,6 +588,33 @@ export const resolveTxHash = action({
       return tx.txHash;
     }
     return null;
+  },
+});
+
+// Like resolveTxHash but returns both the Base Sepolia (Circle) hash
+// and the Arc Sepolia (operator hot wallet) hash. Bot CLI calls this
+// to print both basescan + arcscan links inline.
+export const resolveSettleHashes = action({
+  args: { circleTxId: v.string() },
+  handler: async (
+    ctx,
+    { circleTxId },
+  ): Promise<{ baseHash: string | null; arcHash: string | null }> => {
+    let { baseHash, arcHash }: { baseHash: string | null; arcHash: string | null } =
+      await ctx.runQuery(api.quotes.settleHashesByCircleId, { circleTxId });
+    if (!baseHash) {
+      const tx = await ctx.runAction(internal.circle.getTransaction, {
+        id: circleTxId,
+      });
+      if (tx && tx.txHash) {
+        await ctx.runMutation(internal.quotes._attachOnchainTxHash, {
+          circleTxId,
+          txHash: tx.txHash,
+        });
+        baseHash = tx.txHash;
+      }
+    }
+    return { baseHash, arcHash };
   },
 });
 

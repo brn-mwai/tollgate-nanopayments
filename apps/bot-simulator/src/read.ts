@@ -182,14 +182,14 @@ async function read(
   if (txRef) {
     const looksLikeHash = txRef.startsWith("0x") && txRef.length === 66;
     if (looksLikeHash) {
-      kv("onchain", `https://sepolia.basescan.org/tx/${txRef}`, c.green);
+      kv("base", `https://sepolia.basescan.org/tx/${txRef}`, c.green);
     } else {
       kv("circleTx", txRef, c.dim);
-      const hash = await pollForTxHash(txRef);
-      if (hash) {
-        kv("onchain", `https://sepolia.basescan.org/tx/${hash}`, c.green);
-      } else {
-        kv("onchain", "settled async via Circle (watch dashboard for the resolved tx hash)", c.dim);
+      const { baseHash, arcHash } = await pollForSettleHashes(txRef);
+      if (baseHash) kv("base", `https://sepolia.basescan.org/tx/${baseHash}`, c.green);
+      if (arcHash) kv("arc", `https://testnet.arcscan.app/tx/${arcHash}`, c.green);
+      if (!baseHash && !arcHash) {
+        kv("onchain", "settled async (watch dashboard for resolved hashes)", c.dim);
       }
     }
   } else if (receiptSet) {
@@ -253,19 +253,26 @@ function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-// Resolve on-chain tx hash via the public Convex action, which proactively
-// pulls from Circle if the cron hasn't backfilled yet. Tries every 2s up
-// to 30s; some Circle testnet settles take a while to land in a block.
-async function pollForTxHash(circleTxId: string): Promise<string | null> {
+// Resolve both on-chain tx hashes (Base Sepolia via Circle + Arc Sepolia
+// via operator hot wallet) via the public Convex action. Polls every 2s
+// up to 30s. Returns whichever hashes have resolved by then; either or
+// both can be null if the chain leg is still pending.
+async function pollForSettleHashes(
+  circleTxId: string,
+): Promise<{ baseHash: string | null; arcHash: string | null }> {
   const convexUrl =
     process.env.TOLLGATE_CONVEX_URL?.replace(/\/$/, "") ??
     "https://hallowed-ram-675.convex.cloud";
   const url = `${convexUrl}/api/action`;
   const body = JSON.stringify({
-    path: "quotes:resolveTxHash",
+    path: "quotes:resolveSettleHashes",
     args: { circleTxId },
     format: "json",
   });
+  let last: { baseHash: string | null; arcHash: string | null } = {
+    baseHash: null,
+    arcHash: null,
+  };
   for (let i = 0; i < 15; i++) {
     try {
       const res = await fetch(url, {
@@ -274,15 +281,21 @@ async function pollForTxHash(circleTxId: string): Promise<string | null> {
         body,
       });
       if (res.ok) {
-        const data = (await res.json()) as { status?: string; value?: string | null };
-        if (data.status === "success" && data.value) return data.value;
+        const data = (await res.json()) as {
+          status?: string;
+          value?: { baseHash: string | null; arcHash: string | null };
+        };
+        if (data.status === "success" && data.value) {
+          last = data.value;
+          if (last.baseHash && last.arcHash) return last;
+        }
       }
     } catch {
       /* ignore, retry */
     }
     await sleep(2000);
   }
-  return null;
+  return last;
 }
 
 main().catch((err) => {

@@ -152,6 +152,7 @@ export default defineSchema({
     ),
     circleTxId: v.optional(v.string()), // Circle transaction UUID (immediate)
     txHash: v.optional(v.string()), // Base Sepolia tx hash (after Circle webhook)
+    arcTxHash: v.optional(v.string()), // Arc Sepolia tx hash (mirrored settle leg)
     createdAt: v.number(),
   })
     .index("by_nonce", ["nonce"])

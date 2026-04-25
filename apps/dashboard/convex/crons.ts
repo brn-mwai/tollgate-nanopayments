@@ -24,4 +24,11 @@ crons.cron("cleanup-nonces", "*/10 * * * *", internal.nonces.cleanup);
 // and adjusts reputation scores. No-op when GEMINI_API_KEY is unset.
 crons.cron("gemini-abuse-review", "*/5 * * * *", internal.gemini.reviewAbuse);
 
+// Every minute: backfill onchain txHash for any settled quote whose Circle
+// webhook hasn't landed. Without this the dashboard event stream shows the
+// Circle UUID but not the basescan link until manual reconcile is run.
+crons.cron("reconcile-settlements", "* * * * *", internal.quotes.reconcileSettlements, {
+  limit: 50,
+});
+
 export default crons;
