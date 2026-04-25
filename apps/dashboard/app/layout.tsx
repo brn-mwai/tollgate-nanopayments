@@ -8,11 +8,27 @@ export const metadata: Metadata = {
     "Bot-economics payment rail on Arc. HTTP 402 + USDC. Every AI scrape becomes a transaction, not a theft.",
   metadataBase: new URL("https://tollgate.brianmwai.com"),
   openGraph: {
-    title: "Tollgate",
-    description: "Pay per request on Arc. HTTP 402 + USDC.",
+    title: "Tollgate — Charge AI bots per request in USDC",
+    description:
+      "A dashboard and middleware that lets any publisher charge AI bots per request in USDC over the open x402 standard. Priced by Gemini. Settled on Arc.",
     url: "https://tollgate.brianmwai.com",
     siteName: "Tollgate",
     type: "website",
+    images: [
+      {
+        url: "/og.png",
+        width: 2400,
+        height: 1260,
+        alt: "Tollgate — Charge AI bots per request in USDC",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tollgate — Charge AI bots per request in USDC",
+    description:
+      "A dashboard and middleware that lets any publisher charge AI bots per request in USDC. Priced by Gemini. Settled on Arc.",
+    images: ["/og.png"],
   },
   icons: {
     icon: "/favicon.svg",

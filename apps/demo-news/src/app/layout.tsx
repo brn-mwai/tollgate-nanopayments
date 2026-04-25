@@ -8,11 +8,27 @@ export const metadata: Metadata = {
   description:
     "Every article on this site is HTTP 402-gated. Humans read free. Bots pay $0.001 per request in USDC on Circle infrastructure. Powered by Tollgate.",
   openGraph: {
-    title: "The Nanopayer Times",
+    title: "The Nanopayer Times — Powered by Tollgate",
     description:
-      "AI-era journalism, priced per read. HTTP 402 paywall · Circle · Arc.",
+      "AI-era journalism, priced per read. Every article is HTTP 402-gated. Humans read free. Bots pay $0.001 per request in USDC on Circle infrastructure.",
     url: "https://demo-news.brianmwai.com",
+    siteName: "The Nanopayer Times",
     type: "website",
+    images: [
+      {
+        url: "/og.png",
+        width: 2400,
+        height: 1260,
+        alt: "Tollgate — Charge AI bots per request in USDC",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Nanopayer Times — Powered by Tollgate",
+    description:
+      "Humans read free. Bots pay $0.001 per request in USDC. HTTP 402 paywall on Circle + Arc.",
+    images: ["/og.png"],
   },
 };
 
